@@ -46,7 +46,6 @@ private:
     virtual bool frameRenderingQueued(const Ogre::FrameEvent&);
     virtual bool keyPressed(const OIS::KeyEvent&);
     virtual bool keyReleased(const OIS::KeyEvent&);
-
 };
 
 } // OpenRump
