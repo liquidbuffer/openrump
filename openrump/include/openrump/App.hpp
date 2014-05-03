@@ -2,10 +2,20 @@
 // App.hpp
 // ----------------------------------------------------------------------------
 
+// ----------------------------------------------------------------------------
+// include files
+
 #include <openrump/Export.hpp>
 #include <openrump/BaseApp.hpp>
 #include <OGRE/OgreFrameListener.h>
 #include <OIS/OISKeyboard.h>
+
+// ----------------------------------------------------------------------------
+// forward declarations
+
+namespace OpenRump {
+    class Renderer;
+}
 
 namespace OpenRump {
 
@@ -46,6 +56,8 @@ private:
     virtual bool frameRenderingQueued(const Ogre::FrameEvent&);
     virtual bool keyPressed(const OIS::KeyEvent&);
     virtual bool keyReleased(const OIS::KeyEvent&);
+
+    Renderer* m_Renderer;
 };
 
 } // OpenRump

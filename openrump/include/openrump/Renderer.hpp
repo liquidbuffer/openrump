@@ -20,11 +20,7 @@ public:
      */
     virtual ~Renderer();
 
-protected:
-
-    /*!
-     * @brief
-     */
+    virtual void initialise() = 0;
 };
 
 } // namespace OpenRump

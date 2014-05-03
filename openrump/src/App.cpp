@@ -8,22 +8,28 @@
 #include <openrump/App.hpp>
 #include <iostream>
 
+#include <openrump/OgreRenderer.hpp>
+
 namespace OpenRump {
 
 // ----------------------------------------------------------------------------
-App::App()
+App::App() :
+    m_Renderer(0)
 {
+    m_Renderer = new OgreRenderer();
 }
 
 // ----------------------------------------------------------------------------
 App::~App()
 {
+    if(m_Renderer)
+        delete m_Renderer;
 }
 
 // ----------------------------------------------------------------------------
 void App::onLoad()
 {
-
+    m_Renderer->initialise();
 }
 
 // ----------------------------------------------------------------------------
