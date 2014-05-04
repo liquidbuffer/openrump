@@ -21,7 +21,6 @@ namespace OpenRump {
 
 class OPENRUMP_API App :
     public BaseApp,
-    public OIS::KeyListener,
     public Ogre::FrameListener
 {
 public:
@@ -53,9 +52,11 @@ private:
      */
     virtual void onExit();
 
-    virtual bool frameRenderingQueued(const Ogre::FrameEvent&);
-    virtual bool keyPressed(const OIS::KeyEvent&);
-    virtual bool keyReleased(const OIS::KeyEvent&);
+    /*!
+     * @brief Called when it's time to update the game loop
+     * @return Return false to signal program shutdown
+     */
+    virtual bool onUpdateGameLoop(float timeSinceLastUpdate);
 
     Renderer* m_Renderer;
 };

@@ -9,6 +9,7 @@
 
 #include <OgreRoot.h>
 #include <OgreConfigFile.h>
+#include <OgreRenderWindow.h>
 
 namespace OpenRump {
 
@@ -69,10 +70,10 @@ void OgreRenderer::initialise()
 
     // configure rendering window
 #ifdef _DEBUG
-    if(!(m_Root->restoreConfig()) || m_Root->showConfigDialog());
+    if(!m_Root->showConfigDialog())
         return;
 #else
-    if(!(m_Root->restoreConfig()) || m_Root->showConfigDialog());
+    if(!m_Root->showConfigDialog());
         return;
 #endif // _DEBUG
 
@@ -84,6 +85,20 @@ void OgreRenderer::initialise()
 
     // initialise resources
     Ogre::ResourceGroupManager::getSingletonPtr()->initialiseResourceGroup("Essential");
+}
+
+// ----------------------------------------------------------------------------
+void OgreRenderer::startRendering()
+{
+    m_Root->startRendering();
+}
+
+// ----------------------------------------------------------------------------
+std::size_t OgreRenderer::getWindowHandle()
+{
+    std::size_t hwnd;
+    m_Window->getCustomAttribute("WINDOW", &hwnd);
+    return hwnd;
 }
 
 } // namespace OpenRump

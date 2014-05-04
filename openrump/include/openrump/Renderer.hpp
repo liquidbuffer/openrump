@@ -3,6 +3,9 @@
 // ----------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------
+// include files
+
+#include <cstddef>
 
 namespace OpenRump {
 
@@ -21,6 +24,8 @@ public:
     virtual ~Renderer();
 
     virtual void initialise() = 0;
+    virtual void startRendering() = 0;
+    virtual std::size_t getWindowHandle() = 0;
 };
 
 } // namespace OpenRump

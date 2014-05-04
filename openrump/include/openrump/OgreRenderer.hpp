@@ -37,6 +37,8 @@ public:
      * @brief Initialise renderer
      */
     virtual void initialise();
+    virtual void startRendering();
+    virtual std::size_t getWindowHandle();
 
 private:
 

@@ -35,7 +35,7 @@ void App::onLoad()
 // ----------------------------------------------------------------------------
 void App::onRun()
 {
-
+    //m_Renderer->startRendering();
 }
 
 // ----------------------------------------------------------------------------
@@ -45,25 +45,9 @@ void App::onExit()
 }
 
 // ----------------------------------------------------------------------------
-bool App::frameRenderingQueued(const Ogre::FrameEvent& evt)
+bool App::onUpdateGameLoop(float timeSinceLastUpdate)
 {
-
 }
 
-// ----------------------------------------------------------------------------
-bool App::keyPressed(const OIS::KeyEvent& evt)
-{
-
-    // return true so buffer isn't cleared
-    return true;
-}
-
-// ----------------------------------------------------------------------------
-bool App::keyReleased(const OIS::KeyEvent& evt)
-{
-
-    // return true so buffer isn't cleared
-    return true;
-}
 
 } // namespace OpenRump
