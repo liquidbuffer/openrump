@@ -7,6 +7,7 @@
 
 #include <cstddef>
 #include <vector>
+#include <openrump/ListenerDispatcher.hxx>
 
 // ----------------------------------------------------------------------------
 // forward declarations
@@ -48,29 +49,22 @@ public:
      */
     virtual std::size_t getWindowHandle() = 0;
 
-    /*!
-     * @brief Adds a listener to the dispatch list
-     */
-    void addFrameListener(RendererListener*);
+
 
     /*!
-     * @brief Removes a listener from the dispatch list
-     */
-    void removeFrameListener(RendererListener*);
-
-    /*!
-     * @brief Dispatches a frame event
+     * @brief Handles frame event dispatching to listeners
      * A frame event should occur once every frame, in which the game logic
      * should be updated. The time passed since the last update is passed
      * as an argument.
-     * @param timeSinceLastUpdate The time in seconds since the last call to
-     * this method.
-     * @return Returning false signals the intent to shut down the application.
+     * @note Accepts listeners of type RenderListener, dispatches time between
+     * each frame event is dispatched as a float in seconds.
      */
     bool dispatchFrameEvent(float timeSinceLastUpdate);
 
+    typedef ListenerDispatcher<RendererListener*> FrameEvent;
+    FrameEvent frameEvent;
+
 private:
-    std::vector<RendererListener*> m_ListenerList;
 };
 
 } // namespace OpenRump

@@ -14,6 +14,7 @@
 
 namespace OpenRump {
     class Renderer;
+    class Input;
 }
 
 namespace OpenRump {
@@ -51,10 +52,13 @@ private:
      */
     virtual void onExit();
 
-    // override renderer listeners
+    // override renderer events
     virtual bool onFrameEvent(float timeSinceLastUpdate);
 
+    // override input events
+
     Renderer* m_Renderer;
+    Input* m_Input;
 };
 
 } // OpenRump

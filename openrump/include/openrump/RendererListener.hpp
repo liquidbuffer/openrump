@@ -2,6 +2,9 @@
 // RendererListener.hpp
 // ----------------------------------------------------------------------------
 
+#ifndef __OPENUMP_RENDERER_LISTENER_HPP__
+#define __OPENUMP_RENDERER_LISTENER_HPP__
+
 namespace OpenRump {
 
 class RendererListener
@@ -16,3 +19,5 @@ public:
 };
 
 } // namespace OpenRump
+
+#endif // __OPENUMP_RENDERER_LISTENER_HPP__

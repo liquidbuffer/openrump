@@ -10,14 +10,21 @@ set (OpenRump_SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR})
 set (OpenRump_SOURCES
 	"${OpenRump_SOURCE_DIR}/src/App.cpp"
 	"${OpenRump_SOURCE_DIR}/src/BaseApp.cpp"
+	"${OpenRump_SOURCE_DIR}/src/Input.cpp"
 	"${OpenRump_SOURCE_DIR}/src/OgreRenderer.cpp"
+	"${OpenRump_SOURCE_DIR}/src/OISInput.cpp"
 	"${OpenRump_SOURCE_DIR}/src/Renderer.cpp"
 	"${OpenRump_SOURCE_DIR}/src/RendererListener.cpp"
 )
 set (OpenRump_HEADERS
 	"${OpenRump_SOURCE_DIR}/include/openrump/App.hpp"
 	"${OpenRump_SOURCE_DIR}/include/openrump/BaseApp.hpp"
+	"${OpenRump_SOURCE_DIR}/include/openrump/Input.hpp"
+	"${OpenRump_SOURCE_DIR}/include/openrump/InputListener.hpp"
+	"${OpenRump_SOURCE_DIR}/include/openrump/ListenerDispatcher.hpp"
+	"${OpenRump_SOURCE_DIR}/include/openrump/ListenerDispatcher.hxx"
 	"${OpenRump_SOURCE_DIR}/include/openrump/OgreRenderer.hpp"
+	"${OpenRump_SOURCE_DIR}/include/openrump/OISInput.hpp"
 	"${OpenRump_SOURCE_DIR}/include/openrump/Renderer.hpp"
 	"${OpenRump_SOURCE_DIR}/include/openrump/RendererListener.hpp"
 )
@@ -34,6 +41,10 @@ if (NOT OpenRump_USE_INTERNAL_DEPENDENCIES)
 	find_package (OGRE REQUIRED)
 	include_directories (${OGRE_INCLUDE_DIRS})
 	target_link_libraries (OpenRump ${OGRE_LIBRARIES})
+
+	find_package (OIS REQUIRED)
+	include_directories (${OIS_INCLUDE_DIRS})
+	target_link_libraries (OpenRump ${OIS_LIBRARIES})
 else ()
 	include_directories ("${CMAKE_SOURCE_DIR}/dep/ogre_src_v1-9-0/OgreMain/include")
 	include_directories ("${CMAKE_BINARY_DIR}/dep/ogre_src_v1-9-0/include")

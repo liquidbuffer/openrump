@@ -6,15 +6,20 @@
 // include files
 
 #include <openrump/App.hpp>
-#include <iostream>
-
 #include <openrump/OgreRenderer.hpp>
+
+#include <OIS/OISInputManager.h>
+
+#include <iostream>
+#include <sstream>
+
 
 namespace OpenRump {
 
 // ----------------------------------------------------------------------------
 App::App() :
-    m_Renderer(0)
+    m_Renderer(0),
+    m_Input(0)
 {
     m_Renderer = new OgreRenderer();
 }
@@ -22,6 +27,8 @@ App::App() :
 // ----------------------------------------------------------------------------
 App::~App()
 {
+
+    // destroy renderer
     if(m_Renderer)
         delete m_Renderer;
 }
@@ -29,9 +36,18 @@ App::~App()
 // ----------------------------------------------------------------------------
 bool App::onLoad()
 {
+    // initialise renderer
     if(!m_Renderer->initialise())
         return false;
-    m_Renderer->addFrameListener(this);
+    m_Renderer->frameEvent.addListener(this, "App");
+
+    // initialise input system
+    /*OIS::ParamList pl;
+    std::ostringstream hwndstr;
+    hwndstr << m_Renderer->getWindowHandle();
+    pl.insert(std::make_pair(std::string("WINDOW"), hwndstr.str()));
+    m_Input = OIS::InputManager::createInputSystem(pl);*/
+
     return true;
 }
 
@@ -44,7 +60,6 @@ void App::onRun()
 // ----------------------------------------------------------------------------
 void App::onExit()
 {
-    m_Renderer->removeFrameListener(this);
 }
 
 // ----------------------------------------------------------------------------
