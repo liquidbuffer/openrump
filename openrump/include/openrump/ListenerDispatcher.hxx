@@ -2,6 +2,9 @@
 // ListenerDispatcher.hxx
 // ----------------------------------------------------------------------------
 
+#ifndef __OPENRUMP_LISTENER_DISPATCHER__
+#define __OPENRUMP_LISTENER_DISPATCHER__
+
 // ----------------------------------------------------------------------------
 // include files
 
@@ -86,6 +89,13 @@ void ListenerDispatcher<T>::removeListener(std::string listenerName)
 
 // ----------------------------------------------------------------------------
 template <class T>
+void ListenerDispatcher<T>::removeAllListeners()
+{
+    m_Listeners.clear();
+}
+
+// ----------------------------------------------------------------------------
+template <class T>
 typename ListenerDispatcher<T>::iterator ListenerDispatcher<T>::begin()
 {
     return m_Listeners.begin();
@@ -99,3 +109,5 @@ typename ListenerDispatcher<T>::iterator ListenerDispatcher<T>::end()
 }
 
 } // namespace OpenRump
+
+#endif // __OPENRUMP_LISTENER_DISPATCHER__

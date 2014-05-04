@@ -9,6 +9,8 @@
 #include <openrump/BaseApp.hpp>
 #include <openrump/RendererListener.hpp>
 
+#include <OIS/OISKeyboard.h>
+
 // ----------------------------------------------------------------------------
 // forward declarations
 
@@ -21,7 +23,8 @@ namespace OpenRump {
 
 class OPENRUMP_API App :
     public BaseApp,
-    public RendererListener
+    public RendererListener,
+    public OIS::KeyListener
 {
 public:
 
@@ -56,6 +59,8 @@ private:
     virtual bool onFrameEvent(float timeSinceLastUpdate);
 
     // override input events
+    virtual bool keyPressed(const OIS::KeyEvent&);
+    virtual bool keyReleased(const OIS::KeyEvent&);
 
     Renderer* m_Renderer;
     Input* m_Input;

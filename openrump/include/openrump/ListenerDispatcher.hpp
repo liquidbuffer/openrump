@@ -43,6 +43,11 @@ public:
      */
     void removeListener(std::string listenerName);
 
+    /*!
+     * @brief Removes all listeners
+     */
+    void removeAllListeners();
+
     iterator begin();
     iterator end();
 
