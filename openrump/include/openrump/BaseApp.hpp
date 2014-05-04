@@ -30,7 +30,7 @@ protected:
     /*!
      * @brief Called when the application should load
      */
-    virtual void onLoad() = 0;
+    virtual bool onLoad() = 0;
 
     /*!
      * @brief Called when the application should run

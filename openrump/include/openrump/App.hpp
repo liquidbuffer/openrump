@@ -7,8 +7,7 @@
 
 #include <openrump/Export.hpp>
 #include <openrump/BaseApp.hpp>
-#include <OGRE/OgreFrameListener.h>
-#include <OIS/OISKeyboard.h>
+#include <openrump/RendererListener.hpp>
 
 // ----------------------------------------------------------------------------
 // forward declarations
@@ -21,7 +20,7 @@ namespace OpenRump {
 
 class OPENRUMP_API App :
     public BaseApp,
-    public Ogre::FrameListener
+    public RendererListener
 {
 public:
 
@@ -40,7 +39,7 @@ private:
     /*!
      * @brief Called when the application should load
      */
-    virtual void onLoad();
+    virtual bool onLoad();
 
     /*!
      * @brief Called when the application should run
@@ -52,11 +51,8 @@ private:
      */
     virtual void onExit();
 
-    /*!
-     * @brief Called when it's time to update the game loop
-     * @return Return false to signal program shutdown
-     */
-    virtual bool onUpdateGameLoop(float timeSinceLastUpdate);
+    // override renderer listeners
+    virtual bool onFrameEvent(float timeSinceLastUpdate);
 
     Renderer* m_Renderer;
 };

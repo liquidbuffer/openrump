@@ -7,7 +7,7 @@
 
 #include <openrump/Renderer.hpp>
 
-#include <OgreString.h>
+#include <OgreFrameListener.h>
 
 // ----------------------------------------------------------------------------
 // forward declarations
@@ -19,7 +19,8 @@ namespace Ogre {
 namespace OpenRump {
 
 class OgreRenderer :
-    public Renderer
+    public Renderer,
+    public Ogre::FrameListener
 {
 public:
 
@@ -33,14 +34,14 @@ public:
      */
     ~OgreRenderer();
 
-    /*!
-     * @brief Initialise renderer
-     */
-    virtual void initialise();
+    // override virtual functions
+    virtual bool initialise();
     virtual void startRendering();
     virtual std::size_t getWindowHandle();
 
 private:
+
+    virtual bool frameRenderingQueued(const Ogre::FrameEvent&);
 
     Ogre::Root* m_Root;
     Ogre::RenderWindow* m_Window;

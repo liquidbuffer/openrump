@@ -27,27 +27,30 @@ App::~App()
 }
 
 // ----------------------------------------------------------------------------
-void App::onLoad()
+bool App::onLoad()
 {
-    m_Renderer->initialise();
+    if(!m_Renderer->initialise())
+        return false;
+    m_Renderer->addFrameListener(this);
+    return true;
 }
 
 // ----------------------------------------------------------------------------
 void App::onRun()
 {
-    //m_Renderer->startRendering();
+    m_Renderer->startRendering();
 }
 
 // ----------------------------------------------------------------------------
 void App::onExit()
 {
-
+    m_Renderer->removeFrameListener(this);
 }
 
 // ----------------------------------------------------------------------------
-bool App::onUpdateGameLoop(float timeSinceLastUpdate)
+bool App::onFrameEvent(float timeSinceLastUpdate)
 {
+    return true;
 }
-
 
 } // namespace OpenRump

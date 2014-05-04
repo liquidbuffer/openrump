@@ -35,14 +35,17 @@ OgreRenderer::OgreRenderer() :
 OgreRenderer::~OgreRenderer()
 {
     if(m_Root)
+    {
+        //m_Root->removeFrameListener(this);
         delete m_Root;
+    }
 }
 
 // ----------------------------------------------------------------------------
-void OgreRenderer::initialise()
+bool OgreRenderer::initialise()
 {
     if(m_Root)
-        return;
+        return false;
 
     m_Root = new Ogre::Root(m_PluginsCfg);
 
@@ -71,10 +74,10 @@ void OgreRenderer::initialise()
     // configure rendering window
 #ifdef _DEBUG
     if(!m_Root->showConfigDialog())
-        return;
+        return false;
 #else
     if(!m_Root->showConfigDialog());
-        return;
+        return false;
 #endif // _DEBUG
 
     // initialise render window
@@ -85,6 +88,10 @@ void OgreRenderer::initialise()
 
     // initialise resources
     Ogre::ResourceGroupManager::getSingletonPtr()->initialiseResourceGroup("Essential");
+
+    m_Root->addFrameListener(this);
+
+    return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -99,6 +106,12 @@ std::size_t OgreRenderer::getWindowHandle()
     std::size_t hwnd;
     m_Window->getCustomAttribute("WINDOW", &hwnd);
     return hwnd;
+}
+
+// ----------------------------------------------------------------------------
+bool OgreRenderer::frameRenderingQueued(const Ogre::FrameEvent& evt)
+{
+    return this->dispatchFrameEvent(evt.timeSinceLastFrame);
 }
 
 } // namespace OpenRump

@@ -1,28 +1,17 @@
 // ----------------------------------------------------------------------------
-// BaseApp.hpp
+// RendererListener.cpp
 // ----------------------------------------------------------------------------
 
-#include <openrump/BaseApp.hpp>
+// ----------------------------------------------------------------------------
+// include files
+
+#include <openrump/RendererListener.hpp>
 
 namespace OpenRump {
 
 // ----------------------------------------------------------------------------
-BaseApp::BaseApp()
+bool RendererListener::onFrameEvent(float timeSinceLastUpdate)
 {
-}
-
-// ----------------------------------------------------------------------------
-BaseApp::~BaseApp()
-{
-}
-
-// ----------------------------------------------------------------------------
-void BaseApp::go()
-{
-    if(!this->onLoad())
-        return;
-    this->onRun();
-    this->onExit();
 }
 
 } // namespace OpenRump

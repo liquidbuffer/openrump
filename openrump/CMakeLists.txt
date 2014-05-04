@@ -12,12 +12,14 @@ set (OpenRump_SOURCES
 	"${OpenRump_SOURCE_DIR}/src/BaseApp.cpp"
 	"${OpenRump_SOURCE_DIR}/src/OgreRenderer.cpp"
 	"${OpenRump_SOURCE_DIR}/src/Renderer.cpp"
+	"${OpenRump_SOURCE_DIR}/src/RendererListener.cpp"
 )
 set (OpenRump_HEADERS
 	"${OpenRump_SOURCE_DIR}/include/openrump/App.hpp"
 	"${OpenRump_SOURCE_DIR}/include/openrump/BaseApp.hpp"
 	"${OpenRump_SOURCE_DIR}/include/openrump/OgreRenderer.hpp"
 	"${OpenRump_SOURCE_DIR}/include/openrump/Renderer.hpp"
+	"${OpenRump_SOURCE_DIR}/include/openrump/RendererListener.hpp"
 )
 
 set (OpenRump_INCLUDE_DIR "${OpenRump_SOURCE_DIR}/include" CACHE PATH "" FORCE)
