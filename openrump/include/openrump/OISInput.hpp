@@ -41,6 +41,7 @@ public:
     virtual void attachToWindow(std::size_t windowHnd);
     virtual void detachFromWindow();
     virtual void setWindowExtents(unsigned int width, unsigned int height);
+    virtual void capture();
 
 private:
 

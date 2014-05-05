@@ -63,23 +63,20 @@ void App::onExit()
 static unsigned int x = 0;
 bool App::onFrameEvent(float timeSinceLastUpdate)
 {
-    // exit after a few seconds - testing the input manager which appears to be fucked
-    if(++x == 0xFFF)
-        return false;
+    m_Input->capture();
+
     return true;
 }
 
 // ----------------------------------------------------------------------------
 bool App::keyPressed(const OIS::KeyEvent& evt)
 {
-    std::cout << "key pressed" << std::endl;
     return true;
 }
 
 // ----------------------------------------------------------------------------
 bool App::keyReleased(const OIS::KeyEvent& evt)
 {
-    std::cout << "key released" << std::endl;
     return true;
 }
 

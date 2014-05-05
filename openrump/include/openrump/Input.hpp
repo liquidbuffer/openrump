@@ -51,7 +51,13 @@ public:
      */
     virtual void setWindowExtents(unsigned int width, unsigned int height) = 0;
 
+    /*!
+     * @brief Captures input from all registered devices
+     */
+    virtual void capture() = 0;
+
     // expose listeners so objects can use them to register
+    // this SUCKS - OIS needs to be moved to the derived class.
     typedef ListenerDispatcher<OIS::KeyListener*> KeyEvent;
     KeyEvent keyEvent;
     typedef ListenerDispatcher<OIS::MouseListener*> MouseEvent;

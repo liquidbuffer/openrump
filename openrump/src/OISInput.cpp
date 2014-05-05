@@ -120,10 +120,20 @@ void OISInput::detachFromWindow()
 }
 
 // ----------------------------------------------------------------------------
+void OISInput::capture()
+{
+    if(m_Keyboard)
+        m_Keyboard->capture();
+    if(m_Mouse)
+        m_Mouse->capture();
+    for(std::vector<OIS::JoyStick*>::iterator it = m_Joysticks.begin(); it != m_Joysticks.end(); ++it)
+        (*it)->capture();
+}
+
+// ----------------------------------------------------------------------------
 bool OISInput::keyPressed(const OIS::KeyEvent& evt)
 {
     bool ret = true; // True means: don't clear input buffer
-    std::cout << "key pressed" << std::endl;
     for(KeyEvent::iterator it = keyEvent.begin(); it != keyEvent.end(); ++it)
         if(!it->second->keyPressed(evt))
             ret = false;
@@ -134,7 +144,6 @@ bool OISInput::keyPressed(const OIS::KeyEvent& evt)
 
 bool OISInput::keyReleased(const OIS::KeyEvent& evt)
 {
-    std::cout << "key released" << std::endl;
     bool ret = true; // True means: don't clear input buffer
     for(KeyEvent::iterator it = keyEvent.begin(); it != keyEvent.end(); ++it)
         if(!it->second->keyReleased(evt))
@@ -144,7 +153,7 @@ bool OISInput::keyReleased(const OIS::KeyEvent& evt)
 
 // ----------------------------------------------------------------------------
 bool OISInput::mouseMoved(const OIS::MouseEvent& evt)
-{std::cout << "mouse moved" << std::endl;
+{
     bool ret = true; // True means: don't clear input buffer
     for(MouseEvent::iterator it = mouseEvent.begin(); it != mouseEvent.end(); ++it)
         if(!it->second->mouseMoved(evt))
@@ -155,7 +164,6 @@ bool OISInput::mouseMoved(const OIS::MouseEvent& evt)
 // ----------------------------------------------------------------------------
 bool OISInput::mousePressed(const OIS::MouseEvent& evt, OIS::MouseButtonID mbid)
 {
-    std::cout << "mouse pressed" << std::endl;
     bool ret = true; // True means: don't clear input buffer
     for(MouseEvent::iterator it = mouseEvent.begin(); it != mouseEvent.end(); ++it)
         if(!it->second->mousePressed(evt, mbid))
@@ -166,7 +174,6 @@ bool OISInput::mousePressed(const OIS::MouseEvent& evt, OIS::MouseButtonID mbid)
 // ----------------------------------------------------------------------------
 bool OISInput::mouseReleased(const OIS::MouseEvent& evt, OIS::MouseButtonID mbid)
 {
-    std::cout << "mouse released" << std::endl;
     bool ret = true; // True means: don't clear input buffer
     for(MouseEvent::iterator it = mouseEvent.begin(); it != mouseEvent.end(); ++it)
         if(!it->second->mouseReleased(evt, mbid))
