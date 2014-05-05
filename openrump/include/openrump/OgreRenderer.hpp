@@ -18,7 +18,7 @@ namespace Ogre {
 
 namespace OpenRump {
 
-class OgreRenderer :
+class OPENRUMP_API OgreRenderer :
     public Renderer,
     public Ogre::FrameListener
 {

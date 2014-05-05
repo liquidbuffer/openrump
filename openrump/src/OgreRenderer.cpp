@@ -35,10 +35,7 @@ OgreRenderer::OgreRenderer() :
 OgreRenderer::~OgreRenderer()
 {
     if(m_Root)
-    {
-        //m_Root->removeFrameListener(this);
         delete m_Root;
-    }
 }
 
 // ----------------------------------------------------------------------------

@@ -19,7 +19,7 @@ namespace OIS {
 
 namespace OpenRump {
 
-class OISInput :
+class OPENRUMP_API OISInput :
     public Input,
     public OIS::KeyListener,
     public OIS::MouseListener,

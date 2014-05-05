@@ -5,9 +5,14 @@
 #ifndef __OPENUMP_RENDERER_LISTENER_HPP__
 #define __OPENUMP_RENDERER_LISTENER_HPP__
 
+// ----------------------------------------------------------------------------
+// include files
+
+#include <openrump/Export.hpp>
+
 namespace OpenRump {
 
-class RendererListener
+class OPENRUMP_API RendererListener
 {
 public:
 

@@ -18,7 +18,7 @@ namespace OpenRump {
 
 namespace OpenRump {
 
-class Renderer
+class OPENRUMP_API Renderer
 {
 public:
 
@@ -48,8 +48,6 @@ public:
      * @brief Returns the window handle of the render window
      */
     virtual std::size_t getWindowHandle() = 0;
-
-
 
     /*!
      * @brief Handles frame event dispatching to listeners

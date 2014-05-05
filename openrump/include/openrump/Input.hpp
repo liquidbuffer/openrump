@@ -5,6 +5,8 @@
 // ----------------------------------------------------------------------------
 // include files
 
+#include <openrump/Export.hpp>
+
 #include <cstddef>
 
 // TODO OIS needs to be abstracted more
@@ -15,7 +17,7 @@
 
 namespace OpenRump {
 
-class Input
+class OPENRUMP_API Input
 {
 public:
 

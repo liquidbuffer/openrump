@@ -5,13 +5,17 @@
 // ----------------------------------------------------------------------------
 // include files
 
+#include <openrump/Export.hpp>
+
 #include <map>
 #include <string>
 
 namespace OpenRump {
 
+// TODO support for registering functions to be dispatched to
+
 template <class T>
-class ListenerDispatcher
+class OPENRUMP_API ListenerDispatcher
 {
 public:
 
