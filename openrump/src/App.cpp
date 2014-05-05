@@ -18,7 +18,8 @@ namespace OpenRump {
 // ----------------------------------------------------------------------------
 App::App() :
     m_Renderer(0),
-    m_Input(0)
+    m_Input(0),
+    m_Shutdown(false)
 {
     m_Renderer = new OgreRenderer();
     m_Input = new OISInput();
@@ -65,12 +66,17 @@ bool App::onFrameEvent(float timeSinceLastUpdate)
 {
     m_Input->capture();
 
+    if(m_Shutdown)
+        return false;
+
     return true;
 }
 
 // ----------------------------------------------------------------------------
 bool App::keyPressed(const OIS::KeyEvent& evt)
 {
+    if(evt.key == OIS::KC_ESCAPE)
+        m_Shutdown = true;
     return true;
 }
 

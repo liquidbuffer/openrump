@@ -64,6 +64,8 @@ private:
 
     Renderer* m_Renderer;
     Input* m_Input;
+
+    bool m_Shutdown;
 };
 
 } // OpenRump
