@@ -6,6 +6,7 @@
 // include files
 
 #include <openrump/OISInput.hpp>
+#include <openrump/ListenerDispatcher.hxx>
 
 #include <OIS/OISInputManager.h>
 
@@ -133,104 +134,63 @@ void OISInput::capture()
 // ----------------------------------------------------------------------------
 bool OISInput::keyPressed(const OIS::KeyEvent& evt)
 {
-    bool ret = true; // True means: don't clear input buffer
-    for(KeyEvent::iterator it = keyEvent.begin(); it != keyEvent.end(); ++it)
-        if(!it->second->keyPressed(evt))
-            ret = false;
-    return ret;
+    return keyEvent.dispatchAndFindFalse<const OIS::KeyEvent&>(&OIS::KeyListener::keyPressed, evt);
 }
 
 // ----------------------------------------------------------------------------
 
 bool OISInput::keyReleased(const OIS::KeyEvent& evt)
 {
-    bool ret = true; // True means: don't clear input buffer
-    for(KeyEvent::iterator it = keyEvent.begin(); it != keyEvent.end(); ++it)
-        if(!it->second->keyReleased(evt))
-            ret = false;
-    return ret;
+    return keyEvent.dispatchAndFindFalse<const OIS::KeyEvent&>(&OIS::KeyListener::keyReleased, evt);
 }
 
 // ----------------------------------------------------------------------------
 bool OISInput::mouseMoved(const OIS::MouseEvent& evt)
 {
-    bool ret = true; // True means: don't clear input buffer
-    for(MouseEvent::iterator it = mouseEvent.begin(); it != mouseEvent.end(); ++it)
-        if(!it->second->mouseMoved(evt))
-            ret = false;
-    return ret;
+    return mouseEvent.dispatchAndFindFalse<const OIS::MouseEvent&>(&OIS::MouseListener::mouseMoved, evt);
 }
 
 // ----------------------------------------------------------------------------
 bool OISInput::mousePressed(const OIS::MouseEvent& evt, OIS::MouseButtonID mbid)
 {
-    bool ret = true; // True means: don't clear input buffer
-    for(MouseEvent::iterator it = mouseEvent.begin(); it != mouseEvent.end(); ++it)
-        if(!it->second->mousePressed(evt, mbid))
-            ret = false;
-    return ret;
+    return mouseEvent.dispatchAndFindFalse<const OIS::MouseEvent&>(&OIS::MouseListener::mousePressed, evt, mbid);
 }
 
 // ----------------------------------------------------------------------------
 bool OISInput::mouseReleased(const OIS::MouseEvent& evt, OIS::MouseButtonID mbid)
 {
-    bool ret = true; // True means: don't clear input buffer
-    for(MouseEvent::iterator it = mouseEvent.begin(); it != mouseEvent.end(); ++it)
-        if(!it->second->mouseReleased(evt, mbid))
-            ret = false;
-    return ret;
+    return mouseEvent.dispatchAndFindFalse<const OIS::MouseEvent&>(&OIS::MouseListener::mouseReleased, evt, mbid);
 }
 
 // ----------------------------------------------------------------------------
 bool OISInput::povMoved( const OIS::JoyStickEvent &evt, int pov )
 {
     // TODO joystick dispatch is broken - fix!
-    bool ret = true; // True means: don't clear input buffer
-    for(JoyStickEvent::iterator it = joyStickEvent.begin(); it != joyStickEvent.end(); ++it)
-        for(std::vector<OIS::JoyStick*>::iterator jit = m_Joysticks.begin(); jit != m_Joysticks.end(); ++jit)
-            if(!it->second->povMoved(evt, pov))
-                ret = false;
-    return ret;
+    return true; // True means: don't clear input buffer
 }
 
 // ----------------------------------------------------------------------------
 bool OISInput::axisMoved( const OIS::JoyStickEvent &evt, int axis )
 {
-    bool ret = true; // True means: don't clear input buffer
-    for(JoyStickEvent::iterator it = joyStickEvent.begin(); it != joyStickEvent.end(); ++it)
-        if(!it->second->axisMoved(evt, axis))
-            ret = false;
-    return ret;
+    return true; // True means: don't clear input buffer
 }
 
 // ----------------------------------------------------------------------------
 bool OISInput::sliderMoved( const OIS::JoyStickEvent &evt, int sliderID )
 {
-    bool ret = true; // True means: don't clear input buffer
-    for(JoyStickEvent::iterator it = joyStickEvent.begin(); it != joyStickEvent.end(); ++it)
-        if(!it->second->sliderMoved(evt, sliderID))
-            ret = false;
-    return ret;
+    return true; // True means: don't clear input buffer
 }
 
 // ----------------------------------------------------------------------------
 bool OISInput::buttonPressed( const OIS::JoyStickEvent &evt, int button )
 {
-    bool ret = true; // True means: don't clear input buffer
-    for(JoyStickEvent::iterator it = joyStickEvent.begin(); it != joyStickEvent.end(); ++it)
-        if(!it->second->buttonPressed(evt, button))
-            ret = false;
-    return ret;
+    return true; // True means: don't clear input buffer
 }
 
 // ----------------------------------------------------------------------------
 bool OISInput::buttonReleased( const OIS::JoyStickEvent &evt, int button )
 {
-    bool ret = true; // True means: don't clear input buffer
-    for(JoyStickEvent::iterator it = joyStickEvent.begin(); it != joyStickEvent.end(); ++it)
-        if(!it->second->buttonReleased(evt, button))
-            ret = false;
-    return ret;
+    return true; // True means: don't clear input buffer
 }
 
 }  // namespace OpenRump

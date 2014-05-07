@@ -59,7 +59,7 @@ public:
      */
     bool dispatchFrameEvent(float timeSinceLastUpdate);
 
-    typedef ListenerDispatcher<RendererListener*> FrameEvent;
+    typedef ListenerDispatcher<RendererListener> FrameEvent;
     FrameEvent frameEvent;
 
 private:

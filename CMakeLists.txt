@@ -28,9 +28,26 @@ set (CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Packages")
 set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Utils")
 
+###############################################################################
+# library definitions
+###############################################################################
 add_definitions (
     -DOPENRUMP_DYNAMIC
 )
+
+###############################################################################
+# compiler definitions and flags
+###############################################################################
+if (MSVC)
+elseif (MINGW)
+elseif (APPLE)
+elseif (UNIX)
+    add_definitions(
+        -std=c++0x
+    )
+else ()
+    message(FATAL_ERROR "Unsupported OS")
+endif ()
 
 if (CMAKE_BUILD_TYPE MATCHES Debug)
     add_definitions(

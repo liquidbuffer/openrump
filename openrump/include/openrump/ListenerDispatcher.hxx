@@ -18,20 +18,20 @@
 namespace OpenRump {
 
 // ----------------------------------------------------------------------------
-template <class T>
-ListenerDispatcher<T>::ListenerDispatcher()
+template <class LISTENER_CLASS>
+ListenerDispatcher<LISTENER_CLASS>::ListenerDispatcher()
 {
 }
 
 // ----------------------------------------------------------------------------
-template <class T>
-ListenerDispatcher<T>::~ListenerDispatcher()
+template <class LISTENER_CLASS>
+ListenerDispatcher<LISTENER_CLASS>::~ListenerDispatcher()
 {
 }
 
 // ----------------------------------------------------------------------------
-template <class T>
-void ListenerDispatcher<T>::addListener(const T listener, std::string listenerName)
+template <class LISTENER_CLASS>
+void ListenerDispatcher<LISTENER_CLASS>::addListener(LISTENER_CLASS* listener, std::string listenerName)
 {
 #ifdef _DEBUG
     if(m_Listeners.find(listenerName) != m_Listeners.end())
@@ -40,7 +40,7 @@ void ListenerDispatcher<T>::addListener(const T listener, std::string listenerNa
                    << listenerName << "\" already registered" << std::endl;
         return;
     }
-    for(iterator it = m_Listeners.begin(); it != m_Listeners.end(); ++it)
+    for(auto it = m_Listeners.begin(); it != m_Listeners.end(); ++it)
     {
         if(it->second == listener)
         {
@@ -55,10 +55,10 @@ void ListenerDispatcher<T>::addListener(const T listener, std::string listenerNa
 }
 
 // ----------------------------------------------------------------------------
-template <class T>
-void ListenerDispatcher<T>::removeListener(const T listener)
+template <class LISTENER_CLASS>
+void ListenerDispatcher<LISTENER_CLASS>::removeListener(LISTENER_CLASS* listener)
 {
-    for(iterator it = m_Listeners.begin(); it != m_Listeners.end(); ++it)
+    for(auto it = m_Listeners.begin(); it != m_Listeners.end(); ++it)
     {
         if(it->second == listener)
         {
@@ -72,10 +72,10 @@ void ListenerDispatcher<T>::removeListener(const T listener)
 }
 
 // ----------------------------------------------------------------------------
-template <class T>
-void ListenerDispatcher<T>::removeListener(std::string listenerName)
+template <class LISTENER_CLASS>
+void ListenerDispatcher<LISTENER_CLASS>::removeListener(std::string listenerName)
 {
-    iterator it = m_Listeners.find(listenerName);
+    auto it = m_Listeners.find(listenerName);
     if(it == m_Listeners.end())
     {
 #ifdef _DEBUG
@@ -88,24 +88,32 @@ void ListenerDispatcher<T>::removeListener(std::string listenerName)
 }
 
 // ----------------------------------------------------------------------------
-template <class T>
-void ListenerDispatcher<T>::removeAllListeners()
+template <class LISTENER_CLASS>
+void ListenerDispatcher<LISTENER_CLASS>::removeAllListeners()
 {
     m_Listeners.clear();
 }
 
 // ----------------------------------------------------------------------------
-template <class T>
-typename ListenerDispatcher<T>::iterator ListenerDispatcher<T>::begin()
+template <class LISTENER_CLASS>
+template <class RET_TYPE, class... PARAMS>
+void ListenerDispatcher<LISTENER_CLASS>::
+    dispatch(RET_TYPE (LISTENER_CLASS::*func)(PARAMS...), PARAMS... params) const
 {
-    return m_Listeners.begin();
+    for(auto it = m_Listeners.begin(); it != m_Listeners.end(); ++it)
+        (it->second->*func)(params...);
 }
 
 // ----------------------------------------------------------------------------
-template <class T>
-typename ListenerDispatcher<T>::iterator ListenerDispatcher<T>::end()
+template <class LISTENER_CLASS>
+template <class... PARAMS>
+bool ListenerDispatcher<LISTENER_CLASS>::
+    dispatchAndFindFalse(bool (LISTENER_CLASS::*func)(PARAMS...), PARAMS... params) const
 {
-    return m_Listeners.end();
+    for(auto it = m_Listeners.begin(); it != m_Listeners.end(); ++it)
+        if(!(it->second->*func)(params...))
+            return false;
+    return true;
 }
 
 } // namespace OpenRump
