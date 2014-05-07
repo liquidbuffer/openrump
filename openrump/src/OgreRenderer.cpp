@@ -16,8 +16,8 @@ namespace OpenRump {
 // ----------------------------------------------------------------------------
 OgreRenderer::OgreRenderer() :
     m_Root(0),
-    m_PluginsCfg(""),
-    m_ResourcesCfg("")
+    m_PluginsCfg(Ogre::StringUtil::BLANK),
+    m_ResourcesCfg(Ogre::StringUtil::BLANK)
 {
 
     // set where config files are located
@@ -108,7 +108,9 @@ std::size_t OgreRenderer::getWindowHandle()
 // ----------------------------------------------------------------------------
 bool OgreRenderer::frameRenderingQueued(const Ogre::FrameEvent& evt)
 {
-    return this->dispatchFrameEvent(evt.timeSinceLastFrame);
+    return frameEvent.dispatchAndFindFalse(
+            &RendererListener::onFrameEvent, evt.timeSinceLastFrame
+    );
 }
 
 } // namespace OpenRump

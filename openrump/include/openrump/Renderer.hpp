@@ -49,18 +49,7 @@ public:
      */
     virtual std::size_t getWindowHandle() = 0;
 
-    /*!
-     * @brief Handles frame event dispatching to listeners
-     * A frame event should occur once every frame, in which the game logic
-     * should be updated. The time passed since the last update is passed
-     * as an argument.
-     * @note Accepts listeners of type RenderListener, dispatches time between
-     * each frame event is dispatched as a float in seconds.
-     */
-    bool dispatchFrameEvent(float timeSinceLastUpdate);
-
-    typedef ListenerDispatcher<RendererListener> FrameEvent;
-    FrameEvent frameEvent;
+    ListenerDispatcher<RendererListener> frameEvent;
 
 private:
 };

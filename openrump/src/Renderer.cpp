@@ -19,10 +19,4 @@ Renderer::~Renderer()
 {
 }
 
-// ----------------------------------------------------------------------------
-bool Renderer::dispatchFrameEvent(float timeSinceLastUpdate)
-{
-    return frameEvent.dispatchAndFindFalse(&RendererListener::onFrameEvent, timeSinceLastUpdate);
-}
-
 } // namespace OpenRump
