@@ -12,8 +12,6 @@
 
 namespace OpenRump {
 
-// TODO support for registering functions to be dispatched to
-
 template <class LISTENER_CLASS>
 class OPENRUMP_API ListenerDispatcher
 {
