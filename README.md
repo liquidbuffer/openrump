@@ -1,12 +1,16 @@
-=OpenRump=
+OpenRump
+========
 
 An open source physics based sex game.
 
-==Branches==
+Branches
+--------
 * Please checkout the branch **devel**, and branch off your
   work from there. The commands for that are as follows.
+  ```
     $ git checkout devel
     $ git checkout -b topicname
+  ```
   Make sure to give your branch a suitable name (depending
   on what you're working on).
 
@@ -14,7 +18,8 @@ An open source physics based sex game.
 
 * All merges into master must be stable on all platforms.
 
-==Prerequisits==
+Prerequisits
+------------
 * You need a C++0x or C++11 compliant compiler in order
   to be able to compile this project.
 
