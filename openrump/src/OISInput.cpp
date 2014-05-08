@@ -19,9 +19,9 @@ namespace OpenRump {
 
 // ----------------------------------------------------------------------------
 OISInput::OISInput() :
-    m_InputSystem(0),
-    m_Keyboard(0),
-    m_Mouse(0)
+    m_InputSystem(nullptr),
+    m_Keyboard(nullptr),
+    m_Mouse(nullptr)
 {
 }
 
@@ -78,7 +78,6 @@ void OISInput::attachToWindow(std::size_t windowHnd)
         std::cout << "[OISInput::attachToWindow] Info: Detected " << count << " joysticks" << std::endl;
 #endif // _DEBUG
     }
-
 }
 
 // ----------------------------------------------------------------------------
@@ -99,14 +98,14 @@ void OISInput::detachFromWindow()
     if(m_Keyboard)
     {
         m_InputSystem->destroyInputObject(m_Keyboard);
-        m_Keyboard = 0;
+        m_Keyboard = nullptr;
     }
 
     mouseEvent.removeAllListeners();
     if(m_Mouse)
     {
         m_InputSystem->destroyInputObject(m_Mouse);
-        m_Mouse = 0;
+        m_Mouse = nullptr;
     }
 
     if(m_Joysticks.size() > 0)
@@ -117,7 +116,7 @@ void OISInput::detachFromWindow()
     }
 
     OIS::InputManager::destroyInputSystem(m_InputSystem);
-    m_InputSystem = 0;
+    m_InputSystem = nullptr;
 }
 
 // ----------------------------------------------------------------------------
@@ -127,8 +126,8 @@ void OISInput::capture()
         m_Keyboard->capture();
     if(m_Mouse)
         m_Mouse->capture();
-    for(std::vector<OIS::JoyStick*>::iterator it = m_Joysticks.begin(); it != m_Joysticks.end(); ++it)
-        (*it)->capture();
+    for(auto it : m_Joysticks)
+        it->capture();
 }
 
 // ----------------------------------------------------------------------------

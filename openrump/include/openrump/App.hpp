@@ -11,6 +11,8 @@
 
 #include <OIS/OISKeyboard.h>
 
+#include <memory>
+
 // ----------------------------------------------------------------------------
 // forward declarations
 
@@ -62,8 +64,8 @@ private:
     virtual bool keyPressed(const OIS::KeyEvent&);
     virtual bool keyReleased(const OIS::KeyEvent&);
 
-    Renderer* m_Renderer;
-    Input* m_Input;
+    std::unique_ptr<Renderer> m_Renderer;
+    std::unique_ptr<Input> m_Input;
 
     bool m_Shutdown;
 };

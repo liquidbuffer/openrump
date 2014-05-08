@@ -17,21 +17,15 @@ namespace OpenRump {
 
 // ----------------------------------------------------------------------------
 App::App() :
-    m_Renderer(0),
-    m_Input(0),
+    m_Renderer(new OgreRenderer()),
+    m_Input(new OISInput()),
     m_Shutdown(false)
 {
-    m_Renderer = new OgreRenderer();
-    m_Input = new OISInput();
 }
 
 // ----------------------------------------------------------------------------
 App::~App()
 {
-    if(m_Input)
-        delete m_Input;
-    if(m_Renderer)
-        delete m_Renderer;
 }
 
 // ----------------------------------------------------------------------------
@@ -61,7 +55,6 @@ void App::onExit()
 }
 
 // ----------------------------------------------------------------------------
-static unsigned int x = 0;
 bool App::onFrameEvent(float timeSinceLastUpdate)
 {
     m_Input->capture();
