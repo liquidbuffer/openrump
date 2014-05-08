@@ -83,7 +83,7 @@ bool OgreRenderer::initialise()
     // set default mipmap level (note: some APIs ignore this)
     Ogre::TextureManager::getSingletonPtr()->setDefaultNumMipmaps(5);
 
-    // initialise resources
+    // initialise essential resources
     Ogre::ResourceGroupManager::getSingletonPtr()->initialiseResourceGroup("Essential");
 
     m_Root->addFrameListener(this);
@@ -103,6 +103,18 @@ std::size_t OgreRenderer::getWindowHandle()
     std::size_t hwnd;
     m_Window->getCustomAttribute("WINDOW", &hwnd);
     return hwnd;
+}
+
+// ----------------------------------------------------------------------------
+void OgreRenderer::addResourceLocation(std::string path)
+{
+    Ogre::ResourceGroupManager::getSingletonPtr()->addResourceLocation(path, "FileSystem");
+}
+
+// ----------------------------------------------------------------------------
+void OgreRenderer::loadObject(std::string ID, std::string filename, std::string path)
+{
+
 }
 
 // ----------------------------------------------------------------------------

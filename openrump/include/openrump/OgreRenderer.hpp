@@ -38,6 +38,8 @@ public:
     virtual bool initialise();
     virtual void startRendering();
     virtual std::size_t getWindowHandle();
+    virtual void addResourceLocation(std::string path);
+    virtual void loadObject(std::string ID, std::string filename, std::string path="");
 
 private:
 

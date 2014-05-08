@@ -57,8 +57,8 @@ public:
      * @param params Parameter list of values to be dispatched to the
      * listeners.
      */
-    template <class RET_TYPE, class... PARAMS>
-    void dispatch(RET_TYPE (LISTENER_CLASS::*func)(PARAMS...), PARAMS... params) const;
+    template <class RET_TYPE, class... ARGS, class... PARAMS>
+    void dispatch(RET_TYPE (LISTENER_CLASS::*func)(ARGS...), PARAMS&&... params) const;
 
     /*!
      * @brief Dispatches a message to all listeners
@@ -72,8 +72,8 @@ public:
      * @param params Parameter list of values to be dispatched to the
      * listeners.
      */
-    template <class... PARAMS>
-    bool dispatchAndFindFalse(bool (LISTENER_CLASS::*func)(PARAMS...), PARAMS... params) const;
+    template <class... ARGS, class... PARAMS>
+    bool dispatchAndFindFalse(bool (LISTENER_CLASS::*func)(ARGS...), PARAMS&&... params) const;
 
 private:
 

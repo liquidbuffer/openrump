@@ -40,9 +40,9 @@ void ListenerDispatcher<LISTENER_CLASS>::addListener(LISTENER_CLASS* listener, s
                    << listenerName << "\" already registered" << std::endl;
         return;
     }
-    for(auto it = m_Listeners.begin(); it != m_Listeners.end(); ++it)
+    for(auto it : m_Listeners)
     {
-        if(it->second == listener)
+        if(it.second == listener)
         {
             std::cout << "[ListenerDispatcher::addListener] Warning: listener pointer already registered"
                        << std::endl;
@@ -58,7 +58,7 @@ void ListenerDispatcher<LISTENER_CLASS>::addListener(LISTENER_CLASS* listener, s
 template <class LISTENER_CLASS>
 void ListenerDispatcher<LISTENER_CLASS>::removeListener(LISTENER_CLASS* listener)
 {
-    for(auto it = m_Listeners.begin(); it != m_Listeners.end(); ++it)
+    for(auto it = std::begin(m_Listeners); it != std::end(m_Listeners); ++it)
     {
         if(it->second == listener)
         {
@@ -96,22 +96,22 @@ void ListenerDispatcher<LISTENER_CLASS>::removeAllListeners()
 
 // ----------------------------------------------------------------------------
 template <class LISTENER_CLASS>
-template <class RET_TYPE, class... PARAMS>
+template <class RET_TYPE, class... ARGS, class... PARAMS>
 void ListenerDispatcher<LISTENER_CLASS>::
-    dispatch(RET_TYPE (LISTENER_CLASS::*func)(PARAMS...), PARAMS... params) const
+    dispatch(RET_TYPE (LISTENER_CLASS::*func)(ARGS...), PARAMS&&... params) const
 {
-    for(auto it = m_Listeners.begin(); it != m_Listeners.end(); ++it)
-        (it->second->*func)(params...);
+    for(auto it : m_Listeners)
+        (it.second->*func)(params...);
 }
 
 // ----------------------------------------------------------------------------
 template <class LISTENER_CLASS>
-template <class... PARAMS>
+template <class... ARGS, class... PARAMS>
 bool ListenerDispatcher<LISTENER_CLASS>::
-    dispatchAndFindFalse(bool (LISTENER_CLASS::*func)(PARAMS...), PARAMS... params) const
+    dispatchAndFindFalse(bool (LISTENER_CLASS::*func)(ARGS...), PARAMS&&... params) const
 {
-    for(auto it = m_Listeners.begin(); it != m_Listeners.end(); ++it)
-        if(!(it->second->*func)(params...))
+    for(auto it : m_Listeners)
+        if(!(it.second->*func)(params...))
             return false;
     return true;
 }
