@@ -15,7 +15,8 @@ namespace OpenRump {
 
 // ----------------------------------------------------------------------------
 OgreRenderer::OgreRenderer() :
-    m_Root(0),
+    m_Root(nullptr),
+    m_Window(nullptr),
     m_PluginsCfg(Ogre::StringUtil::BLANK),
     m_ResourcesCfg(Ogre::StringUtil::BLANK)
 {
@@ -34,8 +35,6 @@ OgreRenderer::OgreRenderer() :
 // ----------------------------------------------------------------------------
 OgreRenderer::~OgreRenderer()
 {
-    if(m_Root)
-        delete m_Root;
 }
 
 // ----------------------------------------------------------------------------
@@ -44,7 +43,7 @@ bool OgreRenderer::initialise()
     if(m_Root)
         return false;
 
-    m_Root = new Ogre::Root(m_PluginsCfg);
+    m_Root = std::unique_ptr<Ogre::Root>(new Ogre::Root(m_PluginsCfg));
 
     // load resources configuration file
     Ogre::ConfigFile cf;

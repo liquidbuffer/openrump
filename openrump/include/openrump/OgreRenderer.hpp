@@ -9,6 +9,8 @@
 
 #include <OgreFrameListener.h>
 
+#include <memory>
+
 // ----------------------------------------------------------------------------
 // forward declarations
 namespace Ogre {
@@ -45,7 +47,7 @@ private:
 
     virtual bool frameRenderingQueued(const Ogre::FrameEvent&);
 
-    Ogre::Root* m_Root;
+    std::unique_ptr<Ogre::Root> m_Root;
     Ogre::RenderWindow* m_Window;
     Ogre::String m_PluginsCfg;
     Ogre::String m_ResourcesCfg;
