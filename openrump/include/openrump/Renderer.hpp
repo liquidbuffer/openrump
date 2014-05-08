@@ -50,7 +50,7 @@ public:
     virtual std::size_t getWindowHandle() = 0;
 
     virtual void addResourceLocation(std::string path) = 0;
-    virtual void loadObject(std::string ID, std::string filename, std::string path="") = 0;
+    virtual void loadObject(std::string ID, std::string filename) = 0;
 
     ListenerDispatcher<RendererListener> frameEvent;
 

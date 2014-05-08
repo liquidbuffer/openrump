@@ -10,6 +10,8 @@
 #include <OgreRoot.h>
 #include <OgreConfigFile.h>
 #include <OgreRenderWindow.h>
+#include <OgreSceneManager.h>
+#include <OgreEntity.h>
 
 namespace OpenRump {
 
@@ -17,6 +19,8 @@ namespace OpenRump {
 OgreRenderer::OgreRenderer() :
     m_Root(nullptr),
     m_Window(nullptr),
+    m_SceneManager(nullptr),
+    m_Camera(nullptr),
     m_PluginsCfg(Ogre::StringUtil::BLANK),
     m_ResourcesCfg(Ogre::StringUtil::BLANK)
 {
@@ -69,7 +73,7 @@ bool OgreRenderer::initialise()
 
     // configure rendering window
 #ifdef _DEBUG
-    if(!m_Root->showConfigDialog())
+    if(!(m_Root->restoreConfig() || m_Root->showConfigDialog()))
         return false;
 #else
     if(!m_Root->showConfigDialog());
@@ -85,6 +89,17 @@ bool OgreRenderer::initialise()
     // initialise essential resources
     Ogre::ResourceGroupManager::getSingletonPtr()->initialiseResourceGroup("Essential");
 
+    // set up scene manager with a default camera
+    m_SceneManager = m_Root->createSceneManager("DefaultSceneManager");
+    m_Camera = m_SceneManager->createCamera("MainCamera");
+    Ogre::Viewport* vp = m_Window->addViewport(m_Camera);
+    vp->setBackgroundColour(Ogre::ColourValue(0.0f, 0.0f, 0.5f));
+    m_Camera->setAspectRatio(
+            Ogre::Real(vp->getActualWidth()) /
+            Ogre::Real(vp->getActualHeight())
+    );
+
+    // listen to render frame events
     m_Root->addFrameListener(this);
 
     return true;
@@ -111,9 +126,11 @@ void OgreRenderer::addResourceLocation(std::string path)
 }
 
 // ----------------------------------------------------------------------------
-void OgreRenderer::loadObject(std::string ID, std::string filename, std::string path)
+void OgreRenderer::loadObject(std::string ID, std::string filename)
 {
-
+    Ogre::Entity* entity = m_SceneManager->createEntity(ID, filename);
+    Ogre::SceneNode* node = m_SceneManager->getRootSceneNode()->createChildSceneNode(ID);
+    node->attachObject(entity);
 }
 
 // ----------------------------------------------------------------------------

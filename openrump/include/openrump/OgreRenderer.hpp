@@ -16,6 +16,8 @@
 namespace Ogre {
     class Root;
     class RenderWindow;
+    class SceneManager;
+    class Camera;
 }
 
 namespace OpenRump {
@@ -41,7 +43,7 @@ public:
     virtual void startRendering();
     virtual std::size_t getWindowHandle();
     virtual void addResourceLocation(std::string path);
-    virtual void loadObject(std::string ID, std::string filename, std::string path="");
+    virtual void loadObject(std::string ID, std::string filename);
 
 private:
 
@@ -49,6 +51,8 @@ private:
 
     std::unique_ptr<Ogre::Root> m_Root;
     Ogre::RenderWindow* m_Window;
+    Ogre::SceneManager* m_SceneManager;
+    Ogre::Camera* m_Camera;
     Ogre::String m_PluginsCfg;
     Ogre::String m_ResourcesCfg;
 };

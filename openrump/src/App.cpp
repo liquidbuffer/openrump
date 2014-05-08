@@ -40,6 +40,8 @@ bool App::onLoad()
     m_Input->attachToWindow(m_Renderer->getWindowHandle());
     m_Input->keyEvent.addListener(this, "App");
 
+    m_Renderer->loadObject("twilight sparkle", "twilightsparkle/twilightsparkle.mesh");
+
     return true;
 }
 
