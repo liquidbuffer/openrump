@@ -94,14 +94,14 @@ void OISInput::detachFromWindow()
     if(!m_InputSystem)
         return;
 
-    keyEvent.removeAllListeners();
+    event.removeAllListeners();
+
     if(m_Keyboard)
     {
         m_InputSystem->destroyInputObject(m_Keyboard);
         m_Keyboard = nullptr;
     }
 
-    mouseEvent.removeAllListeners();
     if(m_Mouse)
     {
         m_InputSystem->destroyInputObject(m_Mouse);
@@ -133,38 +133,46 @@ void OISInput::capture()
 // ----------------------------------------------------------------------------
 bool OISInput::keyPressed(const OIS::KeyEvent& evt)
 {
-    return keyEvent.dispatchAndFindFalse<const OIS::KeyEvent&>(&OIS::KeyListener::keyPressed, evt);
+    // exit with escape key
+    if(evt.key == OIS::KC_ESCAPE)
+        event.dispatch(&InputListener::onButtonExit);
+
+    return true; // Don't clear input buffer
 }
 
 // ----------------------------------------------------------------------------
 
 bool OISInput::keyReleased(const OIS::KeyEvent& evt)
 {
-    return keyEvent.dispatchAndFindFalse<const OIS::KeyEvent&>(&OIS::KeyListener::keyReleased, evt);
+    return true; // Don't clear input buffer
 }
 
 // ----------------------------------------------------------------------------
 bool OISInput::mouseMoved(const OIS::MouseEvent& evt)
 {
-    return mouseEvent.dispatchAndFindFalse<const OIS::MouseEvent&>(&OIS::MouseListener::mouseMoved, evt);
+    event.dispatch(
+            &InputListener::onChangeCameraAngleDelta,
+            static_cast<float>(evt.state.Y.rel) * 0.1f,
+            static_cast<float>(evt.state.X.rel) * 0.1f
+    );
+    return true; // Don't clear input buffer
 }
 
 // ----------------------------------------------------------------------------
 bool OISInput::mousePressed(const OIS::MouseEvent& evt, OIS::MouseButtonID mbid)
 {
-    return mouseEvent.dispatchAndFindFalse<const OIS::MouseEvent&>(&OIS::MouseListener::mousePressed, evt, mbid);
+    return true; // Don't clear input buffer
 }
 
 // ----------------------------------------------------------------------------
 bool OISInput::mouseReleased(const OIS::MouseEvent& evt, OIS::MouseButtonID mbid)
 {
-    return mouseEvent.dispatchAndFindFalse<const OIS::MouseEvent&>(&OIS::MouseListener::mouseReleased, evt, mbid);
+    return true; // Don't clear input buffer
 }
 
 // ----------------------------------------------------------------------------
 bool OISInput::povMoved( const OIS::JoyStickEvent &evt, int pov )
 {
-    // TODO joystick dispatch is broken - fix!
     return true; // True means: don't clear input buffer
 }
 

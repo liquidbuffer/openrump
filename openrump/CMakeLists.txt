@@ -11,6 +11,7 @@ set (OpenRump_SOURCES
 	"${OpenRump_SOURCE_DIR}/src/App.cpp"
 	"${OpenRump_SOURCE_DIR}/src/BaseApp.cpp"
 	"${OpenRump_SOURCE_DIR}/src/Input.cpp"
+	"${OpenRump_SOURCE_DIR}/src/InputListener.cpp"
 	"${OpenRump_SOURCE_DIR}/src/OgreRenderer.cpp"
 	"${OpenRump_SOURCE_DIR}/src/OISInput.cpp"
 	"${OpenRump_SOURCE_DIR}/src/Renderer.cpp"

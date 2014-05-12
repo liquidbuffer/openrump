@@ -7,14 +7,9 @@
 
 #include <openrump/Export.hpp>
 #include <openrump/ListenerDispatcher.hxx>
+#include <openrump/InputListener.hpp>
 
 #include <cstddef>
-
-// TODO OIS needs to be abstracted more
-// Will do for now
-#include <OISKeyboard.h>
-#include <OISMouse.h>
-#include <OISJoyStick.h>
 
 namespace OpenRump {
 
@@ -59,11 +54,7 @@ public:
      */
     virtual void capture() = 0;
 
-    // expose listeners so objects can use them to register
-    // this SUCKS - OIS needs to be moved to the derived class.
-    ListenerDispatcher<OIS::KeyListener> keyEvent;
-    ListenerDispatcher<OIS::MouseListener> mouseEvent;
-    ListenerDispatcher<OIS::JoyStickListener> joyStickEvent;
+    ListenerDispatcher<InputListener> event;
 };
 
 }  // namespace OpenRump

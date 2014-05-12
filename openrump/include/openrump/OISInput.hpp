@@ -7,6 +7,10 @@
 
 #include <openrump/Input.hpp>
 
+#include <OIS/OISKeyboard.h>
+#include <OIS/OISMouse.h>
+#include <OIS/OISJoyStick.h>
+
 #include <cstddef>
 #include <vector>
 

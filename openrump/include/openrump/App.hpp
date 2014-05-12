@@ -8,8 +8,7 @@
 #include <openrump/Export.hpp>
 #include <openrump/BaseApp.hpp>
 #include <openrump/RendererListener.hpp>
-
-#include <OIS/OISKeyboard.h>
+#include <openrump/InputListener.hpp>
 
 #include <memory>
 
@@ -26,7 +25,7 @@ namespace OpenRump {
 class OPENRUMP_API App :
     public BaseApp,
     public RendererListener,
-    public OIS::KeyListener
+    public InputListener
 {
 public:
 
@@ -61,8 +60,10 @@ private:
     virtual bool onFrameEvent(float timeSinceLastUpdate);
 
     // override input events
-    virtual bool keyPressed(const OIS::KeyEvent&);
-    virtual bool keyReleased(const OIS::KeyEvent&);
+    virtual void onButtonExit();
+    virtual void onChangeDirectionAndVelocity(float x, float y);
+    virtual void onChangeCameraAngleDelta(float deltaAngleX, float deltaAngleY);
+    virtual void onChangeCameraDistanceDelta(float deltaDistance);
 
     std::unique_ptr<Renderer> m_Renderer;
     std::unique_ptr<Input> m_Input;

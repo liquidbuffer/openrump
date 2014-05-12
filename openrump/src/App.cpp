@@ -38,7 +38,7 @@ bool App::onLoad()
 
     // initialise input
     m_Input->attachToWindow(m_Renderer->getWindowHandle());
-    m_Input->keyEvent.addListener(this, "App");
+    m_Input->event.addListener(this, "App");
 
     m_Renderer->loadObject("twilight sparkle", "twilightsparkle/twilightsparkle.mesh");
 
@@ -68,17 +68,25 @@ bool App::onFrameEvent(float timeSinceLastUpdate)
 }
 
 // ----------------------------------------------------------------------------
-bool App::keyPressed(const OIS::KeyEvent& evt)
+void App::onButtonExit()
 {
-    if(evt.key == OIS::KC_ESCAPE)
-        m_Shutdown = true;
-    return true;
+    m_Shutdown = true;
 }
 
 // ----------------------------------------------------------------------------
-bool App::keyReleased(const OIS::KeyEvent& evt)
+void App::onChangeDirectionAndVelocity(float x, float y)
 {
-    return true;
+}
+
+// ----------------------------------------------------------------------------
+void App::onChangeCameraAngleDelta(float deltaAngleX, float deltaAngleY)
+{
+
+}
+
+// ----------------------------------------------------------------------------
+void App::onChangeCameraDistanceDelta(float deltaDistance)
+{
 }
 
 } // namespace OpenRump
