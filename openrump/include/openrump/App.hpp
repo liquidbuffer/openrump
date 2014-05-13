@@ -22,6 +22,8 @@ namespace OpenRump {
 
 namespace Ogre {
     struct FrameEvent;
+    class Entity;
+    class SceneNode;
 }
 
 namespace OpenRump {
@@ -71,6 +73,15 @@ private:
 
     std::unique_ptr<OgreRenderer> m_OgreRenderer;
     std::unique_ptr<Input> m_Input;
+
+    Ogre::Entity* m_PlayerEntity;
+    Ogre::SceneNode* m_PlayerNode;
+
+    Ogre::SceneNode* m_CameraRotateNode;
+    Ogre::SceneNode* m_CameraNode;
+    float m_CameraAngleX;
+    float m_CameraAngleY;
+    float m_CameraDistance;
 
     bool m_Shutdown;
 };

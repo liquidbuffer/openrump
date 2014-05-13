@@ -91,7 +91,7 @@ bool OgreRenderer::initialise()
     Ogre::ResourceGroupManager::getSingletonPtr()->initialiseResourceGroup("Essential");
 
     // set up scene manager with a default camera
-    m_SceneManager = m_Root->createSceneManager("DefaultSceneManager");
+    m_SceneManager = m_Root->createSceneManager("DefaultSceneManager", "MainSceneManager");
     m_Camera = m_SceneManager->createCamera("MainCamera");
     Ogre::Viewport* vp = m_Window->addViewport(m_Camera);
     vp->setBackgroundColour(Ogre::ColourValue(0.0f, 0.0f, 0.5f));
