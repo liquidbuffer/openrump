@@ -6,6 +6,7 @@
 // include files
 
 #include <openrump/OgreRenderer.hpp>
+#include <openrump/RendererFrameListener.hpp>
 
 #include <OgreRoot.h>
 #include <OgreConfigFile.h>
@@ -99,7 +100,6 @@ bool OgreRenderer::initialise()
             Ogre::Real(vp->getActualHeight())
     );
 
-    // listen to render frame events
     m_Root->addFrameListener(this);
 
     return true;
@@ -120,25 +120,9 @@ std::size_t OgreRenderer::getWindowHandle()
 }
 
 // ----------------------------------------------------------------------------
-void OgreRenderer::addResourceLocation(std::string path)
-{
-    Ogre::ResourceGroupManager::getSingletonPtr()->addResourceLocation(path, "FileSystem");
-}
-
-// ----------------------------------------------------------------------------
-void OgreRenderer::loadObject(std::string ID, std::string filename)
-{
-    Ogre::Entity* entity = m_SceneManager->createEntity(ID, filename);
-    Ogre::SceneNode* node = m_SceneManager->getRootSceneNode()->createChildSceneNode(ID);
-    node->attachObject(entity);
-}
-
-// ----------------------------------------------------------------------------
 bool OgreRenderer::frameRenderingQueued(const Ogre::FrameEvent& evt)
 {
-    return frameEvent.dispatchAndFindFalse(
-            &RendererListener::onFrameEvent, evt.timeSinceLastFrame
-    );
+    return frameEvent.dispatchAndFindFalse(&RendererFrameListener::onFrameRenderingQueued, evt);
 }
 
 } // namespace OpenRump

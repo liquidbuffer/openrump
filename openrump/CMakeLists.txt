@@ -14,8 +14,7 @@ set (OpenRump_SOURCES
 	"${OpenRump_SOURCE_DIR}/src/InputListener.cpp"
 	"${OpenRump_SOURCE_DIR}/src/OgreRenderer.cpp"
 	"${OpenRump_SOURCE_DIR}/src/OISInput.cpp"
-	"${OpenRump_SOURCE_DIR}/src/Renderer.cpp"
-	"${OpenRump_SOURCE_DIR}/src/RendererListener.cpp"
+	"${OpenRump_SOURCE_DIR}/src/RendererFrameListener.cpp"
 )
 set (OpenRump_HEADERS
 	"${OpenRump_SOURCE_DIR}/include/openrump/App.hpp"
@@ -26,8 +25,7 @@ set (OpenRump_HEADERS
 	"${OpenRump_SOURCE_DIR}/include/openrump/ListenerDispatcher.hxx"
 	"${OpenRump_SOURCE_DIR}/include/openrump/OgreRenderer.hpp"
 	"${OpenRump_SOURCE_DIR}/include/openrump/OISInput.hpp"
-	"${OpenRump_SOURCE_DIR}/include/openrump/Renderer.hpp"
-	"${OpenRump_SOURCE_DIR}/include/openrump/RendererListener.hpp"
+	"${OpenRump_SOURCE_DIR}/include/openrump/RendererFrameListener.hpp"
 )
 
 set (OpenRump_INCLUDE_DIR "${OpenRump_SOURCE_DIR}/include" CACHE PATH "" FORCE)
@@ -41,6 +39,7 @@ add_library (OpenRump SHARED
 if (NOT OpenRump_USE_INTERNAL_DEPENDENCIES)
 	find_package (OGRE REQUIRED)
 	include_directories (${OGRE_INCLUDE_DIRS})
+	message(${OGRE_INCLUDE_DIRS})
 	target_link_libraries (OpenRump ${OGRE_LIBRARIES})
 
 	find_package (OIS REQUIRED)

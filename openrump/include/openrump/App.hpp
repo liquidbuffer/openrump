@@ -7,8 +7,8 @@
 
 #include <openrump/Export.hpp>
 #include <openrump/BaseApp.hpp>
-#include <openrump/RendererListener.hpp>
 #include <openrump/InputListener.hpp>
+#include <openrump/RendererFrameListener.hpp>
 
 #include <memory>
 
@@ -16,16 +16,20 @@
 // forward declarations
 
 namespace OpenRump {
-    class Renderer;
+    class OgreRenderer;
     class Input;
+}
+
+namespace Ogre {
+    struct FrameEvent;
 }
 
 namespace OpenRump {
 
 class OPENRUMP_API App :
     public BaseApp,
-    public RendererListener,
-    public InputListener
+    public InputListener,
+    public RendererFrameListener
 {
 public:
 
@@ -56,8 +60,8 @@ private:
      */
     virtual void onExit();
 
-    // override renderer events
-    virtual bool onFrameEvent(float timeSinceLastUpdate);
+    // override frame listener
+    virtual bool onFrameRenderingQueued(const Ogre::FrameEvent&);
 
     // override input events
     virtual void onButtonExit();
@@ -65,7 +69,7 @@ private:
     virtual void onChangeCameraAngleDelta(float deltaAngleX, float deltaAngleY);
     virtual void onChangeCameraDistanceDelta(float deltaDistance);
 
-    std::unique_ptr<Renderer> m_Renderer;
+    std::unique_ptr<OgreRenderer> m_OgreRenderer;
     std::unique_ptr<Input> m_Input;
 
     bool m_Shutdown;

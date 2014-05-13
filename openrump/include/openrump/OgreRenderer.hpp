@@ -5,14 +5,21 @@
 // ----------------------------------------------------------------------------
 // include files
 
-#include <openrump/Renderer.hpp>
+#include <openrump/Export.hpp>
+#include <openrump/ListenerDispatcher.hxx>
 
+#include <OgreString.h>
 #include <OgreFrameListener.h>
 
 #include <memory>
 
 // ----------------------------------------------------------------------------
 // forward declarations
+
+namespace OpenRump {
+    class RendererFrameListener;
+}
+
 namespace Ogre {
     class Root;
     class RenderWindow;
@@ -23,7 +30,6 @@ namespace Ogre {
 namespace OpenRump {
 
 class OPENRUMP_API OgreRenderer :
-    public Renderer,
     public Ogre::FrameListener
 {
 public:
@@ -38,15 +44,28 @@ public:
      */
     ~OgreRenderer();
 
-    // override virtual functions
-    virtual bool initialise();
-    virtual void startRendering();
-    virtual std::size_t getWindowHandle();
-    virtual void addResourceLocation(std::string path);
-    virtual void loadObject(std::string ID, std::string filename);
+    /*!
+     * @brief Sets up Ogre3D
+     * Initialises Ogre, opens the render window, and sets up resources.
+     * @return False if the initialisation procedure is interrupted.
+     */
+    bool initialise();
+
+    /*!
+     * @brief Enters an infinite loop
+     */
+    void startRendering();
+
+    /*!
+     * @brief Returns the render window handle
+     */
+    std::size_t getWindowHandle();
+
+    ListenerDispatcher<RendererFrameListener> frameEvent;
 
 private:
 
+    // override frame listener
     virtual bool frameRenderingQueued(const Ogre::FrameEvent&);
 
     std::unique_ptr<Ogre::Root> m_Root;

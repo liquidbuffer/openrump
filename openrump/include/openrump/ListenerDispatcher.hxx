@@ -9,10 +9,10 @@
 // include files
 
 #include <openrump/ListenerDispatcher.hpp>
-#include <openrump/RendererListener.hpp>
 
 #ifdef _DEBUG
 #   include <iostream>
+#   include <typeinfo>
 #endif // _DEBUG
 
 namespace OpenRump {
@@ -27,6 +27,13 @@ ListenerDispatcher<LISTENER_CLASS>::ListenerDispatcher()
 template <class LISTENER_CLASS>
 ListenerDispatcher<LISTENER_CLASS>::~ListenerDispatcher()
 {
+#ifdef _DEBUG
+    for(auto it : m_Listeners)
+        std::cout << "[ListenerDispatcher<" << typeid(LISTENER_CLASS).name()
+                << ">::~ListenerDispatcher] Warning: Listener \"" << it.first
+                << "\" still registered, yet dispatcher is being destroyed!"
+                << std::endl;
+#endif // _DEBUG
 }
 
 // ----------------------------------------------------------------------------
@@ -91,6 +98,13 @@ void ListenerDispatcher<LISTENER_CLASS>::removeListener(std::string listenerName
 template <class LISTENER_CLASS>
 void ListenerDispatcher<LISTENER_CLASS>::removeAllListeners()
 {
+#ifdef _DEBUG
+    for(auto it : m_Listeners)
+        std::cout << "[ListenerDispatcher<" << typeid(LISTENER_CLASS).name()
+                << ">::removeAllListeners] Warning: Listener \"" << it.first
+                << "\" still registered" << std::endl;
+#endif // _DEBUG
+
     m_Listeners.clear();
 }
 

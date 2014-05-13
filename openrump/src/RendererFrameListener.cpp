@@ -1,16 +1,16 @@
 // ----------------------------------------------------------------------------
-// RendererListener.cpp
+// RendererFrameListener.cpp
 // ----------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------
 // include files
 
-#include <openrump/RendererListener.hpp>
+#include <openrump/RendererFrameListener.hpp>
 
 namespace OpenRump {
 
 // ----------------------------------------------------------------------------
-bool RendererListener::onFrameEvent(float timeSinceLastUpdate)
+RendererFrameListener::~RendererFrameListener()
 {
 }
 

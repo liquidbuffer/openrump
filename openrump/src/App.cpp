@@ -11,13 +11,15 @@
 
 #include <OIS/OISInputManager.h>
 
+#include <OgreRoot.h>
+
 #include <iostream>
 
 namespace OpenRump {
 
 // ----------------------------------------------------------------------------
 App::App() :
-    m_Renderer(new OgreRenderer()),
+    m_OgreRenderer(new OgreRenderer()),
     m_Input(new OISInput()),
     m_Shutdown(false)
 {
@@ -32,15 +34,13 @@ App::~App()
 bool App::onLoad()
 {
     // initialise renderer
-    if(!m_Renderer->initialise())
+    if(!m_OgreRenderer->initialise())
         return false;
-    m_Renderer->frameEvent.addListener(this, "App");
+    m_OgreRenderer->frameEvent.addListener(this, "App");
 
     // initialise input
-    m_Input->attachToWindow(m_Renderer->getWindowHandle());
+    m_Input->attachToWindow(m_OgreRenderer->getWindowHandle());
     m_Input->event.addListener(this, "App");
-
-    m_Renderer->loadObject("twilight sparkle", "twilightsparkle/twilightsparkle.mesh");
 
     return true;
 }
@@ -48,16 +48,18 @@ bool App::onLoad()
 // ----------------------------------------------------------------------------
 void App::onRun()
 {
-    m_Renderer->startRendering();
+    m_OgreRenderer->startRendering();
 }
 
 // ----------------------------------------------------------------------------
 void App::onExit()
 {
+    m_Input->event.removeListener("App");
+    m_OgreRenderer->frameEvent.removeListener("App");
 }
 
 // ----------------------------------------------------------------------------
-bool App::onFrameEvent(float timeSinceLastUpdate)
+bool App::onFrameRenderingQueued(const Ogre::FrameEvent& evt)
 {
     m_Input->capture();
 
@@ -76,6 +78,7 @@ void App::onButtonExit()
 // ----------------------------------------------------------------------------
 void App::onChangeDirectionAndVelocity(float x, float y)
 {
+
 }
 
 // ----------------------------------------------------------------------------
@@ -87,6 +90,7 @@ void App::onChangeCameraAngleDelta(float deltaAngleX, float deltaAngleY)
 // ----------------------------------------------------------------------------
 void App::onChangeCameraDistanceDelta(float deltaDistance)
 {
+
 }
 
 } // namespace OpenRump
