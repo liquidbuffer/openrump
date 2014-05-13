@@ -53,7 +53,7 @@ bool App::onLoad()
     // load player character
     Ogre::SceneManager* sm = Ogre::Root::getSingletonPtr()->getSceneManager("MainSceneManager");
     m_PlayerNode = sm->getRootSceneNode()->createChildSceneNode("PlayerRootNode");
-    m_PlayerEntity = sm->createEntity("Player", "twilightsparkle/twilightsparkle.mesh");
+    m_PlayerEntity = sm->createEntity("Player", "twilightsparkle.mesh");
     m_PlayerNode->attachObject(m_PlayerEntity);
 
     // set up camera to orbit player
@@ -61,6 +61,11 @@ bool App::onLoad()
     m_CameraNode = m_CameraRotateNode->createChildSceneNode("PlayerCameraNode");
     m_CameraNode->attachObject(sm->getCamera("MainCamera"));
     m_CameraNode->setPosition(0, 0, m_CameraDistance);
+
+    // create default light
+    Ogre::Light* light = sm->createLight("MainLight");
+    light->setPosition(60, 200, 500);
+
     this->onChangeCameraAngleDelta(0, 0);
 
     return true;
