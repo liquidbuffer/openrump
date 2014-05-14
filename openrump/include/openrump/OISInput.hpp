@@ -49,6 +49,11 @@ public:
 
 private:
 
+    /*!
+     * @brief Computes the directional vector of the player and dispatches
+     */
+    void dispatchNewDirection();
+
     // implement OIS input events
     virtual bool keyPressed(const OIS::KeyEvent&);
     virtual bool keyReleased(const OIS::KeyEvent&);
@@ -66,6 +71,11 @@ private:
     OIS::Mouse*                     m_Mouse;
     std::vector<OIS::JoyStick*>    m_Joysticks;
 
+    // numbers between -1000 and 1000, depending on the direction of the input
+    // joystick or WASD keys. The angle of the player's direction can be
+    // calculated using these.
+    int m_PlayerMoveUpDown;
+    int m_PlayerMoveLeftRight;
 };
 
 }  // namespace OpenRump

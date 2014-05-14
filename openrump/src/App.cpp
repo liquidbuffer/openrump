@@ -56,7 +56,7 @@ bool App::onLoad()
     m_Player = std::unique_ptr<EntityPlayer>(
             new EntityPlayer(sm, "TwilightSparkle", "twilightsparkle.mesh")
     );
-    m_Player->attachCameraToOrbit(sm->getCamera("MainCamera"), 200);
+    m_Player->attachCameraToOrbit(sm->getCamera("MainCamera"), 200)->setPosition(0, 20, 0);
 
     // create default light
     Ogre::Light* light = sm->createLight("MainLight");
@@ -112,7 +112,7 @@ void App::onButtonExit()
 // ----------------------------------------------------------------------------
 void App::onChangeDirectionAndVelocity(float x, float y)
 {
-
+    std::cout << x << "," << y << std::endl;
 }
 
 // ----------------------------------------------------------------------------

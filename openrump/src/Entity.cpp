@@ -44,7 +44,6 @@ Entity* Entity::createCameraOrbit()
     if(m_CameraOrbitRotateNode)
         return this;
 
-    std::cout << "creating camera orbit" << std::endl;
     m_CameraOrbitRotateNode = m_OgreEntityNode->createChildSceneNode(m_Name + "OrbitRotateNode");
     m_CameraOrbitAttachNode = m_CameraOrbitRotateNode->createChildSceneNode(m_Name + "OrbitAttachNode");
 

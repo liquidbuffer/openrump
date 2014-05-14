@@ -11,6 +11,7 @@
 #include <OIS/OISInputManager.h>
 
 #include <sstream>
+#include <cmath>
 #ifdef _DEBUG
 #   include <iostream>
 #endif // _DEBUG
@@ -137,6 +138,31 @@ bool OISInput::keyPressed(const OIS::KeyEvent& evt)
     if(evt.key == OIS::KC_ESCAPE)
         event.dispatch(&InputListener::onButtonExit);
 
+    // process WASD
+    bool directionChanged = false;
+    if(evt.key == OIS::KC_W)
+    {
+        m_PlayerMoveUpDown = 1000;
+        directionChanged = true;
+    }
+    if(evt.key == OIS::KC_S)
+    {
+        m_PlayerMoveUpDown = -1000;
+        directionChanged = true;
+    }
+    if(evt.key == OIS::KC_A)
+    {
+        m_PlayerMoveLeftRight = -1000;
+        directionChanged = true;
+    }
+    if(evt.key == OIS::KC_D)
+    {
+        m_PlayerMoveLeftRight = 1000;
+        directionChanged = true;
+    }
+    if(directionChanged)
+        this->dispatchNewDirection();
+
     return true; // Don't clear input buffer
 }
 
@@ -144,7 +170,43 @@ bool OISInput::keyPressed(const OIS::KeyEvent& evt)
 
 bool OISInput::keyReleased(const OIS::KeyEvent& evt)
 {
+    // process WASD
+    bool directionChanged = false;
+    if(evt.key == OIS::KC_W || evt.key == OIS::KC_S)
+    {
+        m_PlayerMoveUpDown = 0;
+        directionChanged = true;
+    }
+    if(evt.key == OIS::KC_A || evt.key == OIS::KC_D)
+    {
+        m_PlayerMoveLeftRight = 0;
+        directionChanged = true;
+    }
+    if(directionChanged)
+        this->dispatchNewDirection();
+
     return true; // Don't clear input buffer
+}
+
+// ----------------------------------------------------------------------------
+void OISInput::dispatchNewDirection()
+{
+    if(m_PlayerMoveLeftRight == 0 && m_PlayerMoveUpDown == 0)
+    {
+        event.dispatch(&InputListener::onChangeDirectionAndVelocity, 0, 0);
+        return;
+    }
+
+    // clamp length to 1.0 - don't want player going faster when walking diagonally
+    float normaliseX = m_PlayerMoveLeftRight / 1000.0f;
+    float normaliseY = m_PlayerMoveUpDown / 1000.0f;
+    float length = sqrt(pow(normaliseX, 2) + pow(normaliseY, 2));
+    if(length > 1.0f)
+    {
+        normaliseX /= length;
+        normaliseY /= length;
+    }
+    event.dispatch(&InputListener::onChangeDirectionAndVelocity, normaliseX, normaliseY);
 }
 
 // ----------------------------------------------------------------------------
