@@ -10,6 +10,8 @@ set (OpenRump_SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR})
 set (OpenRump_SOURCES
 	"${OpenRump_SOURCE_DIR}/src/App.cpp"
 	"${OpenRump_SOURCE_DIR}/src/BaseApp.cpp"
+	"${OpenRump_SOURCE_DIR}/src/Entity.cpp"
+	"${OpenRump_SOURCE_DIR}/src/EntityPlayer.cpp"
 	"${OpenRump_SOURCE_DIR}/src/Input.cpp"
 	"${OpenRump_SOURCE_DIR}/src/InputListener.cpp"
 	"${OpenRump_SOURCE_DIR}/src/OgreRenderer.cpp"
@@ -19,6 +21,8 @@ set (OpenRump_SOURCES
 set (OpenRump_HEADERS
 	"${OpenRump_SOURCE_DIR}/include/openrump/App.hpp"
 	"${OpenRump_SOURCE_DIR}/include/openrump/BaseApp.hpp"
+	"${OpenRump_SOURCE_DIR}/include/openrump/Entity.hpp"
+	"${OpenRump_SOURCE_DIR}/include/openrump/EntityPlayer.hpp"
 	"${OpenRump_SOURCE_DIR}/include/openrump/Input.hpp"
 	"${OpenRump_SOURCE_DIR}/include/openrump/InputListener.hpp"
 	"${OpenRump_SOURCE_DIR}/include/openrump/ListenerDispatcher.hpp"

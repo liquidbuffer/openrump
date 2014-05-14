@@ -18,6 +18,7 @@
 namespace OpenRump {
     class OgreRenderer;
     class Input;
+    class EntityPlayer;
 }
 
 namespace Ogre {
@@ -74,8 +75,7 @@ private:
     std::unique_ptr<OgreRenderer> m_OgreRenderer;
     std::unique_ptr<Input> m_Input;
 
-    Ogre::Entity* m_PlayerEntity;
-    Ogre::SceneNode* m_PlayerNode;
+    std::unique_ptr<EntityPlayer> m_Player;
 
     Ogre::SceneNode* m_CameraRotateNode;
     Ogre::SceneNode* m_CameraNode;
