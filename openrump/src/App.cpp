@@ -112,7 +112,16 @@ void App::onButtonExit()
 // ----------------------------------------------------------------------------
 void App::onChangeDirectionAndVelocity(float x, float y)
 {
-    std::cout << x << "," << y << std::endl;
+
+    // rotate vector by camera angle to get real world direction
+    float cs = Ogre::Math::Cos(Ogre::Radian(m_CameraAngleY));
+    float sn = Ogre::Math::Sin(Ogre::Radian(m_CameraAngleY));
+    Ogre::Vector2 targetPlayerDirection(
+            x*cs - y*sn,
+            x*sn + y*cs
+    );
+
+    //
 }
 
 // ----------------------------------------------------------------------------

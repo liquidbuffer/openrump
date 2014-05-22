@@ -9,6 +9,7 @@
 
 #include <OgreSceneManager.h>
 #include <OgreEntity.h>
+#include <OgreRoot.h>
 
 namespace OpenRump {
 
@@ -20,18 +21,73 @@ Entity::Entity(Ogre::SceneManager* sm, std::string instanceName, std::string mes
     m_CameraOrbitRotateNode(nullptr),
     m_CameraOrbitAttachNode(nullptr),
     m_OrbitingCamera(nullptr),
+    m_WalkAnimState(nullptr),
     m_Name(instanceName)
 {
     m_OgreEntity = m_SceneManager->createEntity(instanceName, meshName);
     m_OgreEntityNode = m_SceneManager->getRootSceneNode()->createChildSceneNode(m_Name + "RootNode");
     m_OgreEntityNode->attachObject(m_OgreEntity);
+
+    this->extractAnimation(
+            m_OgreEntity->getSkeleton()->getAnimation("Anim_1"),
+            m_OgreEntity->getSkeleton()->createAnimation("walk", 0.6f),
+            41.0f,
+            71.0f
+    );
+
+    m_OgreEntity->refreshAvailableAnimationState();
+    m_WalkAnimState = m_OgreEntity->getAnimationState("walk");
+    m_WalkAnimState->setEnabled(true);
+    m_WalkAnimState->setLoop(true);
+
+    Ogre::Root::getSingletonPtr()->addFrameListener(this);
+}
+
+// ----------------------------------------------------------------------------
+void Entity::extractAnimation(Ogre::Animation* source,
+                              Ogre::Animation* dest,
+                              Ogre::Real startTime,
+                              Ogre::Real endTime)
+{
+    Ogre::Real timeScale = dest->getLength() / (endTime - startTime);
+
+    // loop through all animation node tracks in source and copy them to destination
+    for(Ogre::Animation::NodeTrackIterator srcNodeTrackIt = source->getNodeTrackIterator();
+        srcNodeTrackIt.hasMoreElements()
+        ;)
+    {
+        Ogre::NodeAnimationTrack* srcNodeTrack = srcNodeTrackIt.getNext();
+        unsigned short trackHandle = srcNodeTrack->getHandle();
+        Ogre::NodeAnimationTrack* destNodeTrack = dest->createNodeTrack(trackHandle);
+
+        // loop through all transforms of current source track and copy them to destination
+        // if they are within the time frame specified
+        for(unsigned short keyFrameHandle = 0;
+            keyFrameHandle != srcNodeTrack->getNumKeyFrames();
+            ++keyFrameHandle)
+        {
+            Ogre::TransformKeyFrame* srcKeyFrame = srcNodeTrack->getNodeKeyFrame(keyFrameHandle);
+            if(srcKeyFrame->getTime() < startTime || srcKeyFrame->getTime() > endTime)
+                continue;
+
+            Ogre::Real scaledTime = (srcKeyFrame->getTime()-startTime) * timeScale;
+            Ogre::TransformKeyFrame* destKeyFrame = destNodeTrack->createNodeKeyFrame(scaledTime);
+
+            destKeyFrame->setTranslate(srcKeyFrame->getTranslate());
+            destKeyFrame->setRotation(srcKeyFrame->getRotation());
+            destKeyFrame->setScale(srcKeyFrame->getScale());
+        }
+    }
 }
 
 // ----------------------------------------------------------------------------
 Entity::~Entity()
 {
+    Ogre::Root::getSingletonPtr()->removeFrameListener(this);
+
     if(this->hasCameraOrbit())
         this->destroyCameraOrbit();
+
     m_OgreEntityNode->detachObject(m_OgreEntity);
     m_SceneManager->destroyEntity(m_OgreEntity);
     m_SceneManager->getRootSceneNode()->removeChild(m_OgreEntityNode);
@@ -113,6 +169,13 @@ Ogre::Camera* Entity::destroyCameraOrbit()
 bool Entity::hasCameraOrbit() const
 {
     return (m_CameraOrbitRotateNode != nullptr);
+}
+
+// ----------------------------------------------------------------------------
+bool Entity::frameRenderingQueued(const Ogre::FrameEvent& evt)
+{
+    m_WalkAnimState->addTime(evt.timeSinceLastFrame);
+    return true;
 }
 
 } // namespace OpenRump

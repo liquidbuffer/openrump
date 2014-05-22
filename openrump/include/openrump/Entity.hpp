@@ -7,6 +7,8 @@
 
 #include <string>
 
+#include <OgreFrameListener.h>
+
 // ----------------------------------------------------------------------------
 // forward declarations
 
@@ -19,7 +21,8 @@ namespace Ogre {
 
 namespace OpenRump {
 
-class Entity
+class Entity :
+    public Ogre::FrameListener
 {
 public:
 
@@ -95,7 +98,18 @@ public:
      */
     bool hasCameraOrbit() const;
 
+    /*!
+     * @brief Extracts a section of an animation into a new animation state.
+     */
+    void extractAnimation(Ogre::Animation* source,
+                          Ogre::Animation* target,
+                          Ogre::Real startTime,
+                          Ogre::Real endTime);
+
 private:
+
+    // override virtual functions
+    bool frameRenderingQueued(const Ogre::FrameEvent&);
 
     Ogre::SceneManager* m_SceneManager;
     Ogre::Entity* m_OgreEntity;
@@ -103,6 +117,8 @@ private:
     Ogre::SceneNode* m_CameraOrbitRotateNode;
     Ogre::SceneNode* m_CameraOrbitAttachNode;
     Ogre::Camera* m_OrbitingCamera;
+
+    Ogre::AnimationState* m_WalkAnimState;
     std::string m_Name;
 
 };

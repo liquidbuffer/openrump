@@ -12,6 +12,5 @@ add_executable (AppOpenRump
 	${AppOpenRump_HEADERS}
 )
 target_link_libraries (AppOpenRump
-        OgreMain
         OpenRump
 )
