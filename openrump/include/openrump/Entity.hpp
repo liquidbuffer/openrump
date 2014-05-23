@@ -7,7 +7,8 @@
 
 #include <string>
 
-#include <OgreFrameListener.h>
+#include <Ogre.h>
+#include <OgrePrerequisites.h>
 
 // ----------------------------------------------------------------------------
 // forward declarations
@@ -21,8 +22,7 @@ namespace Ogre {
 
 namespace OpenRump {
 
-class Entity :
-    public Ogre::FrameListener
+class Entity
 {
 public:
 
@@ -99,17 +99,25 @@ public:
     bool hasCameraOrbit() const;
 
     /*!
-     * @brief Extracts a section of an animation into a new animation state.
+     * @brief Extracts a section from one animation into another animation.
+     * The specified section of key frames are extracted from the source
+     * animation, scaled to the length of the destination animation and
+     * copied. The time frame to extract is specified in seconds.
+     * @note The source and destination skeletons should have the same amount
+     * of nodes. Copying an animation to a skeleton with less nodes or more
+     * nodes doesn't crash, but not sure what that does.
+     * @note All existing key frames are erased in the destination animation.
+     * @param source The source animation to copy from.
+     * @param dest The destination animation to copy to.
+     * @param startTime Where to begin copying from the source animation.
+     * @param endTime Where to stop copying from the source animation.
      */
     void extractAnimation(Ogre::Animation* source,
-                          Ogre::Animation* target,
+                          Ogre::Animation* dest,
                           Ogre::Real startTime,
                           Ogre::Real endTime);
 
 private:
-
-    // override virtual functions
-    bool frameRenderingQueued(const Ogre::FrameEvent&);
 
     Ogre::SceneManager* m_SceneManager;
     Ogre::Entity* m_OgreEntity;
@@ -118,7 +126,6 @@ private:
     Ogre::SceneNode* m_CameraOrbitAttachNode;
     Ogre::Camera* m_OrbitingCamera;
 
-    Ogre::AnimationState* m_WalkAnimState;
     std::string m_Name;
 
 };
