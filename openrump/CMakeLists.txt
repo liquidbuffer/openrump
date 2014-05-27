@@ -8,6 +8,7 @@ project (OpenRump)
 
 set (OpenRump_SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR})
 set (OpenRump_SOURCES
+    "${OpenRump_SOURCE_DIR}/src/AnimationController.cpp"
 	"${OpenRump_SOURCE_DIR}/src/App.cpp"
 	"${OpenRump_SOURCE_DIR}/src/BaseApp.cpp"
 	"${OpenRump_SOURCE_DIR}/src/Entity.cpp"
@@ -19,6 +20,7 @@ set (OpenRump_SOURCES
 	"${OpenRump_SOURCE_DIR}/src/RendererFrameListener.cpp"
 )
 set (OpenRump_HEADERS
+    "${OpenRump_SOURCE_DIR}/include/openrump/AnimationController.hpp"
 	"${OpenRump_SOURCE_DIR}/include/openrump/App.hpp"
 	"${OpenRump_SOURCE_DIR}/include/openrump/BaseApp.hpp"
 	"${OpenRump_SOURCE_DIR}/include/openrump/Entity.hpp"

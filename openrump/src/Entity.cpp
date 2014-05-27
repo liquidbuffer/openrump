@@ -6,6 +6,7 @@
 // include files
 
 #include <openrump/Entity.hpp>
+#include <openrump/AnimationController.hpp>
 
 #include <OgreSceneManager.h>
 #include <OgreEntity.h>
@@ -153,6 +154,34 @@ void Entity::extractAnimation(Ogre::Animation* source,
             destKeyFrame->setScale(srcKeyFrame->getScale());
         }
     }
+}
+
+// ----------------------------------------------------------------------------
+void Entity::enableAnimation()
+{
+    m_AnimationController = std::unique_ptr<AnimationController>(
+            new AnimationController(m_OgreEntity)
+    );
+}
+
+// ----------------------------------------------------------------------------
+void Entity::disableAnimation()
+{
+    m_AnimationController.reset(nullptr);
+}
+
+// ----------------------------------------------------------------------------
+bool Entity::isAnimated() const
+{
+    return (m_AnimationController != nullptr);
+}
+
+// ----------------------------------------------------------------------------
+AnimationController* Entity::getAnimationController() const
+{
+    if(!this->isAnimated())
+        throw std::runtime_error("[Entity::getAnimationController] Error: Animation not enabled");
+    return m_AnimationController.get();
 }
 
 } // namespace OpenRump

@@ -21,6 +21,10 @@ namespace Ogre {
 }
 
 namespace OpenRump {
+    class AnimationController;
+}
+
+namespace OpenRump {
 
 class Entity
 {
@@ -98,6 +102,8 @@ public:
      */
     bool hasCameraOrbit() const;
 
+protected:
+
     /*!
      * @brief Extracts a section from one animation into another animation.
      * The specified section of key frames are extracted from the source
@@ -117,6 +123,24 @@ public:
                           Ogre::Real startTime,
                           Ogre::Real endTime);
 
+    /*!
+     * @brief Enables animation for this entity.
+     * Instantiates an animation controller for this entity.
+     */
+    void enableAnimation();
+
+    /*!
+     * @brief Disables animation for this entity.
+     */
+    void disableAnimation();
+
+    /*!
+     * @brief Returns true if animation is enabled.
+     */
+    bool isAnimated() const;
+
+    AnimationController* getAnimationController() const;
+
 private:
 
     Ogre::SceneManager* m_SceneManager;
@@ -125,6 +149,8 @@ private:
     Ogre::SceneNode* m_CameraOrbitRotateNode;
     Ogre::SceneNode* m_CameraOrbitAttachNode;
     Ogre::Camera* m_OrbitingCamera;
+
+    std::unique_ptr<AnimationController> m_AnimationController;
 
     std::string m_Name;
 
