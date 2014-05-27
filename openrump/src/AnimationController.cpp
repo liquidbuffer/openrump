@@ -26,43 +26,93 @@ AnimationController::~AnimationController()
 }
 
 // ----------------------------------------------------------------------------
-void AnimationController::playAnimation(std::string name, float speed)
+void AnimationController::play(std::string name, float speed)
 {
     Ogre::AnimationState* animationState = m_OgreEntity->getAnimationState(name);
     animationState->setEnabled(true);
     animationState->setLoop(false);
     animationState->setTimePosition(0);
-    for(auto it : m_AnimationList)
+    for(auto it : m_ActiveAnimations)
         if(it.animationState == animationState)
             return;
-    m_AnimationList.push_back(Animation(animationState, speed));
+    m_ActiveAnimations.push_back(Animation(animationState, speed));
 }
 
 // ----------------------------------------------------------------------------
-void AnimationController::loopAnimation(std::string name, float speed)
+void AnimationController::loop(std::string name, float speed)
 {
     Ogre::AnimationState* animationState = m_OgreEntity->getAnimationState(name);
     animationState->setEnabled(true);
     animationState->setLoop(true);
     animationState->setTimePosition(0);
-    for(auto it : m_AnimationList)
+    for(auto it : m_ActiveAnimations)
         if(it.animationState == animationState)
             return;
-    m_AnimationList.push_back(Animation(animationState, speed));
+    m_ActiveAnimations.push_back(Animation(animationState, speed));
+}
+
+// ----------------------------------------------------------------------------
+void AnimationController::stop(std::string name)
+{
+    Ogre::AnimationState* animationState = m_OgreEntity->getAnimationState(name);
+    animationState->setEnabled(false);
+    for(auto it = m_ActiveAnimations.begin(); it != m_ActiveAnimations.end(); ++it)
+        if(it->animationState == animationState)
+        {
+            m_ActiveAnimations.erase(it);
+            return;
+        }
+}
+
+// ----------------------------------------------------------------------------
+void AnimationController::pause(std::string name)
+{
+    Ogre::AnimationState* animationState = m_OgreEntity->getAnimationState(name);
+    for(auto it : m_ActiveAnimations)
+        if(it.animationState == animationState)
+        {
+            it.paused = true;
+            return;
+        }
+}
+
+// ----------------------------------------------------------------------------
+void AnimationController::resume(std::string name)
+{
+    Ogre::AnimationState* animationState = m_OgreEntity->getAnimationState(name);
+    for(auto it : m_ActiveAnimations)
+        if(it.animationState == animationState)
+        {
+            it.paused = false;
+            return;
+        }
+}
+
+// ----------------------------------------------------------------------------
+void AnimationController::setSpeed(std::string name, float speed)
+{
+    Ogre::AnimationState* animationState = m_OgreEntity->getAnimationState(name);
+    for(auto it : m_ActiveAnimations)
+        if(it.animationState == animationState)
+        {
+            it.speed = speed;
+            return;
+        }
 }
 
 // ----------------------------------------------------------------------------
 bool AnimationController::frameRenderingQueued(const Ogre::FrameEvent& evt)
 {
-    auto it = m_AnimationList.begin();
-    while(it != m_AnimationList.end())
+    auto it = m_ActiveAnimations.begin();
+    while(it != m_ActiveAnimations.end())
     {
-        it->animationState->addTime(evt.timeSinceLastFrame * it->speed);
+        if(!it->paused)
+            it->animationState->addTime(evt.timeSinceLastFrame * it->speed);
 
         if(it->animationState->hasEnded())
         {
             it->animationState->setEnabled(false);
-            it = m_AnimationList.erase(it);
+            it = m_ActiveAnimations.erase(it);
         }
         else
             ++it;
