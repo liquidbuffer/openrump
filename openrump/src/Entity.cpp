@@ -83,6 +83,14 @@ Ogre::Camera* Entity::detachCameraFromOrbit()
 }
 
 // ----------------------------------------------------------------------------
+void Entity::setCameraDistance(float distance)
+{
+    if(!m_CameraOrbitAttachNode)
+        return;
+    m_CameraOrbitAttachNode->setPosition(0, 0, distance);
+}
+
+// ----------------------------------------------------------------------------
 Ogre::Camera* Entity::getCamera() const
 {
     return m_OrbitingCamera;

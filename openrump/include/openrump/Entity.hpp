@@ -77,6 +77,8 @@ public:
      */
     Ogre::Camera* detachCameraFromOrbit();
 
+    void setCameraDistance(float distance);
+
     /*!
      * @brief Gets the attached camera
      * @return A pointer to the attached camera, or a nullptr if no camera is

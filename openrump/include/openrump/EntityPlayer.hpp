@@ -45,6 +45,14 @@ private:
 
     Input* m_Input;
 
+    float m_CameraDistance;
+    float m_CameraDistanceMax;
+    float m_CameraDistanceMin;
+
+    Ogre::Vector2 m_PlayerDirection;
+    Ogre::Vector2 m_TargetPlayerDirection;
+
+
     // camera
     struct CameraAngle_t
     {
