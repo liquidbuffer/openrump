@@ -39,7 +39,6 @@ public:
 private:
 
     // override input events
-    virtual void onButtonExit();
     virtual void onChangeDirectionAndVelocity(float x, float y);
     virtual void onChangeCameraAngleDelta(float deltaAngleX, float deltaAngleY);
     virtual void onChangeCameraDistanceDelta(float deltaDistance);

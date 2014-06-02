@@ -28,16 +28,11 @@ EntityPlayer::~EntityPlayer()
 }
 
 // ----------------------------------------------------------------------------
-void EntityPlayer::onButtonExit()
-{
-}
-
-// ----------------------------------------------------------------------------
 void EntityPlayer::onChangeDirectionAndVelocity(float x, float y)
 {
     // rotate vector by camera angle to get real world direction
-    float cs = Ogre::Math::Cos(Ogre::Radian(m_CameraAngleY));
-    float sn = Ogre::Math::Sin(Ogre::Radian(m_CameraAngleY));
+    float cs = Ogre::Math::Cos(m_CameraAngle.y);
+    float sn = Ogre::Math::Sin(m_CameraAngle.y);
     Ogre::Vector2 targetPlayerDirection(
             x*cs - y*sn,
             x*sn + y*cs

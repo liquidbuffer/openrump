@@ -69,9 +69,6 @@ private:
 
     // override input events
     virtual void onButtonExit();
-    virtual void onChangeDirectionAndVelocity(float x, float y);
-    virtual void onChangeCameraAngleDelta(float deltaAngleX, float deltaAngleY);
-    virtual void onChangeCameraDistanceDelta(float deltaDistance);
 
     std::unique_ptr<OgreRenderer> m_OgreRenderer;
     std::unique_ptr<Input> m_Input;

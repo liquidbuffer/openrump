@@ -116,19 +116,4 @@ void App::onButtonExit()
     m_Shutdown = true;
 }
 
-// ----------------------------------------------------------------------------
-void App::onChangeDirectionAndVelocity(float x, float y)
-{
-}
-
-// ----------------------------------------------------------------------------
-void App::onChangeCameraAngleDelta(float deltaAngleX, float deltaAngleY)
-{
-}
-
-// ----------------------------------------------------------------------------
-void App::onChangeCameraDistanceDelta(float deltaDistance)
-{
-}
-
 } // namespace OpenRump
