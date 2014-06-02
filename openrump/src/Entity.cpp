@@ -184,4 +184,10 @@ AnimationController* Entity::getAnimationController() const
     return m_AnimationController.get();
 }
 
+// ----------------------------------------------------------------------------
+Ogre::SceneNode* Entity::getEntitySceneNode()
+{
+    return m_OgreEntityNode;
+}
+
 } // namespace OpenRump

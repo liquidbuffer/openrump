@@ -102,6 +102,8 @@ public:
      */
     bool hasCameraOrbit() const;
 
+    Ogre::SceneNode* getEntitySceneNode();
+
 protected:
 
     /*!

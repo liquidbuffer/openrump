@@ -56,7 +56,15 @@ bool App::onLoad()
     m_Player = std::unique_ptr<EntityPlayer>(
             new EntityPlayer(sm, "TwilightSparkle", "twilightsparkle.mesh")
     );
+    // move camera's centre up a little
     m_Player->attachCameraToOrbit(sm->getCamera("MainCamera"), 200)->setPosition(0, 20, 0);
+
+    // load world
+    m_World = std::unique_ptr<Entity>(
+        new Entity(sm, "World", "prototype-test-map.mesh")
+    );
+    m_World->getEntitySceneNode()->setScale(200, 200, 200);
+    m_World->getEntitySceneNode()->setPosition(0, -300, 0);
 
     // create default light
     Ogre::Light* light = sm->createLight("MainLight");
@@ -76,7 +84,6 @@ void App::onRun()
 // ----------------------------------------------------------------------------
 void App::onExit()
 {
-
     Ogre::SceneManager* sm = Ogre::Root::getSingletonPtr()->getSceneManager("MainSceneManager");
 
     // remove lights
