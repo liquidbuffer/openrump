@@ -54,7 +54,7 @@ bool App::onLoad()
 
     // load player character and attach camera to its orbit
     m_Player = std::unique_ptr<EntityPlayer>(
-            new EntityPlayer(sm, "TwilightSparkle", "twilightsparkle.mesh")
+            new EntityPlayer(m_Input.get(), sm, "TwilightSparkle", "twilightsparkle.mesh")
     );
     // move camera's centre up a little
     m_Player->attachCameraToOrbit(sm->getCamera("MainCamera"), 200)->setPosition(0, 20, 0);
@@ -119,40 +119,16 @@ void App::onButtonExit()
 // ----------------------------------------------------------------------------
 void App::onChangeDirectionAndVelocity(float x, float y)
 {
-
-    // rotate vector by camera angle to get real world direction
-    float cs = Ogre::Math::Cos(Ogre::Radian(m_CameraAngleY));
-    float sn = Ogre::Math::Sin(Ogre::Radian(m_CameraAngleY));
-    Ogre::Vector2 targetPlayerDirection(
-            x*cs - y*sn,
-            x*sn + y*cs
-    );
-
-    //
 }
 
 // ----------------------------------------------------------------------------
 void App::onChangeCameraAngleDelta(float deltaAngleX, float deltaAngleY)
 {
-
-    // add deltas and limit X angle to +90° and -90°
-    m_CameraAngleX -= deltaAngleX;
-    m_CameraAngleY -= deltaAngleY;
-    if(m_CameraAngleX < -Ogre::Math::PI*0.5f)
-        m_CameraAngleX = -Ogre::Math::PI*0.5f;
-    if(m_CameraAngleX > Ogre::Math::PI*0.5f)
-        m_CameraAngleX = Ogre::Math::PI*0.5f;
-
-    // apply to camera
-    m_Player->getCameraRotateNode()->setOrientation(Ogre::Quaternion());
-    m_Player->getCameraRotateNode()->yaw(Ogre::Radian(m_CameraAngleY));
-    m_Player->getCameraRotateNode()->pitch(Ogre::Radian(m_CameraAngleX));
 }
 
 // ----------------------------------------------------------------------------
 void App::onChangeCameraDistanceDelta(float deltaDistance)
 {
-
 }
 
 } // namespace OpenRump
