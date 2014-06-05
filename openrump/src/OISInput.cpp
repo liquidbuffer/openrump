@@ -209,7 +209,7 @@ void OISInput::dispatchNewDirection()
         return;
     }
 
-    // clamp length to 1.0 - don't want player going faster when walking diagonally
+    // scale length to 1.0 - don't want player going faster when walking diagonally
     float normaliseX = m_PlayerMoveLeftRight / 1000.0f;
     float normaliseY = m_PlayerMoveUpDown / 1000.0f;
     float length = sqrt(pow(normaliseX, 2) + pow(normaliseY, 2));
@@ -229,12 +229,11 @@ bool OISInput::mouseMoved(const OIS::MouseEvent& evt)
             static_cast<float>(evt.state.Y.rel) * 0.02f,
             static_cast<float>(evt.state.X.rel) * 0.02f
     );
-    this->dispatchNewDirection();
-
     event.dispatch(
         &InputListener::onChangeCameraDistanceDelta,
         static_cast<float>(evt.state.Z.rel) * 0.02f
     );
+    this->dispatchNewDirection();
     return true; // Don't clear input buffer
 }
 

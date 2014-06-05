@@ -61,6 +61,12 @@ private:
     Ogre::Real m_PlayerSpeed;
     Ogre::Real m_MaxPlayerSpeed;
 
+    Ogre::Real m_PlayerTurnAccelerationFactor;
+    Ogre::Real m_RollAngleIntensityFactor;
+    Ogre::Real m_RollAngleAccelerationFactor;
+    Ogre::Radian m_RollAngle;
+    Ogre::Radian m_MaxRollAngle;
+
     // camera
     struct CameraAngle_t
     {
