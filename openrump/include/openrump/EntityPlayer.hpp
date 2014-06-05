@@ -50,9 +50,9 @@ private:
 
     Input* m_Input;
 
-    float m_CameraDistance;
-    float m_MaxCameraDistance;
-    float m_MinCameraDistance;
+    Ogre::Real m_CameraDistance;
+    Ogre::Real m_MaxCameraDistance;
+    Ogre::Real m_MinCameraDistance;
 
     Ogre::Vector3 m_PlayerDirection;
     Ogre::Vector3 m_TargetPlayerDirection;
@@ -60,6 +60,7 @@ private:
     Ogre::Real m_TargetPlayerSpeed;
     Ogre::Real m_PlayerSpeed;
     Ogre::Real m_MaxPlayerSpeed;
+    Ogre::Real m_PlayerAccelerationFactor;
 
     Ogre::Real m_PlayerTurnAccelerationFactor;
     Ogre::Real m_RollAngleIntensityFactor;

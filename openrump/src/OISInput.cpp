@@ -226,12 +226,12 @@ bool OISInput::mouseMoved(const OIS::MouseEvent& evt)
 {
     event.dispatch(
             &InputListener::onChangeCameraAngleDelta,
-            static_cast<float>(evt.state.Y.rel) * 0.02f,
-            static_cast<float>(evt.state.X.rel) * 0.02f
+            static_cast<float>(evt.state.Y.rel) * 0.02,
+            static_cast<float>(evt.state.X.rel) * 0.02
     );
     event.dispatch(
         &InputListener::onChangeCameraDistanceDelta,
-        static_cast<float>(evt.state.Z.rel) * 0.02f
+        static_cast<float>(evt.state.Z.rel) * 0.0005
     );
     this->dispatchNewDirection();
     return true; // Don't clear input buffer

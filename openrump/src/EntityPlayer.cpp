@@ -26,6 +26,7 @@ EntityPlayer::EntityPlayer(Input* input,
     m_TargetPlayerSpeed(0),
     m_PlayerSpeed(0),
     m_MaxPlayerSpeed(1),
+    m_PlayerAccelerationFactor(5),
     m_PlayerTurnAccelerationFactor(10),
     m_RollAngleIntensityFactor(100),
     m_RollAngleAccelerationFactor(0.01),
@@ -87,7 +88,9 @@ void EntityPlayer::onChangeCameraAngleDelta(float deltaAngleX, float deltaAngleY
 void EntityPlayer::onChangeCameraDistanceDelta(float deltaDistance)
 {
     m_CameraDistance = Ogre::Math::Clamp(
-        (m_MinCameraDistance - m_CameraDistance) * Ogre::Real(0.05) * deltaDistance + m_CameraDistance,
+        (m_MinCameraDistance - m_CameraDistance)
+                * deltaDistance
+                + m_CameraDistance,
         m_MinCameraDistance,
         m_MaxCameraDistance
     );
@@ -100,15 +103,21 @@ bool EntityPlayer::frameRenderingQueued(const Ogre::FrameEvent& evt)
 {
     // asymptotically approach target speed
     m_PlayerSpeed = Ogre::Math::Clamp(
-        m_PlayerSpeed + (m_TargetPlayerSpeed - m_PlayerSpeed) * evt.timeSinceLastFrame * Ogre::Real(5),
+        m_PlayerSpeed + (m_TargetPlayerSpeed - m_PlayerSpeed)
+                * evt.timeSinceLastFrame
+                * m_PlayerAccelerationFactor,
         Ogre::Real(0),
         m_MaxPlayerSpeed
     );
 
     // interpolate directional vector towards target direction
-    Ogre::Quaternion targetRotation(m_PlayerDirection.getRotationTo(m_TargetPlayerDirection));
+    Ogre::Quaternion targetRotation(
+            m_PlayerDirection.getRotationTo(m_TargetPlayerDirection)
+    );
     Ogre::Quaternion actualRotation(Ogre::Quaternion::Slerp(
-            evt.timeSinceLastFrame * m_PlayerSpeed * m_PlayerTurnAccelerationFactor,
+            evt.timeSinceLastFrame
+                    * m_PlayerSpeed
+                    * m_PlayerTurnAccelerationFactor,
             Ogre::Quaternion::IDENTITY,
             targetRotation
     ));
@@ -122,14 +131,20 @@ bool EntityPlayer::frameRenderingQueued(const Ogre::FrameEvent& evt)
                             m_MaxRollAngle
                     ) - m_RollAngle) * m_RollAngleAccelerationFactor;
 
-    // move and rotate player
+    // rotate player accordingly
     this->getRotateSceneNode()->setOrientation(
-            Ogre::Quaternion(Ogre::Vector3(0, 1, 0).crossProduct(m_PlayerDirection),
-                             Ogre::Vector3(0, 1, 0),
-                             m_PlayerDirection)
-          * Ogre::Quaternion(m_RollAngle, Ogre::Vector3(0, 0, -1))
+            Ogre::Quaternion(
+                    Ogre::Vector3(0, 1, 0).crossProduct(m_PlayerDirection),
+                    Ogre::Vector3(0, 1, 0),
+                    m_PlayerDirection)
+            * Ogre::Quaternion(m_RollAngle, Ogre::Vector3(0, 0, -1))
     );
-    this->getTranslateSceneNode()->translate(m_PlayerDirection * m_PlayerSpeed);
+
+    // position player accordingly
+    this->getTranslateSceneNode()->translate(
+            m_PlayerDirection
+            * m_PlayerSpeed
+    );
 
     return true;
 }
