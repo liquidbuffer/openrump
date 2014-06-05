@@ -22,7 +22,9 @@ namespace OpenRump {
 OISInput::OISInput() :
     m_InputSystem(nullptr),
     m_Keyboard(nullptr),
-    m_Mouse(nullptr)
+    m_Mouse(nullptr),
+    m_PlayerMoveUpDown(0),
+    m_PlayerMoveLeftRight(0)
 {
 }
 
@@ -142,22 +144,22 @@ bool OISInput::keyPressed(const OIS::KeyEvent& evt)
     bool directionChanged = false;
     if(evt.key == OIS::KC_W)
     {
-        m_PlayerMoveUpDown = -1000;
+        m_PlayerMoveUpDown -= 1000;
         directionChanged = true;
     }
     if(evt.key == OIS::KC_S)
     {
-        m_PlayerMoveUpDown = 1000;
+        m_PlayerMoveUpDown += 1000;
         directionChanged = true;
     }
     if(evt.key == OIS::KC_A)
     {
-        m_PlayerMoveLeftRight = -1000;
+        m_PlayerMoveLeftRight -= 1000;
         directionChanged = true;
     }
     if(evt.key == OIS::KC_D)
     {
-        m_PlayerMoveLeftRight = 1000;
+        m_PlayerMoveLeftRight += 1000;
         directionChanged = true;
     }
     if(directionChanged)
@@ -172,14 +174,24 @@ bool OISInput::keyReleased(const OIS::KeyEvent& evt)
 {
     // process WASD
     bool directionChanged = false;
-    if(evt.key == OIS::KC_W || evt.key == OIS::KC_S)
+    if(evt.key == OIS::KC_W)
     {
-        m_PlayerMoveUpDown = 0;
+        m_PlayerMoveUpDown += 1000;
         directionChanged = true;
     }
-    if(evt.key == OIS::KC_A || evt.key == OIS::KC_D)
+    if(evt.key == OIS::KC_S)
     {
-        m_PlayerMoveLeftRight = 0;
+        m_PlayerMoveUpDown -= 1000;
+        directionChanged = true;
+    }
+    if(evt.key == OIS::KC_A)
+    {
+        m_PlayerMoveLeftRight += 1000;
+        directionChanged = true;
+    }
+    if(evt.key == OIS::KC_D)
+    {
+        m_PlayerMoveLeftRight -= 1000;
         directionChanged = true;
     }
     if(directionChanged)
