@@ -63,8 +63,8 @@ bool App::onLoad()
     m_World = std::unique_ptr<Entity>(
         new Entity(sm, "World", "prototype-test-map.mesh")
     );
-    m_World->getEntitySceneNode()->setScale(200, 200, 200);
-    m_World->getEntitySceneNode()->setPosition(0, -300, 0);
+    m_World->getTranslateSceneNode()->setScale(80, 80, 80);
+    m_World->getTranslateSceneNode()->setPosition(0, -200, 0);
 
     // create default light
     Ogre::Light* light = sm->createLight("MainLight");

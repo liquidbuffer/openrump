@@ -104,7 +104,8 @@ public:
      */
     bool hasCameraOrbit() const;
 
-    Ogre::SceneNode* getEntitySceneNode();
+    Ogre::SceneNode* getTranslateSceneNode();
+    Ogre::SceneNode* getRotateSceneNode();
 
 protected:
 
@@ -149,7 +150,8 @@ private:
 
     Ogre::SceneManager* m_SceneManager;
     Ogre::Entity* m_OgreEntity;
-    Ogre::SceneNode* m_OgreEntityNode;
+    Ogre::SceneNode* m_OgreEntityTranslateNode;
+    Ogre::SceneNode* m_OgreEntityRotateNode;
     Ogre::SceneNode* m_CameraOrbitRotateNode;
     Ogre::SceneNode* m_CameraOrbitAttachNode;
     Ogre::Camera* m_OrbitingCamera;

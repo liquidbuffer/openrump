@@ -142,12 +142,12 @@ bool OISInput::keyPressed(const OIS::KeyEvent& evt)
     bool directionChanged = false;
     if(evt.key == OIS::KC_W)
     {
-        m_PlayerMoveUpDown = 1000;
+        m_PlayerMoveUpDown = -1000;
         directionChanged = true;
     }
     if(evt.key == OIS::KC_S)
     {
-        m_PlayerMoveUpDown = -1000;
+        m_PlayerMoveUpDown = 1000;
         directionChanged = true;
     }
     if(evt.key == OIS::KC_A)

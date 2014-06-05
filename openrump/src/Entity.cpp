@@ -18,15 +18,17 @@ namespace OpenRump {
 Entity::Entity(Ogre::SceneManager* sm, std::string instanceName, std::string meshName) :
     m_SceneManager(sm),
     m_OgreEntity(nullptr),
-    m_OgreEntityNode(nullptr),
+    m_OgreEntityTranslateNode(nullptr),
+    m_OgreEntityRotateNode(nullptr),
     m_CameraOrbitRotateNode(nullptr),
     m_CameraOrbitAttachNode(nullptr),
     m_OrbitingCamera(nullptr),
     m_Name(instanceName)
 {
     m_OgreEntity = m_SceneManager->createEntity(instanceName, meshName);
-    m_OgreEntityNode = m_SceneManager->getRootSceneNode()->createChildSceneNode(m_Name + "RootNode");
-    m_OgreEntityNode->attachObject(m_OgreEntity);
+    m_OgreEntityTranslateNode = m_SceneManager->getRootSceneNode()->createChildSceneNode(m_Name + "TranslateNode");
+    m_OgreEntityRotateNode = m_OgreEntityTranslateNode->createChildSceneNode(m_Name + "RotateNode");
+    m_OgreEntityRotateNode->attachObject(m_OgreEntity);
 }
 
 // ----------------------------------------------------------------------------
@@ -35,10 +37,12 @@ Entity::~Entity()
     if(this->hasCameraOrbit())
         this->destroyCameraOrbit();
 
-    m_OgreEntityNode->detachObject(m_OgreEntity);
+    m_OgreEntityRotateNode->detachObject(m_OgreEntity);
     m_SceneManager->destroyEntity(m_OgreEntity);
-    m_SceneManager->getRootSceneNode()->removeChild(m_OgreEntityNode);
-    m_SceneManager->destroySceneNode(m_OgreEntityNode);
+    m_OgreEntityTranslateNode->removeChild(m_OgreEntityRotateNode);
+    m_SceneManager->destroySceneNode(m_OgreEntityRotateNode);
+    m_SceneManager->getRootSceneNode()->removeChild(m_OgreEntityTranslateNode);
+    m_SceneManager->destroySceneNode(m_OgreEntityTranslateNode);
 }
 
 // ----------------------------------------------------------------------------
@@ -47,7 +51,7 @@ Entity* Entity::createCameraOrbit()
     if(m_CameraOrbitRotateNode)
         return this;
 
-    m_CameraOrbitRotateNode = m_OgreEntityNode->createChildSceneNode(m_Name + "OrbitRotateNode");
+    m_CameraOrbitRotateNode = m_OgreEntityTranslateNode->createChildSceneNode(m_Name + "OrbitRotateNode");
     m_CameraOrbitAttachNode = m_CameraOrbitRotateNode->createChildSceneNode(m_Name + "OrbitAttachNode");
 
     return this;
@@ -113,7 +117,7 @@ Ogre::Camera* Entity::destroyCameraOrbit()
     m_CameraOrbitRotateNode->removeChild(m_CameraOrbitAttachNode);
     m_SceneManager->destroySceneNode(m_CameraOrbitAttachNode);
     m_CameraOrbitAttachNode = nullptr;
-    m_OgreEntityNode->removeChild(m_CameraOrbitRotateNode);
+    m_OgreEntityTranslateNode->removeChild(m_CameraOrbitRotateNode);
     m_SceneManager->destroySceneNode(m_CameraOrbitRotateNode);
     m_CameraOrbitRotateNode = nullptr;
 
@@ -193,9 +197,15 @@ AnimationController* Entity::getAnimationController() const
 }
 
 // ----------------------------------------------------------------------------
-Ogre::SceneNode* Entity::getEntitySceneNode()
+Ogre::SceneNode* Entity::getTranslateSceneNode()
 {
-    return m_OgreEntityNode;
+    return m_OgreEntityTranslateNode;
+}
+
+// ----------------------------------------------------------------------------
+Ogre::SceneNode* Entity::getRotateSceneNode()
+{
+    return m_OgreEntityRotateNode;
 }
 
 } // namespace OpenRump
