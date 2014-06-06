@@ -65,8 +65,12 @@ private:
     Ogre::Real m_PlayerTurnAccelerationFactor;
     Ogre::Real m_RollAngleIntensityFactor;
     Ogre::Real m_RollAngleAccelerationFactor;
+    Ogre::Real m_PitchAngleIntensityFactor;
+    Ogre::Real m_PitchAngleAccelerationFactor;
     Ogre::Radian m_RollAngle;
     Ogre::Radian m_MaxRollAngle;
+    Ogre::Radian m_PitchAngle;
+    Ogre::Radian m_MaxPitchAngle;
 
     // camera
     struct CameraAngle_t

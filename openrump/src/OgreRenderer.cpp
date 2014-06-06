@@ -99,7 +99,8 @@ bool OgreRenderer::initialise()
             Ogre::Real(vp->getActualWidth()) /
             Ogre::Real(vp->getActualHeight())
     );
-
+    m_Camera->setNearClipDistance(0.2);
+    m_Camera->setFarClipDistance(500);
     m_Root->addFrameListener(this);
 
     return true;

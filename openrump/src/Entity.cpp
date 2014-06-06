@@ -68,7 +68,7 @@ Ogre::SceneNode* Entity::attachCameraToOrbit(Ogre::Camera* cam, float distance)
 
     m_OrbitingCamera = cam;
     m_CameraOrbitAttachNode->attachObject(m_OrbitingCamera);
-    m_CameraOrbitAttachNode->setPosition(0, 0, distance);
+    this->setCameraDistance(distance);
 
     return m_CameraOrbitRotateNode;
 }

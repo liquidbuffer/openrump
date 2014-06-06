@@ -56,14 +56,16 @@ bool App::onLoad()
     m_Player = std::unique_ptr<EntityPlayer>(
             new EntityPlayer(m_Input.get(), sm, "TwilightSparkle", "twilightsparkle.mesh")
     );
+    m_Player->getRotateSceneNode()->setScale(0.015, 0.015, 0.015);
+
     // move camera's centre up a little
-    m_Player->attachCameraToOrbit(sm->getCamera("MainCamera"), 200)->setPosition(0, 20, 0);
+    m_Player->attachCameraToOrbit(sm->getCamera("MainCamera"))->setPosition(0, 0.5, 0);
 
     // load world
     m_World = std::unique_ptr<Entity>(
         new Entity(sm, "World", "prototype-test-map.mesh")
     );
-    m_World->getTranslateSceneNode()->setScale(80, 80, 80);
+    m_World->getTranslateSceneNode()->setScale(8, 8, 8);
     m_World->getTranslateSceneNode()->setPosition(0, -200, 0);
 
     // create default light
