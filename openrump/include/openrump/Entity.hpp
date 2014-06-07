@@ -28,18 +28,41 @@ namespace OpenRump {
 
 class Entity
 {
+private:
+
+    /*!
+     * @brief Default constructor - only for delegating.
+     */
+    Entity();
+
+protected:
+
+    /*!
+     * @brief Constructs an entity.
+     * The entity will use the specified scene manager to load itself into
+     * memory.
+     * @param sm The Ogre scene manager to use.
+     */
+    Entity(Ogre::SceneManager* sm);
+
+    /*!
+     * @brief Loads the entity from a mesh name.
+     * @param instanceName A globally unique name for this entity.
+     * @param meshName The mesh file name to load.
+     */
+    void load(std::string instanceName, std::string meshName);
+
 public:
 
     /*!
-     * @brief Constructs an entity
-     * The entity will use the specified scene manager to load itself into
-     * memory with the specified instance name and mesh name. If the mesh does
-     * not exist, an exception is thrown.
+     * @brief Constructs an entity and loads the specified mesh.
      * @param sm The Ogre scene manager to use.
-     * @param instanceName A unique identifier for this instance.
-     * @param meshName The name of the mesh file to load.
+     * @param instanceName A globally unique name for this entity.
+     * @param meshName The mesh file name to load.
      */
-    Entity(Ogre::SceneManager* sm, std::string instanceName, std::string meshName);
+    Entity(Ogre::SceneManager* sm,
+           std::string instanceName,
+           std::string meshName);
 
     /*!
      * @brief Allow destruction through base class pointer
@@ -77,6 +100,10 @@ public:
      */
     Ogre::Camera* detachCameraFromOrbit();
 
+    /*!
+     * @brief Sets the camera's distance from the centre rotation point.
+     * @param distance The distance to set.
+     */
     void setCameraDistance(float distance);
 
     /*!

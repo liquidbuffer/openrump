@@ -23,15 +23,41 @@ class EntityPlayer :
     public InputListener,
     public Ogre::FrameListener
 {
+private:
+
+    /*!
+     * @brief Constructor with scene manager - only for delegating
+     */
+    EntityPlayer(Ogre::SceneManager* sm);
+
 public:
 
     /*!
-     * @brief Constructs a player using the specified ogre scene manager
+     * @brief Constructs a player using the specified ogre scene manager.
+     * @param input A pointer to the input controller, as the player entity
+     * has internal methods that will react to user input, such as player
+     * movement and camera movement.
+     * @param sm The Ogre scene manager to use to create this entity.
+     * @param instanceName A globally unique name for this instance.
+     * @param meshName The name of the mesh to load for this instance.
      */
-    EntityPlayer(Input* inputDispatcher,
-                 Ogre::SceneManager*,
+    // DEPRECATED
+    EntityPlayer(Input* input,
+                 Ogre::SceneManager* sm,
                  std::string instanceName,
                  std::string meshName);
+
+    /*!
+     * @brief Constructs a player from an XML file using the specified ogre sm.
+     * @param input A pointer to the input controller, as the player entity
+     * has internal methods that will react to user input, such as player
+     * movement and camera movement.
+     * @param sm The Ogre scene manager to use to create this entity.
+     * @param fileName The file name of the XML file to load.
+     */
+    EntityPlayer(Input* input,
+                 Ogre::SceneManager* sm,
+                 std::string fileName);
 
     /*!
      * @brief Default destructor
@@ -54,15 +80,15 @@ private:
     Ogre::Real m_MaxCameraDistance;
     Ogre::Real m_MinCameraDistance;
 
-    Ogre::Vector3 m_PlayerDirection;
-    Ogre::Vector3 m_TargetPlayerDirection;
+    Ogre::Vector3 m_Direction;
+    Ogre::Vector3 m_TargetDirection;
 
-    Ogre::Real m_TargetPlayerSpeed;
-    Ogre::Real m_PlayerSpeed;
-    Ogre::Real m_MaxPlayerSpeed;
-    Ogre::Real m_PlayerAccelerationFactor;
+    Ogre::Real m_TargetSpeed;
+    Ogre::Real m_Speed;
+    Ogre::Real m_MaxSpeed;
+    Ogre::Real m_AccelerationFactor;
 
-    Ogre::Real m_PlayerTurnAccelerationFactor;
+    Ogre::Real m_TurnAccelerationFactor;
     Ogre::Real m_RollAngleIntensityFactor;
     Ogre::Real m_RollAngleAccelerationFactor;
     Ogre::Real m_PitchAngleIntensityFactor;

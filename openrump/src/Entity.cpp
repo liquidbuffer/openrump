@@ -15,20 +15,53 @@
 namespace OpenRump {
 
 // ----------------------------------------------------------------------------
-Entity::Entity(Ogre::SceneManager* sm, std::string instanceName, std::string meshName) :
-    m_SceneManager(sm),
+Entity::Entity() :
+    m_SceneManager(nullptr),
     m_OgreEntity(nullptr),
     m_OgreEntityTranslateNode(nullptr),
     m_OgreEntityRotateNode(nullptr),
     m_CameraOrbitRotateNode(nullptr),
     m_CameraOrbitAttachNode(nullptr),
     m_OrbitingCamera(nullptr),
-    m_Name(instanceName)
+    m_Name("")
 {
+}
+
+// ----------------------------------------------------------------------------
+Entity::Entity(Ogre::SceneManager* sm) :
+    Entity()
+{
+    m_SceneManager = sm;
+}
+
+// ----------------------------------------------------------------------------
+void Entity::load(std::string instanceName, std::string meshName)
+{
+#ifdef _DEBUG
+    if(m_Name != "")
+    {
+        std::cout << "[Entity::load] Warning: Entity "
+                  << instanceName << "already loaded!";
+        return;
+    }
+#endif
+    m_Name = instanceName;
     m_OgreEntity = m_SceneManager->createEntity(instanceName, meshName);
-    m_OgreEntityTranslateNode = m_SceneManager->getRootSceneNode()->createChildSceneNode(m_Name + "TranslateNode");
-    m_OgreEntityRotateNode = m_OgreEntityTranslateNode->createChildSceneNode(m_Name + "RotateNode");
+    m_OgreEntityTranslateNode = m_SceneManager->getRootSceneNode()
+            ->createChildSceneNode(m_Name + "TranslateNode");
+    m_OgreEntityRotateNode = m_OgreEntityTranslateNode
+            ->createChildSceneNode(m_Name + "RotateNode");
     m_OgreEntityRotateNode->attachObject(m_OgreEntity);
+}
+
+// ----------------------------------------------------------------------------
+Entity::Entity(Ogre::SceneManager* sm,
+               std::string instanceName,
+               std::string meshName) :
+    Entity()
+{
+    m_SceneManager = sm;
+    this->load(instanceName, meshName);
 }
 
 // ----------------------------------------------------------------------------
@@ -36,6 +69,10 @@ Entity::~Entity()
 {
     if(this->hasCameraOrbit())
         this->destroyCameraOrbit();
+
+    assert(m_OgreEntity != nullptr);
+    assert(m_OgreEntityRotateNode != nullptr);
+    assert(m_OgreEntityTranslateNode != nullptr);
 
     m_OgreEntityRotateNode->detachObject(m_OgreEntity);
     m_SceneManager->destroyEntity(m_OgreEntity);
@@ -51,8 +88,10 @@ Entity* Entity::createCameraOrbit()
     if(m_CameraOrbitRotateNode)
         return this;
 
-    m_CameraOrbitRotateNode = m_OgreEntityTranslateNode->createChildSceneNode(m_Name + "OrbitRotateNode");
-    m_CameraOrbitAttachNode = m_CameraOrbitRotateNode->createChildSceneNode(m_Name + "OrbitAttachNode");
+    m_CameraOrbitRotateNode = m_OgreEntityTranslateNode
+            ->createChildSceneNode(m_Name + "OrbitRotateNode");
+    m_CameraOrbitAttachNode = m_CameraOrbitRotateNode
+            ->createChildSceneNode(m_Name + "OrbitAttachNode");
 
     return this;
 }
@@ -97,12 +136,14 @@ void Entity::setCameraDistance(float distance)
 // ----------------------------------------------------------------------------
 Ogre::Camera* Entity::getCamera() const
 {
+    assert(m_OrbitingCamera != nullptr);
     return m_OrbitingCamera;
 }
 
 // ----------------------------------------------------------------------------
 Ogre::SceneNode* Entity::getCameraRotateNode() const
 {
+    assert(m_CameraOrbitRotateNode != nullptr);
     return m_CameraOrbitRotateNode;
 }
 
@@ -112,7 +153,7 @@ Ogre::Camera* Entity::destroyCameraOrbit()
     Ogre::Camera* cam = this->detachCameraFromOrbit();
 
     if(!m_CameraOrbitRotateNode)
-        return cam;
+        return cam;  // return nullptr
 
     m_CameraOrbitRotateNode->removeChild(m_CameraOrbitAttachNode);
     m_SceneManager->destroySceneNode(m_CameraOrbitAttachNode);
@@ -139,27 +180,34 @@ void Entity::extractAnimation(Ogre::Animation* source,
     Ogre::Real timeScale = dest->getLength() / (endTime - startTime);
     dest->destroyAllTracks();
 
-    // loop through all animation node tracks in source and copy them to destination
-    for(Ogre::Animation::NodeTrackIterator srcNodeTrackIt = source->getNodeTrackIterator();
+    // loop through all animation node tracks in source and copy them to
+    // destination
+    for(Ogre::Animation::NodeTrackIterator srcNodeTrackIt =
+                source->getNodeTrackIterator();
         srcNodeTrackIt.hasMoreElements()
         ;)
     {
         Ogre::NodeAnimationTrack* srcNodeTrack = srcNodeTrackIt.getNext();
         unsigned short trackHandle = srcNodeTrack->getHandle();
-        Ogre::NodeAnimationTrack* destNodeTrack = dest->createNodeTrack(trackHandle);
+        Ogre::NodeAnimationTrack* destNodeTrack =
+                dest->createNodeTrack(trackHandle);
 
-        // loop through all transforms of current source track and copy them to destination
-        // if they are within the time frame specified
+        // loop through all transforms of current source track and copy them to
+        // destination if they are within the time frame specified
         for(unsigned short keyFrameHandle = 0;
             keyFrameHandle != srcNodeTrack->getNumKeyFrames();
             ++keyFrameHandle)
         {
-            Ogre::TransformKeyFrame* srcKeyFrame = srcNodeTrack->getNodeKeyFrame(keyFrameHandle);
-            if(srcKeyFrame->getTime() < startTime || srcKeyFrame->getTime() > endTime)
+            Ogre::TransformKeyFrame* srcKeyFrame = srcNodeTrack
+                    ->getNodeKeyFrame(keyFrameHandle);
+            if(srcKeyFrame->getTime() < startTime
+                    || srcKeyFrame->getTime() > endTime)
                 continue;
 
-            Ogre::Real scaledTime = (srcKeyFrame->getTime()-startTime) * timeScale;
-            Ogre::TransformKeyFrame* destKeyFrame = destNodeTrack->createNodeKeyFrame(scaledTime);
+            Ogre::Real scaledTime = (srcKeyFrame->getTime()-startTime)
+                    * timeScale;
+            Ogre::TransformKeyFrame* destKeyFrame = destNodeTrack
+                    ->createNodeKeyFrame(scaledTime);
 
             destKeyFrame->setTranslate(srcKeyFrame->getTranslate());
             destKeyFrame->setRotation(srcKeyFrame->getRotation());
@@ -192,19 +240,22 @@ bool Entity::isAnimated() const
 AnimationController* Entity::getAnimationController() const
 {
     if(!this->isAnimated())
-        throw std::runtime_error("[Entity::getAnimationController] Error: Animation not enabled");
+        throw std::runtime_error("[Entity::getAnimationController] Error: \
+Animation not enabled");
     return m_AnimationController.get();
 }
 
 // ----------------------------------------------------------------------------
 Ogre::SceneNode* Entity::getTranslateSceneNode()
 {
+    assert(m_OgreEntityTranslateNode != nullptr);
     return m_OgreEntityTranslateNode;
 }
 
 // ----------------------------------------------------------------------------
 Ogre::SceneNode* Entity::getRotateSceneNode()
 {
+    assert(m_OgreEntityRotateNode != nullptr);
     return m_OgreEntityRotateNode;
 }
 

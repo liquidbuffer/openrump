@@ -13,33 +13,66 @@
 namespace OpenRump {
 
 // ----------------------------------------------------------------------------
+EntityPlayer::EntityPlayer(Ogre::SceneManager* sm) :
+    m_Input(nullptr),
+    m_CameraDistance(0),
+    m_MaxCameraDistance(0),
+    m_MinCameraDistance(0),
+    m_Direction(0, 0, 1),
+    m_TargetSpeed(0),
+    m_Speed(0),
+    m_MaxSpeed(0),
+    m_AccelerationFactor(0),
+    m_TurnAccelerationFactor(0),
+    m_RollAngleIntensityFactor(0),
+    m_RollAngleAccelerationFactor(0),
+    m_PitchAngleIntensityFactor(0),
+    m_PitchAngleAccelerationFactor(0),
+    m_RollAngle(0),
+    m_MaxRollAngle(0),
+    m_PitchAngle(0),
+    m_MaxPitchAngle(0),
+    m_CameraAngle(Ogre::Radian(0), Ogre::Radian(0)),
+    Entity(sm)
+{
+}
+
+// ----------------------------------------------------------------------------
+// DEPRECATED
 EntityPlayer::EntityPlayer(Input* input,
                            Ogre::SceneManager* sm,
                            std::string instanceName,
                            std::string meshName) :
-    m_Input(input),
-    m_CameraDistance(3),
-    m_MaxCameraDistance(15),
-    m_MinCameraDistance(1),
-    m_PlayerDirection(0, 0, 1),
-    m_TargetPlayerDirection(0, 0, 1),
-    m_TargetPlayerSpeed(0),
-    m_PlayerSpeed(0),
-    m_MaxPlayerSpeed(100),
-    m_PlayerAccelerationFactor(4),
-    m_PlayerTurnAccelerationFactor(10),
-    m_RollAngleIntensityFactor(100),
-    m_RollAngleAccelerationFactor(0.01),
-    m_PitchAngleIntensityFactor(0.05),
-    m_PitchAngleAccelerationFactor(0.005),
-    m_RollAngle(0),
-    m_MaxRollAngle(Ogre::Degree(40)),
-    m_PitchAngle(0),
-    m_MaxPitchAngle(Ogre::Degree(30)),
-    m_CameraAngle(Ogre::Radian(0), Ogre::Radian(0)),
-    Entity(sm, instanceName, meshName)
+    EntityPlayer(sm)
 {
-    m_Input->event.addListener(this, "EntityPlayer: "+std::string(instanceName));
+    m_Input = input;
+    this->load(instanceName, meshName);
+
+    m_CameraDistance = 3;
+    m_MaxCameraDistance = 15;
+    m_MinCameraDistance = 1;
+    m_MaxSpeed = 10;
+    m_AccelerationFactor = 4;
+    m_TurnAccelerationFactor = 4;
+    m_RollAngleIntensityFactor = 100;
+    m_RollAngleAccelerationFactor = 0.01;
+    m_PitchAngleIntensityFactor = 0.05;
+    m_PitchAngleAccelerationFactor = 0.005;
+    m_MaxRollAngle = Ogre::Degree(40);
+    m_MaxPitchAngle = Ogre::Degree(30);
+
+    m_Input->event.addListener(this, "EntityPlayer"+std::string(instanceName));
+    Ogre::Root::getSingletonPtr()->addFrameListener(this);
+}
+
+// ----------------------------------------------------------------------------
+EntityPlayer::EntityPlayer(Input* input,
+                           Ogre::SceneManager* sm,
+                           std::string fileName) :
+    EntityPlayer(sm)
+{
+    m_Input = input;
+    //TODO m_Input->event.addListener(this, "EntityPlayer"+std::string(instanceName));
     Ogre::Root::getSingletonPtr()->addFrameListener(this);
 }
 
@@ -58,17 +91,17 @@ void EntityPlayer::onChangeDirectionAndVelocity(float x, float y)
     {
         Ogre::Real cs = Ogre::Math::Cos(-m_CameraAngle.y);
         Ogre::Real sn = Ogre::Math::Sin(-m_CameraAngle.y);
-        m_TargetPlayerDirection = Ogre::Matrix3(
+        m_TargetDirection = Ogre::Matrix3(
                 cs,  0, -sn,
                 0,   1,   0,
                 sn,  0,  cs
         ) * Ogre::Vector3(x, 0, y);
 
-        m_TargetPlayerSpeed = m_MaxPlayerSpeed;
+        m_TargetSpeed = m_MaxSpeed;
 
     // directional vector of length 0.0 means target speed is 0
     }else
-        m_TargetPlayerSpeed = 0.0;
+        m_TargetSpeed = 0.0;
 }
 
 // ----------------------------------------------------------------------------
@@ -110,27 +143,27 @@ void EntityPlayer::onChangeCameraDistanceDelta(float deltaDistance)
 bool EntityPlayer::frameRenderingQueued(const Ogre::FrameEvent& evt)
 {
     // asymptotically approach target speed
-    Ogre::Real acceleration = (m_TargetPlayerSpeed - m_PlayerSpeed)
-            * m_PlayerAccelerationFactor;
-    m_PlayerSpeed = Ogre::Math::Clamp(
-            m_PlayerSpeed + acceleration,
+    Ogre::Real acceleration = (m_TargetSpeed - m_Speed)
+            * m_AccelerationFactor;
+    m_Speed = Ogre::Math::Clamp(
+            m_Speed + acceleration,
             Ogre::Real(0),
-            m_MaxPlayerSpeed
+            m_MaxSpeed
     );
 
     // interpolate directional vector towards target direction
     Ogre::Quaternion targetRotation(
-            m_PlayerDirection.getRotationTo(m_TargetPlayerDirection)
+            m_Direction.getRotationTo(m_TargetDirection)
     );
     Ogre::Quaternion actualRotation(Ogre::Quaternion::Slerp(
             evt.timeSinceLastFrame
-                    * (m_PlayerSpeed/m_MaxPlayerSpeed)
-                    * m_PlayerTurnAccelerationFactor,
+                    * (m_Speed/m_MaxSpeed)
+                    * m_TurnAccelerationFactor,
             Ogre::Quaternion::IDENTITY,
             targetRotation
     ));
-    m_PlayerDirection = actualRotation * m_PlayerDirection;
-    m_PlayerDirection.normalise();
+    m_Direction = actualRotation * m_Direction;
+    m_Direction.normalise();
 
     // calculate roll angle
     m_RollAngle += (Ogre::Math::Clamp(
@@ -149,17 +182,17 @@ bool EntityPlayer::frameRenderingQueued(const Ogre::FrameEvent& evt)
     // rotate player accordingly
     this->getRotateSceneNode()->setOrientation(
             Ogre::Quaternion(
-                    Ogre::Vector3(0, 1, 0).crossProduct(m_PlayerDirection),
+                    Ogre::Vector3(0, 1, 0).crossProduct(m_Direction),
                     Ogre::Vector3(0, 1, 0),
-                    m_PlayerDirection)
+                    m_Direction)
             * Ogre::Quaternion(m_RollAngle, Ogre::Vector3(0, 0, -1))
             * Ogre::Quaternion(m_PitchAngle, Ogre::Vector3(1, 0, 0))
     );
 
     // position player accordingly
     this->getTranslateSceneNode()->translate(
-            m_PlayerDirection
-            * m_PlayerSpeed
+            m_Direction
+            * m_Speed
             * evt.timeSinceLastFrame
     );
 
