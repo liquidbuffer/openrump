@@ -110,12 +110,11 @@ Ogre::String EntityPlayer::loadFromXML(std::istream& stream)
     }
 
     // extract mode parameters
-    BOOST_FOREACH(const ptree::value_type& modes,
-            pt.get_child("parameters").get_child("modes"))
+    for(auto& modes : pt.get_child("parameters").get_child("modes"))
     {
         // third person mode
         if(modes.second.get<Ogre::String>("<xmlattr>.type") == "3rd_person")
-            BOOST_FOREACH(const ptree::value_type& mode, modes.second)
+            for(auto& mode : modes.second)
             {
                 if(mode.first == "camera")
                 {
