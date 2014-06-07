@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<mesh global_id="TwilightSparkle" mesh="twilightsparkle.mesh" />
+<parameters>
+	<modes>
+		<mode type="3rd_person">
+			<camera distance="3.0" max_distance="15.0" min_distance="1.0" />
+			<movement max_speed="10.0" acceleration_factor="0.01" />
+			<turn acceleration_factor="4.0" />
+			<roll intensity_factor="100.0" acceleration_factor="0.01" max_angle="40.0" />
+			<pitch intensity_factor="0.05" acceleration_factor="0.005" max_angle="30.0" />
+		</mode>
+		<mode type="sex">
+		</mode>
+	</modes>
+</parameters>

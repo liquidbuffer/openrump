@@ -50,7 +50,7 @@ protected:
      * @param instanceName A globally unique name for this entity.
      * @param meshName The mesh file name to load.
      */
-    void load(std::string instanceName, std::string meshName);
+    void load(Ogre::String instanceName, Ogre::String meshName);
 
 public:
 
@@ -61,8 +61,8 @@ public:
      * @param meshName The mesh file name to load.
      */
     Entity(Ogre::SceneManager* sm,
-           std::string instanceName,
-           std::string meshName);
+           Ogre::String instanceName,
+           Ogre::String meshName);
 
     /*!
      * @brief Allow destruction through base class pointer
@@ -185,7 +185,7 @@ private:
 
     std::unique_ptr<AnimationController> m_AnimationController;
 
-    std::string m_Name;
+    Ogre::String m_Name;
 
 };
 

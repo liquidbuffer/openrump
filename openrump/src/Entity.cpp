@@ -35,7 +35,7 @@ Entity::Entity(Ogre::SceneManager* sm) :
 }
 
 // ----------------------------------------------------------------------------
-void Entity::load(std::string instanceName, std::string meshName)
+void Entity::load(Ogre::String instanceName, Ogre::String meshName)
 {
 #ifdef _DEBUG
     if(m_Name != "")
@@ -56,8 +56,8 @@ void Entity::load(std::string instanceName, std::string meshName)
 
 // ----------------------------------------------------------------------------
 Entity::Entity(Ogre::SceneManager* sm,
-               std::string instanceName,
-               std::string meshName) :
+               Ogre::String instanceName,
+               Ogre::String meshName) :
     Entity()
 {
     m_SceneManager = sm;

@@ -44,8 +44,8 @@ public:
     // DEPRECATED
     EntityPlayer(Input* input,
                  Ogre::SceneManager* sm,
-                 std::string instanceName,
-                 std::string meshName);
+                 Ogre::String instanceName,
+                 Ogre::String meshName);
 
     /*!
      * @brief Constructs a player from an XML file using the specified ogre sm.
@@ -57,7 +57,7 @@ public:
      */
     EntityPlayer(Input* input,
                  Ogre::SceneManager* sm,
-                 std::string fileName);
+                 Ogre::String fileName);
 
     /*!
      * @brief Default destructor
@@ -65,6 +65,14 @@ public:
     ~EntityPlayer();
 
 private:
+
+    /*!
+     * @brief Loads the player from an XML file
+     * @param stream The name of the XML file to load.
+     * @return Returns the globally unique identifier string of the entity,
+     * as specified in the XML file.
+     */
+    Ogre::String loadFromXML(std::istream& stream);
 
     // override input events
     virtual void onChangeDirectionAndVelocity(float x, float y);

@@ -54,7 +54,7 @@ bool App::onLoad()
 
     // load player character and attach camera to its orbit
     m_Player = std::unique_ptr<EntityPlayer>(
-            new EntityPlayer(m_Input.get(), sm, "TwilightSparkle", "twilightsparkle.mesh")
+            new EntityPlayer(m_Input.get(), sm, "../../res/twilightsparkle.xml")
     );
     m_Player->getRotateSceneNode()->setScale(0.015, 0.015, 0.015);
 
@@ -65,8 +65,8 @@ bool App::onLoad()
     m_World = std::unique_ptr<Entity>(
         new Entity(sm, "World", "prototype-test-map.mesh")
     );
-    m_World->getTranslateSceneNode()->setScale(8, 8, 8);
-    m_World->getTranslateSceneNode()->setPosition(0, -200, 0);
+    //m_World->getTranslateSceneNode()->setScale(8, 8, 8);
+    m_World->getTranslateSceneNode()->setPosition(0, -2, 0);
 
     // create default light
     Ogre::Light* light = sm->createLight("MainLight");

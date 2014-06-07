@@ -10,6 +10,10 @@
 
 #include <OgreRoot.h>
 
+#include <boost/property_tree/xml_parser.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/foreach.hpp>
+
 namespace OpenRump {
 
 // ----------------------------------------------------------------------------
@@ -41,8 +45,8 @@ EntityPlayer::EntityPlayer(Ogre::SceneManager* sm) :
 // DEPRECATED
 EntityPlayer::EntityPlayer(Input* input,
                            Ogre::SceneManager* sm,
-                           std::string instanceName,
-                           std::string meshName) :
+                           Ogre::String instanceName,
+                           Ogre::String meshName) :
     EntityPlayer(sm)
 {
     m_Input = input;
@@ -61,19 +65,103 @@ EntityPlayer::EntityPlayer(Input* input,
     m_MaxRollAngle = Ogre::Degree(40);
     m_MaxPitchAngle = Ogre::Degree(30);
 
-    m_Input->event.addListener(this, "EntityPlayer"+std::string(instanceName));
+    m_Input->event.addListener(this, "EntityPlayer"+instanceName);
     Ogre::Root::getSingletonPtr()->addFrameListener(this);
 }
 
 // ----------------------------------------------------------------------------
 EntityPlayer::EntityPlayer(Input* input,
                            Ogre::SceneManager* sm,
-                           std::string fileName) :
+                           Ogre::String fileName) :
     EntityPlayer(sm)
 {
     m_Input = input;
-    //TODO m_Input->event.addListener(this, "EntityPlayer"+std::string(instanceName));
+
+    // open file stream and load from XML
+    std::ifstream file(fileName);
+    if(!file.is_open())
+        throw std::runtime_error("[EntityPlayer::loadFromXML] Error: Unable to\
+open file \"" + fileName + "\"");
+    Ogre::String instanceName = this->loadFromXML(file);
+
+    m_Input->event.addListener(this, "EntityPlayer"+instanceName);
     Ogre::Root::getSingletonPtr()->addFrameListener(this);
+}
+
+// ----------------------------------------------------------------------------
+Ogre::String EntityPlayer::loadFromXML(std::istream& stream)
+{
+    using boost::property_tree::ptree;
+
+    // various temporaries
+    Ogre::String instanceName;
+    Ogre::String meshName;
+
+    // read xml
+    ptree pt;
+    read_xml(stream, pt);
+
+    // extract mesh information
+    {
+        instanceName = pt.get_child("mesh").get
+                <Ogre::String>("<xmlattr>.global_id");
+        meshName = pt.get_child("mesh").get
+                <Ogre::String>("<xmlattr>.mesh");
+    }
+
+    // extract mode parameters
+    BOOST_FOREACH(const ptree::value_type& modes,
+            pt.get_child("parameters").get_child("modes"))
+    {
+        // third person mode
+        if(modes.second.get<Ogre::String>("<xmlattr>.type") == "3rd_person")
+            BOOST_FOREACH(const ptree::value_type& mode, modes.second)
+            {
+                if(mode.first == "camera")
+                {
+                    m_CameraDistance = mode.second.get
+                            <Ogre::Real>("<xmlattr>.distance");
+                    m_MaxCameraDistance = mode.second.get
+                            <Ogre::Real>("<xmlattr>.max_distance");
+                    m_MinCameraDistance  =mode.second.get
+                            <Ogre::Real>("<xmlattr>.min_distance");
+                }
+                if(mode.first == "movement")
+                {
+                    m_MaxSpeed = mode.second.get
+                            <Ogre::Real>("<xmlattr>.max_speed");
+                    m_AccelerationFactor = mode.second.get
+                            <Ogre::Real>("<xmlattr>.acceleration_factor");
+                }
+                if(mode.first == "turn")
+                {
+                    m_TurnAccelerationFactor = mode.second.get
+                            <Ogre::Real>("<xmlattr>.acceleration_factor");
+                }
+                if(mode.first == "roll")
+                {
+                    m_RollAngleIntensityFactor = mode.second.get
+                            <Ogre::Real>("<xmlattr>.intensity_factor");
+                    m_RollAngleAccelerationFactor = mode.second.get
+                            <Ogre::Real>("<xmlattr>.acceleration_factor");
+                    m_MaxRollAngle = Ogre::Degree(mode.second.get
+                            <Ogre::Real>("<xmlattr>.max_angle"));
+                }
+                if(mode.first == "pitch")
+                {
+                    m_PitchAngleIntensityFactor = mode.second.get
+                            <Ogre::Real>("<xmlattr>.intensity_factor");
+                    m_PitchAngleAccelerationFactor = mode.second.get
+                            <Ogre::Real>("<xmlattr>.acceleration_factor");
+                    m_MaxPitchAngle = Ogre::Degree(mode.second.get
+                            <Ogre::Real>("<xmlattr>.max_angle"));
+                }
+            }
+    }
+
+    // load mesh
+    this->load(instanceName, meshName);
+    return instanceName;
 }
 
 // ----------------------------------------------------------------------------
