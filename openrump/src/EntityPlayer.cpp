@@ -233,21 +233,16 @@ bool EntityPlayer::frameRenderingQueued(const Ogre::FrameEvent& evt)
     Ogre::Real acceleration = (m_TargetSpeed - m_Speed)
             * m_AccelerationFactor;
     m_Speed = Ogre::Math::Clamp(
-            m_Speed + acceleration,
+            m_Speed + acceleration * evt.timeSinceLastFrame,
             Ogre::Real(0),
             m_MaxSpeed
     );
 
     // interpolate directional vector towards target direction
-    Ogre::Quaternion targetRotation(
-            m_Direction.getRotationTo(m_TargetDirection)
-    );
     Ogre::Quaternion actualRotation(Ogre::Quaternion::Slerp(
-            evt.timeSinceLastFrame
-                    * (m_Speed/m_MaxSpeed)
-                    * m_TurnAccelerationFactor,
+            (m_Speed/m_MaxSpeed) * m_TurnAccelerationFactor,
             Ogre::Quaternion::IDENTITY,
-            targetRotation
+            m_Direction.getRotationTo(m_TargetDirection)
     ));
     m_Direction = actualRotation * m_Direction;
     m_Direction.normalise();
