@@ -123,7 +123,8 @@ std::size_t OgreRenderer::getWindowHandle()
 // ----------------------------------------------------------------------------
 bool OgreRenderer::frameRenderingQueued(const Ogre::FrameEvent& evt)
 {
-    return frameEvent.dispatchAndFindFalse(&RendererFrameListener::onFrameRenderingQueued, evt);
+    return frameEvent.dispatchAndFindFalse(&RendererFrameListener::onUpdateRenderLoop,
+            evt.timeSinceLastFrame);
 }
 
 } // namespace OpenRump

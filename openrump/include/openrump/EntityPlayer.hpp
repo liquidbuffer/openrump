@@ -7,13 +7,14 @@
 
 #include <openrump/Entity.hpp>
 #include <openrump/InputListener.hpp>
-#include <OgreFrameListener.h>
+#include <openrump/RendererFrameListener.hpp>
 
 // ----------------------------------------------------------------------------
 // forward declarations
 
 namespace OpenRump {
     class Input;
+    class OgreRenderer;
 }
 
 namespace OpenRump {
@@ -21,7 +22,7 @@ namespace OpenRump {
 class EntityPlayer :
     public Entity,
     public InputListener,
-    public Ogre::FrameListener
+    public RendererFrameListener
 {
 private:
 
@@ -43,6 +44,7 @@ public:
      */
     // DEPRECATED
     EntityPlayer(Input* input,
+                 OgreRenderer* renderer,
                  Ogre::SceneManager* sm,
                  Ogre::String instanceName,
                  Ogre::String meshName);
@@ -56,6 +58,7 @@ public:
      * @param fileName The file name of the XML file to load.
      */
     EntityPlayer(Input* input,
+                 OgreRenderer* renderer,
                  Ogre::SceneManager* sm,
                  Ogre::String fileName);
 
@@ -80,9 +83,10 @@ private:
     virtual void onChangeCameraDistanceDelta(float deltaDistance);
 
     // override renderer events
-    virtual bool frameRenderingQueued(const Ogre::FrameEvent&);
+    virtual bool onUpdateRenderLoop(const float timeSinceLastUpdate);
 
     Input* m_Input;
+    OgreRenderer* m_Renderer;
 
     Ogre::Real m_CameraDistance;
     Ogre::Real m_MaxCameraDistance;

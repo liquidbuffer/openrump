@@ -23,13 +23,22 @@ class OPENRUMP_API RendererFrameListener
 {
 public:
 
+    /*!
+     * @brief Allow destruction through base class pointer
+     */
     virtual ~RendererFrameListener();
 
     /*!
-     * @brief Called when it's time to update the game loop
-     * @return Return false to signal program shutdown
+     * @brief Called when it's time to update the render loop.
+     * @return Return false to signal program shutdown.
      */
-    virtual bool onFrameRenderingQueued(const Ogre::FrameEvent&) = 0;
+    virtual bool onUpdateRenderLoop(const float timeSinceLastUpdate);
+
+    /*!
+     * @brief Called when it's time to update the game loop.
+     * @return Return false to signal program shutdown.
+     */
+    virtual bool onUpdateGameLoop(const float timeStep);
 };
 
 } // namespace OpenRump

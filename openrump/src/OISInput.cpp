@@ -81,6 +81,7 @@ void OISInput::attachToWindow(std::size_t windowHnd)
         std::cout << "[OISInput::attachToWindow] Info: Detected " << count << " joysticks" << std::endl;
 #endif // _DEBUG
     }
+    //this->detachFromWindow();
 }
 
 // ----------------------------------------------------------------------------

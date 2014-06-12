@@ -7,6 +7,7 @@
 
 #include <openrump/EntityPlayer.hpp>
 #include <openrump/Input.hpp>
+#include <openrump/OgreRenderer.hpp>
 
 #include <OgreRoot.h>
 
@@ -19,6 +20,7 @@ namespace OpenRump {
 // ----------------------------------------------------------------------------
 EntityPlayer::EntityPlayer(Ogre::SceneManager* sm) :
     m_Input(nullptr),
+    m_Renderer(nullptr),
     m_CameraDistance(0),
     m_MaxCameraDistance(0),
     m_MinCameraDistance(0),
@@ -44,12 +46,15 @@ EntityPlayer::EntityPlayer(Ogre::SceneManager* sm) :
 // ----------------------------------------------------------------------------
 // DEPRECATED
 EntityPlayer::EntityPlayer(Input* input,
+                           OgreRenderer* renderer,
                            Ogre::SceneManager* sm,
                            Ogre::String instanceName,
                            Ogre::String meshName) :
     EntityPlayer(sm)
 {
     m_Input = input;
+    m_Renderer = renderer;
+
     this->load(instanceName, meshName);
 
     m_CameraDistance = 3;
@@ -66,16 +71,18 @@ EntityPlayer::EntityPlayer(Input* input,
     m_MaxPitchAngle = Ogre::Degree(30);
 
     m_Input->event.addListener(this, "EntityPlayer"+instanceName);
-    Ogre::Root::getSingletonPtr()->addFrameListener(this);
+    m_Renderer->frameEvent.addListener(this, "EntityPlayer"+instanceName);
 }
 
 // ----------------------------------------------------------------------------
 EntityPlayer::EntityPlayer(Input* input,
+                           OgreRenderer* renderer,
                            Ogre::SceneManager* sm,
                            Ogre::String fileName) :
     EntityPlayer(sm)
 {
     m_Input = input;
+    m_Renderer = renderer;
 
     // open file stream and load from XML
     std::ifstream file(fileName);
@@ -85,7 +92,7 @@ open file \"" + fileName + "\"");
     Ogre::String instanceName = this->loadFromXML(file);
 
     m_Input->event.addListener(this, "EntityPlayer"+instanceName);
-    Ogre::Root::getSingletonPtr()->addFrameListener(this);
+    m_Renderer->frameEvent.addListener(this, "EntityPlayer"+instanceName);
 }
 
 // ----------------------------------------------------------------------------
@@ -166,7 +173,7 @@ Ogre::String EntityPlayer::loadFromXML(std::istream& stream)
 // ----------------------------------------------------------------------------
 EntityPlayer::~EntityPlayer()
 {
-    Ogre::Root::getSingletonPtr()->removeFrameListener(this);
+    m_Renderer->frameEvent.removeListener(this);
     m_Input->event.removeListener(this);
 }
 
@@ -227,13 +234,13 @@ void EntityPlayer::onChangeCameraDistanceDelta(float deltaDistance)
 }
 
 // ----------------------------------------------------------------------------
-bool EntityPlayer::frameRenderingQueued(const Ogre::FrameEvent& evt)
+bool EntityPlayer::onUpdateRenderLoop(const float timeSinceLastUpdate)
 {
     // asymptotically approach target speed
     Ogre::Real acceleration = (m_TargetSpeed - m_Speed)
             * m_AccelerationFactor;
     m_Speed = Ogre::Math::Clamp(
-            m_Speed + acceleration * evt.timeSinceLastFrame,
+            m_Speed + acceleration * timeSinceLastUpdate,
             Ogre::Real(0),
             m_MaxSpeed
     );
@@ -275,7 +282,7 @@ bool EntityPlayer::frameRenderingQueued(const Ogre::FrameEvent& evt)
     this->getTranslateSceneNode()->translate(
             m_Direction
             * m_Speed
-            * evt.timeSinceLastFrame
+            * timeSinceLastUpdate
     );
 
     return true;

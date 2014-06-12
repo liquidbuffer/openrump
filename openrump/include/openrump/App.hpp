@@ -65,7 +65,7 @@ private:
     virtual void onExit();
 
     // override frame listener
-    virtual bool onFrameRenderingQueued(const Ogre::FrameEvent&);
+    virtual bool onUpdateRenderLoop(const float timeSinceLastUpdate);
 
     // override input events
     virtual void onButtonExit();

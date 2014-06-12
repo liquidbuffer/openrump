@@ -17,6 +17,7 @@ set (OpenRump_SOURCES
 	"${OpenRump_SOURCE_DIR}/src/InputListener.cpp"
 	"${OpenRump_SOURCE_DIR}/src/OgreRenderer.cpp"
 	"${OpenRump_SOURCE_DIR}/src/OISInput.cpp"
+	"${OpenRump_SOURCE_DIR}/src/PyGameModule.cpp"
 	"${OpenRump_SOURCE_DIR}/src/RendererFrameListener.cpp"
 )
 set (OpenRump_HEADERS
@@ -31,6 +32,7 @@ set (OpenRump_HEADERS
 	"${OpenRump_SOURCE_DIR}/include/openrump/ListenerDispatcher.hxx"
 	"${OpenRump_SOURCE_DIR}/include/openrump/OgreRenderer.hpp"
 	"${OpenRump_SOURCE_DIR}/include/openrump/OISInput.hpp"
+	"${OpenRump_SOURCE_DIR}/include/openrump/PyGameModule.hpp"
 	"${OpenRump_SOURCE_DIR}/include/openrump/RendererFrameListener.hpp"
 )
 
