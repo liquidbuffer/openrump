@@ -18,6 +18,7 @@ namespace OpenRump {
 
 // ----------------------------------------------------------------------------
 OgreRenderer::OgreRenderer() :
+    m_LoopTimer(new LoopTimer()),
     m_Root(nullptr),
     m_Window(nullptr),
     m_SceneManager(nullptr),
@@ -103,12 +104,16 @@ bool OgreRenderer::initialise()
     m_Camera->setFarClipDistance(500);
     m_Root->addFrameListener(this);
 
+    // set game loop fps to 60
+    m_LoopTimer->setFPS(60);
+
     return true;
 }
 
 // ----------------------------------------------------------------------------
 void OgreRenderer::startRendering()
 {
+    m_LoopTimer->reset();
     m_Root->startRendering();
 }
 
@@ -123,6 +128,19 @@ std::size_t OgreRenderer::getWindowHandle()
 // ----------------------------------------------------------------------------
 bool OgreRenderer::frameRenderingQueued(const Ogre::FrameEvent& evt)
 {
+    // dispatch game loop event
+    int updates = 0;
+    while(m_LoopTimer->isTimeToUpdate())
+    {
+        if(!frameEvent.dispatchAndFindFalse(&RendererFrameListener::onUpdateGameLoop,
+            m_LoopTimer->getTimeBetweenFrames()))
+            return false;
+
+        if(++updates >= 10)  // don't allow more than 10 game loop updates
+            break;           // without a render loop update
+    }
+
+    // dispatch render loop event
     return frameEvent.dispatchAndFindFalse(&RendererFrameListener::onUpdateRenderLoop,
             evt.timeSinceLastFrame);
 }

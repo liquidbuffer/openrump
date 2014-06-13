@@ -7,6 +7,7 @@
 
 #include <openrump/Export.hpp>
 #include <openrump/ListenerDispatcher.hxx>
+#include <openrump/LoopTimer.hpp>
 
 #include <OgreString.h>
 #include <OgreFrameListener.h>
@@ -68,6 +69,7 @@ private:
     // override frame listener
     virtual bool frameRenderingQueued(const Ogre::FrameEvent&);
 
+    std::unique_ptr<LoopTimer> m_LoopTimer;
     std::unique_ptr<Ogre::Root> m_Root;
     Ogre::RenderWindow* m_Window;
     Ogre::SceneManager* m_SceneManager;
