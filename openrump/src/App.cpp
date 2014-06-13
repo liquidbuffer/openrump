@@ -9,6 +9,7 @@
 #include <openrump/OgreRenderer.hpp>
 #include <openrump/OISInput.hpp>
 #include <openrump/EntityPlayer.hpp>
+#include <openrump/PyGameInterface.hpp>
 
 #include <OgreRoot.h>
 #include <OgreSceneNode.h>
@@ -20,7 +21,8 @@
 namespace OpenRump {
 
 // ----------------------------------------------------------------------------
-App::App() :
+App::App(std::string workingDirectory) :
+    m_WorkingDirectory(workingDirectory),
     m_OgreRenderer(new OgreRenderer()),
     m_Input(new OISInput()),
     m_Player(nullptr),
@@ -64,7 +66,7 @@ bool App::onLoad()
         new Entity(sm, "World", "prototype-test-map.mesh")
     );
     m_World->getTranslateSceneNode()->setScale(8, 8, 8);
-    m_World->getTranslateSceneNode()->setPosition(0, -2, 0);
+    m_World->getTranslateSceneNode()->setPosition(0, -40, 0);
 
     // create default light
     Ogre::Light* light = sm->createLight("MainLight");
@@ -75,6 +77,8 @@ bool App::onLoad()
     // register as listener
     m_Input->event.addListener(this, "App");
     m_OgreRenderer->frameEvent.addListener(this, "App");
+
+    PyGameInterface test(m_WorkingDirectory);
 
     return true;
 }

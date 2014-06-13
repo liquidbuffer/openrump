@@ -234,13 +234,13 @@ void EntityPlayer::onChangeCameraDistanceDelta(float deltaDistance)
 }
 
 // ----------------------------------------------------------------------------
-bool EntityPlayer::onUpdateRenderLoop(const float timeSinceLastUpdate)
+bool EntityPlayer::onUpdateGameLoop(const float timeStep)
 {
     // asymptotically approach target speed
     Ogre::Real acceleration = (m_TargetSpeed - m_Speed)
             * m_AccelerationFactor;
     m_Speed = Ogre::Math::Clamp(
-            m_Speed + acceleration * timeSinceLastUpdate,
+            m_Speed + acceleration,
             Ogre::Real(0),
             m_MaxSpeed
     );
@@ -280,9 +280,7 @@ bool EntityPlayer::onUpdateRenderLoop(const float timeSinceLastUpdate)
 
     // position player accordingly
     this->getTranslateSceneNode()->translate(
-            m_Direction
-            * m_Speed
-            * timeSinceLastUpdate
+            m_Direction * m_Speed
     );
 
     return true;

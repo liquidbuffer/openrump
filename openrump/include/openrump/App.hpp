@@ -38,9 +38,9 @@ class OPENRUMP_API App :
 public:
 
     /*!
-     * @brief Default constructor
+     * @brief constructor
      */
-    App();
+    App(std::string workingDirectory);
 
     /*!
      * @brief Default destructor
@@ -69,6 +69,8 @@ private:
 
     // override input events
     virtual void onButtonExit();
+
+    std::string m_WorkingDirectory;
 
     std::unique_ptr<OgreRenderer> m_OgreRenderer;
     std::unique_ptr<Input> m_Input;

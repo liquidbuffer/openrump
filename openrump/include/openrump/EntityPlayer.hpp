@@ -83,7 +83,7 @@ private:
     virtual void onChangeCameraDistanceDelta(float deltaDistance);
 
     // override renderer events
-    virtual bool onUpdateRenderLoop(const float timeSinceLastUpdate);
+    virtual bool onUpdateGameLoop(const float timeStep);
 
     Input* m_Input;
     OgreRenderer* m_Renderer;

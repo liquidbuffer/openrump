@@ -1,18 +1,23 @@
 // ----------------------------------------------------------------------------
-// PyGameModule.hpp
+// PyGameInterface.hpp
 // ----------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------
 // include files
 
+#include <string>
+#include <memory>
+
 namespace OpenRump {
 
-class PyGameModule
+class PyGameInterface
 {
 public:
 
-    PyGameModule();
-    ~PyGameModule();
+    PyGameInterface(std::string workingDirectory);
+    ~PyGameInterface();
+private:
+    std::unique_ptr<char[]> m_WorkingDirectory;
 };
 
 } // namespace OpenRump

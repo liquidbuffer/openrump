@@ -18,7 +18,7 @@ set (OpenRump_SOURCES
 	"${OpenRump_SOURCE_DIR}/src/LoopTimer.cpp"
 	"${OpenRump_SOURCE_DIR}/src/OgreRenderer.cpp"
 	"${OpenRump_SOURCE_DIR}/src/OISInput.cpp"
-	"${OpenRump_SOURCE_DIR}/src/PyGameModule.cpp"
+	"${OpenRump_SOURCE_DIR}/src/PyGameInterface.cpp"
 	"${OpenRump_SOURCE_DIR}/src/RendererFrameListener.cpp"
 )
 set (OpenRump_HEADERS
@@ -34,7 +34,7 @@ set (OpenRump_HEADERS
 	"${OpenRump_SOURCE_DIR}/include/openrump/LoopTimer.hpp"
 	"${OpenRump_SOURCE_DIR}/include/openrump/OgreRenderer.hpp"
 	"${OpenRump_SOURCE_DIR}/include/openrump/OISInput.hpp"
-	"${OpenRump_SOURCE_DIR}/include/openrump/PyGameModule.hpp"
+	"${OpenRump_SOURCE_DIR}/include/openrump/PyGameInterface.hpp"
 	"${OpenRump_SOURCE_DIR}/include/openrump/RendererFrameListener.hpp"
 )
 
@@ -56,7 +56,10 @@ if (NOT OpenRump_USE_INTERNAL_DEPENDENCIES)
 	include_directories (${OIS_INCLUDE_DIRS})
 	target_link_libraries (OpenRump ${OIS_LIBRARIES})
 else ()
-	include_directories ("${CMAKE_SOURCE_DIR}/dep/ogre_src_v1-9-0/OgreMain/include")
-	include_directories ("${CMAKE_BINARY_DIR}/dep/ogre_src_v1-9-0/include")
-	target_link_libraries (OpenRump OgreMain)
+	include_directories ("${CMAKE_SOURCE_DIR}/build.dep/include/OGRE")
+	target_link_libraries (OpenRump
+		"${CMAKE_SOURCE_DIR}/build.dep/lib/libOgreMain.so"
+		"${CMAKE_SOURCE_DIR}/build.dep/lib/libpython2.7.so"
+		"${CMAKE_SOURCE_DIR}/build.dep/lib/libOIS.so"
+	)
 endif ()
