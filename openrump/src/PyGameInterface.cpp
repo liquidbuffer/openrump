@@ -21,7 +21,6 @@ PyGameInterface::PyGameInterface(std::string workingDirectory) :
 
     Py_SetProgramName(m_WorkingDirectory.get());
     Py_Initialize();
-    PyRun_SimpleString("print 'hello world'");
 }
 
 // ----------------------------------------------------------------------------

@@ -16,16 +16,7 @@
 // forward declarations
 
 namespace OpenRump {
-    class OgreRenderer;
-    class Input;
-    class EntityPlayer;
-    class Entity;
-}
-
-namespace Ogre {
-    struct FrameEvent;
-    class Entity;
-    class SceneNode;
+    class PyGameInterface;
 }
 
 namespace OpenRump {
@@ -52,7 +43,7 @@ private:
     /*!
      * @brief Called when the application should load
      */
-    virtual bool onLoad();
+    virtual void onLoad();
 
     /*!
      * @brief Called when the application should run
@@ -64,27 +55,9 @@ private:
      */
     virtual void onExit();
 
-    // override frame listener
-    virtual bool onUpdateRenderLoop(const float timeSinceLastUpdate);
-
-    // override input events
-    virtual void onButtonExit();
-
     std::string m_WorkingDirectory;
 
-    std::unique_ptr<OgreRenderer> m_OgreRenderer;
-    std::unique_ptr<Input> m_Input;
-
-    std::unique_ptr<EntityPlayer> m_Player;
-    std::unique_ptr<Entity> m_World;
-
-    Ogre::SceneNode* m_CameraRotateNode;
-    Ogre::SceneNode* m_CameraNode;
-    float m_CameraAngleX;
-    float m_CameraAngleY;
-    float m_CameraDistance;
-
-    bool m_Shutdown;
+    std::unique_ptr<PyGameInterface> m_GameInterface;
 };
 
 } // OpenRump

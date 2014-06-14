@@ -19,8 +19,7 @@ BaseApp::~BaseApp()
 // ----------------------------------------------------------------------------
 void BaseApp::go()
 {
-    if(!this->onLoad())
-        return;
+    this->onLoad();
     this->onRun();
     this->onExit();
 }
