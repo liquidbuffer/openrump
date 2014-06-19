@@ -59,9 +59,9 @@ if (NOT OpenRump_USE_INTERNAL_DEPENDENCIES)
 	target_link_libraries (OpenRump ${OIS_LIBRARIES})
 else ()
 	include_directories ("${CMAKE_SOURCE_DIR}/build.dep/include/OGRE")
+	include_directories ("${CMAKE_SOURCE_DIR}/build.dep/include/python2.7")
 	target_link_libraries (OpenRump
 		"${CMAKE_SOURCE_DIR}/build.dep/lib/libOgreMain.so"
-		"${CMAKE_SOURCE_DIR}/build.dep/lib/libpython2.7.so"
 		"${CMAKE_SOURCE_DIR}/build.dep/lib/libOIS.so"
 	)
 endif ()

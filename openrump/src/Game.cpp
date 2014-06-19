@@ -9,22 +9,26 @@
 #include <openrump/OISInput.hpp>
 #include <openrump/OgreRenderer.hpp>
 
+#include <openrump/EntityPlayer.hpp>
+
 #include <OgreRoot.h>
 
 namespace OpenRump {
 
 // ----------------------------------------------------------------------------
-Game::Game(std::string workingDirectory) :
+Game::Game() :
     m_OgreRenderer(new OgreRenderer),
     m_Input(new OISInput),
     m_Shutdown(false),
-    PyGameInterface(workingDirectory)
+    m_IsInitialised(false)
 {
+    this->initialise();
 }
 
 // ----------------------------------------------------------------------------
 Game::~Game()
 {
+    this->cleanUp();
 }
 
 // ----------------------------------------------------------------------------
@@ -42,6 +46,8 @@ void Game::stop()
 // ----------------------------------------------------------------------------
 void Game::initialise()
 {
+    if(m_IsInitialised)
+        return;
 
     // initialise renderer
     m_OgreRenderer->initialise();
@@ -51,13 +57,19 @@ void Game::initialise()
 
     Ogre::SceneManager* sm = Ogre::Root::getSingletonPtr()->getSceneManager("MainSceneManager");
 
+    EntityPlayer* entity = new EntityPlayer(m_Input.get(), m_OgreRenderer.get(), sm, "applejack", "Body.mesh");
+    entity->attachCameraToOrbit(sm->getCamera("MainCamera"));
+
     // create default light
     Ogre::Light* light = sm->createLight("MainLight");
-    light->setPosition(60, 200, 500);
+    light->setPosition(60, 200, -500);
+    sm->createLight("SecondLight")->setPosition(-60, -200, 500);
 
     // register as listener
     m_Input->event.addListener(this, "Game");
     Ogre::Root::getSingletonPtr()->addFrameListener(this);
+
+    m_IsInitialised = true;
 }
 
 // ----------------------------------------------------------------------------
@@ -69,6 +81,9 @@ void Game::run()
 // ----------------------------------------------------------------------------
 void Game::cleanUp()
 {
+    if(!m_IsInitialised)
+        return;
+
     Ogre::SceneManager* sm = Ogre::Root::getSingletonPtr()->getSceneManager("MainSceneManager");
 
     // remove lights
@@ -77,6 +92,8 @@ void Game::cleanUp()
     // clean up input
     Ogre::Root::getSingletonPtr()->removeFrameListener(this);
     m_Input->event.removeListener(this);
+
+    m_IsInitialised = false;
 }
 
 // ----------------------------------------------------------------------------

@@ -16,7 +16,7 @@
 // forward declarations
 
 namespace OpenRump {
-    class PyGameInterface;
+    class Game;
 }
 
 namespace OpenRump {
@@ -56,8 +56,8 @@ private:
     virtual void onExit();
 
     std::string m_WorkingDirectory;
-
-    std::unique_ptr<PyGameInterface> m_GameInterface;
+    std::unique_ptr<char[]> m_PyWorkingDirectory;
+    std::unique_ptr<Game> m_Game;
 };
 
 } // OpenRump

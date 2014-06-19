@@ -5,28 +5,16 @@
 // ----------------------------------------------------------------------------
 // include files
 
+#include <openrump/Game.hpp>
 #include <openrump/PyGameInterface.hpp>
 
-#include <python2.7/Python.h>
+#include <boost/python.hpp>
 
-namespace OpenRump {
-
-// ----------------------------------------------------------------------------
-PyGameInterface::PyGameInterface(std::string workingDirectory) :
-    m_WorkingDirectory(new char[workingDirectory.size()+1])
+BOOST_PYTHON_MODULE(open_rump)
 {
-    // python requires a writable char* of the working directory
-    std::copy(workingDirectory.begin(), workingDirectory.end(), m_WorkingDirectory.get());
-    m_WorkingDirectory[workingDirectory.size()] = '\0';
-
-    Py_SetProgramName(m_WorkingDirectory.get());
-    Py_Initialize();
+    using namespace boost::python;
+    class_<OpenRump::Game, boost::noncopyable>("Game")
+        .def("test", &OpenRump::Game::test)
+        .def("run", &OpenRump::Game::run)
+    ;
 }
-
-// ----------------------------------------------------------------------------
-PyGameInterface::~PyGameInterface()
-{
-    Py_Finalize();
-}
-
-} // namespace OpenRump

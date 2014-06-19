@@ -6,11 +6,11 @@
 // include files
 
 #include <openrump/InputListener.hpp>
-#include <openrump/PyGameInterface.hpp>
 
 #include <OgreFrameListener.h>
 
 #include <string>
+#include <memory>
 
 // ----------------------------------------------------------------------------
 // forward declarations
@@ -23,7 +23,6 @@ namespace OpenRump {
 namespace OpenRump {
 
 class Game :
-    public PyGameInterface,
     public Ogre::FrameListener,
     public InputListener
 {
@@ -32,23 +31,36 @@ public:
     /*!
      * @brief Constructor
      */
-    Game(std::string workingDirectory);
+    Game();
 
     /*!
      * @brief Default destructor
      */
     ~Game();
 
-    // override public game interface methods
-    virtual void test();
-    virtual void stop();
+    /*!
+     * @brief Stops the game and shuts down.
+     */
+    void stop();
+
+    void test();
+
+    /*!
+     * @brief Initialises the game so it's ready to run.
+     */
+    void initialise();
+
+    /*!
+     * @brief Begins running the game (main loop).
+     */
+    void run();
+
+    /*!
+     * @brief Cleans up everything.
+     */
+    void cleanUp();
 
 private:
-
-    // override internal game interface methods
-    virtual void initialise();
-    virtual void run();
-    virtual void cleanUp();
 
     // override ogre frame listener methods
     virtual bool frameStarted(const Ogre::FrameEvent&);
@@ -60,6 +72,7 @@ private:
     std::unique_ptr<Input> m_Input;
 
     bool m_Shutdown;
+    bool m_IsInitialised;
 };
 
 } // namespace OpenRump

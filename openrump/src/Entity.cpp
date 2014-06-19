@@ -12,6 +12,8 @@
 #include <OgreEntity.h>
 #include <OgreRoot.h>
 
+#include <iostream>
+
 namespace OpenRump {
 
 // ----------------------------------------------------------------------------

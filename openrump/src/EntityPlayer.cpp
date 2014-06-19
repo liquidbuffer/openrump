@@ -57,7 +57,7 @@ EntityPlayer::EntityPlayer(Input* input,
 
     this->load(instanceName, meshName);
 
-    m_CameraDistance = 3;
+    m_CameraDistance = 5;
     m_MaxCameraDistance = 15;
     m_MinCameraDistance = 1;
     m_MaxSpeed = 10;
