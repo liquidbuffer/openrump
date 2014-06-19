@@ -32,9 +32,9 @@ Game::~Game()
 }
 
 // ----------------------------------------------------------------------------
-void Game::test()
+void Game::run()
 {
-    std::cout << "test successful!" << std::endl;
+    m_OgreRenderer->startRendering();
 }
 
 // ----------------------------------------------------------------------------
@@ -70,12 +70,6 @@ void Game::initialise()
     Ogre::Root::getSingletonPtr()->addFrameListener(this);
 
     m_IsInitialised = true;
-}
-
-// ----------------------------------------------------------------------------
-void Game::run()
-{
-    m_OgreRenderer->startRendering();
 }
 
 // ----------------------------------------------------------------------------

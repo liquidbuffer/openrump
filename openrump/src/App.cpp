@@ -5,15 +5,16 @@
 // ----------------------------------------------------------------------------
 // include files
 
+#include <python2.7/Python.h>  // must be included before boost.python to avoid warnings
+
+#include <boost/python.hpp>  // must be included before std to avoid warnings
+
 #include <openrump/App.hpp>
 #include <openrump/OgreRenderer.hpp>
 #include <openrump/Game.hpp>
 #include <openrump/PyGameInterface.hpp>
 
 #include <iostream>
-
-#include <python2.7/Python.h>
-#include <boost/python.hpp>
 
 namespace OpenRump {
 
@@ -26,10 +27,10 @@ App::App(std::string workingDirectory) :
     // python requires a writable char* of the working directory
     std::copy(workingDirectory.begin(),
               workingDirectory.end(),
-              m_PyWorkingDirectory.get()
-    );
+              m_PyWorkingDirectory.get());
     m_PyWorkingDirectory[workingDirectory.size()] = '\0';
 
+    // important for when python needs to load modules
     Py_SetProgramName(m_PyWorkingDirectory.get());
     Py_Initialize();
 }
@@ -43,13 +44,11 @@ App::~App()
 // ----------------------------------------------------------------------------
 void App::onLoad()
 {
-    //m_Game = std::unique_ptr<Game>(new Game);
 }
 
 // ----------------------------------------------------------------------------
 void App::onRun()
 {
-    //m_Game->run();
     using namespace boost::python;
     try
     {

@@ -43,7 +43,12 @@ public:
      */
     void stop();
 
-    void test();
+    /*!
+     * @brief Begins running the game (main loop).
+     */
+    void run();
+
+private:
 
     /*!
      * @brief Initialises the game so it's ready to run.
@@ -51,16 +56,9 @@ public:
     void initialise();
 
     /*!
-     * @brief Begins running the game (main loop).
-     */
-    void run();
-
-    /*!
      * @brief Cleans up everything.
      */
     void cleanUp();
-
-private:
 
     // override ogre frame listener methods
     virtual bool frameStarted(const Ogre::FrameEvent&);
