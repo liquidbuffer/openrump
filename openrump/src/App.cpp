@@ -55,7 +55,7 @@ void App::onRun()
         initopen_rump();
         object main_module = import("__main__");
         object main_namespace = main_module.attr("__dict__");
-        object ignored = exec("import open_rump\ngame = open_rump.Game()\ngame.run()\n", main_namespace);
+        object ignored = exec_file("../../Main.py", main_namespace);
     } catch(const error_already_set&)
     {
         PyErr_Print();
