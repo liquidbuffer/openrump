@@ -17,7 +17,7 @@
 namespace OpenRump {
 
 // ----------------------------------------------------------------------------
-Entity::Entity() :
+EntityBase::Entity() :
     m_SceneManager(nullptr),
     m_OgreEntity(nullptr),
     m_OgreEntityTranslateNode(nullptr),
@@ -30,14 +30,14 @@ Entity::Entity() :
 }
 
 // ----------------------------------------------------------------------------
-Entity::Entity(Ogre::SceneManager* sm) :
-    Entity()
+EntityBase::Entity(Ogre::SceneManager* sm) :
+    EntityBase()
 {
     m_SceneManager = sm;
 }
 
 // ----------------------------------------------------------------------------
-void Entity::load(Ogre::String instanceName, Ogre::String meshName)
+void EntityBase::load(Ogre::String instanceName, Ogre::String meshName)
 {
 #ifdef _DEBUG
     if(m_Name != "")
@@ -57,17 +57,17 @@ void Entity::load(Ogre::String instanceName, Ogre::String meshName)
 }
 
 // ----------------------------------------------------------------------------
-Entity::Entity(Ogre::SceneManager* sm,
+EntityBase::Entity(Ogre::SceneManager* sm,
                Ogre::String instanceName,
                Ogre::String meshName) :
-    Entity()
+    EntityBase()
 {
     m_SceneManager = sm;
     this->load(instanceName, meshName);
 }
 
 // ----------------------------------------------------------------------------
-Entity::~Entity()
+EntityBase::~EntityBase()
 {
     if(this->hasCameraOrbit())
         this->destroyCameraOrbit();
@@ -85,7 +85,7 @@ Entity::~Entity()
 }
 
 // ----------------------------------------------------------------------------
-Entity* Entity::createCameraOrbit()
+EntityBase* EntityBase::createCameraOrbit()
 {
     if(m_CameraOrbitRotateNode)
         return this;
@@ -99,7 +99,7 @@ Entity* Entity::createCameraOrbit()
 }
 
 // ----------------------------------------------------------------------------
-Ogre::SceneNode* Entity::attachCameraToOrbit(Ogre::Camera* cam, float distance)
+Ogre::SceneNode* EntityBase::attachCameraToOrbit(Ogre::Camera* cam, float distance)
 {
     if(m_OrbitingCamera)
         return m_CameraOrbitRotateNode;
@@ -115,7 +115,7 @@ Ogre::SceneNode* Entity::attachCameraToOrbit(Ogre::Camera* cam, float distance)
 }
 
 // ----------------------------------------------------------------------------
-Ogre::Camera* Entity::detachCameraFromOrbit()
+Ogre::Camera* EntityBase::detachCameraFromOrbit()
 {
     if(!m_OrbitingCamera)
         return nullptr;
@@ -128,7 +128,7 @@ Ogre::Camera* Entity::detachCameraFromOrbit()
 }
 
 // ----------------------------------------------------------------------------
-void Entity::setCameraDistance(float distance)
+void EntityBase::setCameraDistance(float distance)
 {
     if(!m_CameraOrbitAttachNode)
         return;
@@ -136,21 +136,21 @@ void Entity::setCameraDistance(float distance)
 }
 
 // ----------------------------------------------------------------------------
-Ogre::Camera* Entity::getCamera() const
+Ogre::Camera* EntityBase::getCamera() const
 {
     assert(m_OrbitingCamera != nullptr);
     return m_OrbitingCamera;
 }
 
 // ----------------------------------------------------------------------------
-Ogre::SceneNode* Entity::getCameraRotateNode() const
+Ogre::SceneNode* EntityBase::getCameraRotateNode() const
 {
     assert(m_CameraOrbitRotateNode != nullptr);
     return m_CameraOrbitRotateNode;
 }
 
 // ----------------------------------------------------------------------------
-Ogre::Camera* Entity::destroyCameraOrbit()
+Ogre::Camera* EntityBase::destroyCameraOrbit()
 {
     Ogre::Camera* cam = this->detachCameraFromOrbit();
 
@@ -168,13 +168,13 @@ Ogre::Camera* Entity::destroyCameraOrbit()
 }
 
 // ----------------------------------------------------------------------------
-bool Entity::hasCameraOrbit() const
+bool EntityBase::hasCameraOrbit() const
 {
     return (m_CameraOrbitRotateNode != nullptr);
 }
 
 // ----------------------------------------------------------------------------
-void Entity::extractAnimation(Ogre::Animation* source,
+void EntityBase::extractAnimation(Ogre::Animation* source,
                               Ogre::Animation* dest,
                               Ogre::Real startTime,
                               Ogre::Real endTime)
@@ -219,7 +219,7 @@ void Entity::extractAnimation(Ogre::Animation* source,
 }
 
 // ----------------------------------------------------------------------------
-void Entity::enableAnimation()
+void EntityBase::enableAnimation()
 {
     m_AnimationController = std::unique_ptr<AnimationController>(
             new AnimationController(m_OgreEntity)
@@ -227,19 +227,19 @@ void Entity::enableAnimation()
 }
 
 // ----------------------------------------------------------------------------
-void Entity::disableAnimation()
+void EntityBase::disableAnimation()
 {
     m_AnimationController.reset(nullptr);
 }
 
 // ----------------------------------------------------------------------------
-bool Entity::isAnimated() const
+bool EntityBase::isAnimated() const
 {
     return (m_AnimationController != nullptr);
 }
 
 // ----------------------------------------------------------------------------
-AnimationController* Entity::getAnimationController() const
+AnimationController* EntityBase::getAnimationController() const
 {
     if(!this->isAnimated())
         throw std::runtime_error("[Entity::getAnimationController] Error: \
@@ -248,14 +248,14 @@ Animation not enabled");
 }
 
 // ----------------------------------------------------------------------------
-Ogre::SceneNode* Entity::getTranslateSceneNode()
+Ogre::SceneNode* EntityBase::getTranslateSceneNode()
 {
     assert(m_OgreEntityTranslateNode != nullptr);
     return m_OgreEntityTranslateNode;
 }
 
 // ----------------------------------------------------------------------------
-Ogre::SceneNode* Entity::getRotateSceneNode()
+Ogre::SceneNode* EntityBase::getRotateSceneNode()
 {
     assert(m_OgreEntityRotateNode != nullptr);
     return m_OgreEntityRotateNode;

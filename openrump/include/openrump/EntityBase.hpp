@@ -15,7 +15,7 @@
 
 namespace Ogre {
     class SceneManager;
-    class Entity;
+    class EntityBase;
     class SceneNode;
     class Camera;
 }
@@ -26,14 +26,14 @@ namespace OpenRump {
 
 namespace OpenRump {
 
-class Entity
+class EntityBase
 {
 private:
 
     /*!
      * @brief Default constructor - only for delegating.
      */
-    Entity();
+    EntityBase();
 
 protected:
 
@@ -43,7 +43,7 @@ protected:
      * memory.
      * @param sm The Ogre scene manager to use.
      */
-    Entity(Ogre::SceneManager* sm);
+    EntityBase(Ogre::SceneManager* sm);
 
     /*!
      * @brief Loads the entity from a mesh name.
@@ -60,14 +60,14 @@ public:
      * @param instanceName A globally unique name for this entity.
      * @param meshName The mesh file name to load.
      */
-    Entity(Ogre::SceneManager* sm,
+    EntityBase(Ogre::SceneManager* sm,
            Ogre::String instanceName,
            Ogre::String meshName);
 
     /*!
      * @brief Allow destruction through base class pointer
      */
-    virtual ~Entity();
+    virtual ~EntityBase();
 
     /*!
      * @brief Creates scene nodes to support an orbiting camera around the entity
@@ -76,7 +76,7 @@ public:
      * calling this method directly - the orbit is created automatically.
      * @return Returns itself for chaining.
      */
-    Entity* createCameraOrbit();
+    EntityBase* createCameraOrbit();
 
     /*!
      * @brief Attaches a camera to an orbiting scene node.
@@ -176,7 +176,7 @@ protected:
 private:
 
     Ogre::SceneManager* m_SceneManager;
-    Ogre::Entity* m_OgreEntity;
+    Ogre::EntityBase* m_OgreEntity;
     Ogre::SceneNode* m_OgreEntityTranslateNode;
     Ogre::SceneNode* m_OgreEntityRotateNode;
     Ogre::SceneNode* m_CameraOrbitRotateNode;

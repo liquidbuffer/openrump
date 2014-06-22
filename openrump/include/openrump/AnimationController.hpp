@@ -11,7 +11,7 @@
 // forward declarations
 
 namespace Ogre {
-    class Entity;
+    class EntityBase;
     class AnimationState;
 }
 

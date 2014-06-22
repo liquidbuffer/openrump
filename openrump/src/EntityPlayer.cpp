@@ -39,7 +39,7 @@ EntityPlayer::EntityPlayer(Ogre::SceneManager* sm) :
     m_PitchAngle(0),
     m_MaxPitchAngle(0),
     m_CameraAngle(Ogre::Radian(0), Ogre::Radian(0)),
-    Entity(sm)
+    EntityBase(sm)
 {
 }
 

@@ -57,9 +57,6 @@ void Game::initialise()
 
     Ogre::SceneManager* sm = Ogre::Root::getSingletonPtr()->getSceneManager("MainSceneManager");
 
-    EntityPlayer* entity = new EntityPlayer(m_Input.get(), m_OgreRenderer.get(), sm, "applejack", "Body.mesh");
-    entity->attachCameraToOrbit(sm->getCamera("MainCamera"));
-
     // create default light
     Ogre::Light* light = sm->createLight("MainLight");
     light->setPosition(60, 200, -500);
@@ -70,6 +67,25 @@ void Game::initialise()
     Ogre::Root::getSingletonPtr()->addFrameListener(this);
 
     m_IsInitialised = true;
+}
+
+void Game::loadPlayer(std::string entityName, std::string meshFileName)
+{
+    if(m_EntityList.find(entityName) != m_EntityList.end())
+        return;
+    Ogre::SceneManager* sm = Ogre::Root::getSingletonPtr()->getSceneManager("MainSceneManager");
+    m_EntityList[entityName] = std::unique_ptr<EntityBase>(
+        new EntityPlayer(m_Input.get(), m_OgreRenderer.get(), sm, entityName, meshFileName)
+    );
+}
+
+void Game::attachCameraToEntity(std::string entityName, std::string cameraName)
+{
+    auto it = m_EntityList.find(entityName);
+    if(it == m_EntityList.end())
+        return;
+    Ogre::SceneManager* sm = Ogre::Root::getSingletonPtr()->getSceneManager("MainSceneManager");
+    it->second->attachCameraToOrbit(sm->getCamera(cameraName));
 }
 
 // ----------------------------------------------------------------------------

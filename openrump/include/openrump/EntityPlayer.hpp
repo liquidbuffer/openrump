@@ -20,7 +20,7 @@ namespace OpenRump {
 namespace OpenRump {
 
 class EntityPlayer :
-    public Entity,
+    public EntityBase,
     public InputListener,
     public RendererFrameListener
 {

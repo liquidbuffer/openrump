@@ -13,8 +13,11 @@
 BOOST_PYTHON_MODULE(open_rump)
 {
     using namespace boost::python;
+
     class_<OpenRump::Game, boost::noncopyable>("Game")
         .def("run", &OpenRump::Game::run)
         .def("stop", &OpenRump::Game::stop)
+        .def("load_player", &OpenRump::Game::loadPlayer)
+        .def("attach_camera_to_entity", &OpenRump::Game::attachCameraToEntity)
     ;
 }

@@ -11,6 +11,7 @@
 
 #include <string>
 #include <memory>
+#include <map>
 
 // ----------------------------------------------------------------------------
 // forward declarations
@@ -18,6 +19,7 @@
 namespace OpenRump {
     class OgreRenderer;
     class Input;
+    class EntityBase;
 }
 
 namespace OpenRump {
@@ -48,6 +50,12 @@ public:
      */
     void run();
 
+    /*!
+     * @brief Loads a player into the game
+     */
+    void loadPlayer(std::string entityName, std::string meshFileName);
+    void attachCameraToEntity(std::string entityName, std::string cameraName);
+
 private:
 
     /*!
@@ -71,6 +79,8 @@ private:
 
     bool m_Shutdown;
     bool m_IsInitialised;
+
+    std::map< std::string, std::unique_ptr<EntityBase> > m_EntityList;
 };
 
 } // namespace OpenRump
