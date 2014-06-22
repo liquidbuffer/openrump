@@ -55,7 +55,7 @@ void App::onRun()
         initopen_rump();
         object main_module = import("__main__");
         object main_namespace = main_module.attr("__dict__");
-        object ignored = exec_file("../../Main.py", main_namespace);
+        object ignored = exec_file("../../py/Main.py", main_namespace);
     } catch(const error_already_set&)
     {
         PyErr_Print();

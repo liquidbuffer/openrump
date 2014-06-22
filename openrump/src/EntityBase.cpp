@@ -5,7 +5,7 @@
 // ----------------------------------------------------------------------------
 // include files
 
-#include <openrump/Entity.hpp>
+#include <openrump/EntityBase.hpp>
 #include <openrump/AnimationController.hpp>
 
 #include <OgreSceneManager.h>
@@ -17,7 +17,7 @@
 namespace OpenRump {
 
 // ----------------------------------------------------------------------------
-EntityBase::Entity() :
+EntityBase::EntityBase() :
     m_SceneManager(nullptr),
     m_OgreEntity(nullptr),
     m_OgreEntityTranslateNode(nullptr),
@@ -30,7 +30,7 @@ EntityBase::Entity() :
 }
 
 // ----------------------------------------------------------------------------
-EntityBase::Entity(Ogre::SceneManager* sm) :
+EntityBase::EntityBase(Ogre::SceneManager* sm) :
     EntityBase()
 {
     m_SceneManager = sm;
@@ -57,9 +57,9 @@ void EntityBase::load(Ogre::String instanceName, Ogre::String meshName)
 }
 
 // ----------------------------------------------------------------------------
-EntityBase::Entity(Ogre::SceneManager* sm,
-               Ogre::String instanceName,
-               Ogre::String meshName) :
+EntityBase::EntityBase(Ogre::SceneManager* sm,
+                       Ogre::String instanceName,
+                       Ogre::String meshName) :
     EntityBase()
 {
     m_SceneManager = sm;

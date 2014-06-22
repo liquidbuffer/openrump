@@ -176,7 +176,7 @@ protected:
 private:
 
     Ogre::SceneManager* m_SceneManager;
-    Ogre::EntityBase* m_OgreEntity;
+    Ogre::Entity* m_OgreEntity;
     Ogre::SceneNode* m_OgreEntityTranslateNode;
     Ogre::SceneNode* m_OgreEntityRotateNode;
     Ogre::SceneNode* m_CameraOrbitRotateNode;

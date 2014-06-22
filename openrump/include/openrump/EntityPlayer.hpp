@@ -5,7 +5,7 @@
 // ----------------------------------------------------------------------------
 // include files
 
-#include <openrump/Entity.hpp>
+#include <openrump/EntityBase.hpp>
 #include <openrump/InputListener.hpp>
 #include <openrump/RendererFrameListener.hpp>
 

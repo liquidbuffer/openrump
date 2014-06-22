@@ -5,9 +5,9 @@ set (AppOpenRump_SOURCES
 set (AppOpenRump_HEADERS
 )
 
-include_directories (${OpenRump_INCLUDE_DIR})
-include_directories ("${CMAKE_SOURCE_DIR}/build.dep/include)
-include_directories ("${CMAKE_SOURCE_DIR}/build.dep/include/python2.7)
+include_directories ("${OpenRump_INCLUDE_DIR}")
+include_directories ("${CMAKE_SOURCE_DIR}/build.dep/include")
+include_directories ("${CMAKE_SOURCE_DIR}/build.dep/include/python2.7")
 
 add_executable (AppOpenRump
 	${AppOpenRump_SOURCES}
