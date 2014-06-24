@@ -6,11 +6,13 @@
 // include files
 
 #include <openrump/InputListener.hpp>
+#include <openrump/RendererFrameListener.hpp>
 
-#include <OgreFrameListener.h>
+#include <boost/python.hpp>
 
 #include <string>
 #include <memory>
+#include <vector>
 #include <map>
 
 // ----------------------------------------------------------------------------
@@ -25,7 +27,7 @@ namespace OpenRump {
 namespace OpenRump {
 
 class Game :
-    public Ogre::FrameListener,
+    public RendererFrameListener,
     public InputListener
 {
 public:
@@ -51,10 +53,20 @@ public:
     void run();
 
     /*!
-     * @brief Loads a player into the game
+     * @brief Loads a player into the game.
+     * @param entityName A globally unique string identifying this entity.
+     * @param meshFileName The name of the mesh file to load.
      */
     void loadPlayer(std::string entityName, std::string meshFileName);
+
+    /*!
+     * @brief Attaches a camera to the orbit of an entity.
+     * @param entityName The entity identifier string.
+     * @param cameraName The camera identifier string.
+     */
     void attachCameraToEntity(std::string entityName, std::string cameraName);
+
+    void addGameUpdateCallback(boost::python::object callable);
 
 private:
 
@@ -68,8 +80,9 @@ private:
      */
     void cleanUp();
 
-    // override ogre frame listener methods
-    virtual bool frameStarted(const Ogre::FrameEvent&);
+    // override frame events
+    virtual bool onPreUpdateRenderLoop(const float timeSinceLastUpdate);
+    virtual bool onUpdateGameLoop(const float timeStep);
 
     // override input listener methods
     virtual void onButtonExit();
@@ -81,6 +94,7 @@ private:
     bool m_IsInitialised;
 
     std::map< std::string, std::unique_ptr<EntityBase> > m_EntityList;
+    std::vector<boost::python::object> m_GameUpdateCallbackList;
 };
 
 } // namespace OpenRump

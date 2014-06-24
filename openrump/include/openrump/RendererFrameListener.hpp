@@ -29,6 +29,12 @@ public:
     virtual ~RendererFrameListener();
 
     /*!
+     * @brief Called right before the render loop is to be updated.
+     * @return Return false to signal program shutdown.
+     */
+    virtual bool onPreUpdateRenderLoop(const float timeSinceLastUpdate);
+
+    /*!
      * @brief Called when it's time to update the render loop.
      * @return Return false to signal program shutdown.
      */

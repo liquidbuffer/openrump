@@ -15,6 +15,12 @@ RendererFrameListener::~RendererFrameListener()
 }
 
 // ----------------------------------------------------------------------------
+bool RendererFrameListener::onPreUpdateRenderLoop(const float timeSinceListUpdate)
+{
+    return true;
+}
+
+// ----------------------------------------------------------------------------
 bool RendererFrameListener::onUpdateRenderLoop(const float timeSinceLastUpdate)
 {
     return true;

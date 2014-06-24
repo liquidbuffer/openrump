@@ -43,16 +43,18 @@ void ListenerDispatcher<LISTENER_CLASS>::addListener(LISTENER_CLASS* listener, s
 #ifdef _DEBUG
     if(m_Listeners.find(listenerName) != m_Listeners.end())
     {
-        std::cout << "[ListenerDispatcher::addListener] Warning: listenerName \""
-                   << listenerName << "\" already registered" << std::endl;
+        std::cout << "[ListenerDispatcher<" << typeid(LISTENER_CLASS).name()
+                  << ">::::addListener] Warning: listenerName \""
+                  << listenerName << "\" already registered" << std::endl;
         return;
     }
     for(auto it : m_Listeners)
     {
         if(it.second == listener)
         {
-            std::cout << "[ListenerDispatcher::addListener] Warning: listener pointer already registered"
-                       << std::endl;
+            std::cout << "[ListenerDispatcher<" << typeid(LISTENER_CLASS).name()
+                      << ">::addListener] Warning: listener pointer already registered"
+                      << std::endl;
             return;
         }
     }
@@ -74,7 +76,9 @@ void ListenerDispatcher<LISTENER_CLASS>::removeListener(LISTENER_CLASS* listener
         }
     }
 #ifdef _DEBUG
-    std::cout << "[ListenerDispatcher::removeListener] Warning: listener pointer not registered" << std::endl;
+    std::cout << "[ListenerDispatcher<" << typeid(LISTENER_CLASS).name()
+              << ">::removeListener] Warning: listener pointer not registered"
+              << std::endl;
 #endif // _DEBUG
 }
 
@@ -86,8 +90,9 @@ void ListenerDispatcher<LISTENER_CLASS>::removeListener(std::string listenerName
     if(it == m_Listeners.end())
     {
 #ifdef _DEBUG
-        std::cout << "[ListenerDispatcher::removeListener] Warning: listener \"" << listenerName
-                   << "\" not registered" << std::endl;
+        std::cout << "[ListenerDispatcher<" << typeid(LISTENER_CLASS).name()
+                  << ">::removeListener] Warning: listener \"" << listenerName
+                  << "\" not registered" << std::endl;
 #endif // _DEBUG
         return;
     }

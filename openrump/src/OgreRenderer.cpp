@@ -126,6 +126,14 @@ std::size_t OgreRenderer::getWindowHandle()
 }
 
 // ----------------------------------------------------------------------------
+bool OgreRenderer::frameStarted(const Ogre::FrameEvent& evt)
+{
+    // dispatch pre render loop event
+    return frameEvent.dispatchAndFindFalse(&RendererFrameListener::onPreUpdateRenderLoop,
+            evt.timeSinceLastFrame);
+}
+
+// ----------------------------------------------------------------------------
 bool OgreRenderer::frameRenderingQueued(const Ogre::FrameEvent& evt)
 {
     // dispatch game loop event

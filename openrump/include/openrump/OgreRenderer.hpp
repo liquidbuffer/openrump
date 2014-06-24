@@ -66,7 +66,8 @@ public:
 
 private:
 
-    // override frame listener
+    // override frame listeners
+    virtual bool frameStarted(const Ogre::FrameEvent& evt);
     virtual bool frameRenderingQueued(const Ogre::FrameEvent&);
 
     std::unique_ptr<LoopTimer> m_LoopTimer;

@@ -63,5 +63,6 @@ else ()
 	target_link_libraries (OpenRump
 		"${CMAKE_SOURCE_DIR}/build.dep/lib/libOgreMain.so"
 		"${CMAKE_SOURCE_DIR}/build.dep/lib/libOIS.so"
+		"${CMAKE_SOURCE_DIR}/build.dep/lib/libboost_python.so"
 	)
 endif ()

@@ -8,7 +8,6 @@
 #include <openrump/Game.hpp>
 #include <openrump/OISInput.hpp>
 #include <openrump/OgreRenderer.hpp>
-
 #include <openrump/EntityPlayer.hpp>
 
 #include <OgreRoot.h>
@@ -34,6 +33,9 @@ Game::~Game()
 // ----------------------------------------------------------------------------
 void Game::run()
 {
+    // attach OIS to render window before running
+    m_Input->attachToWindow(m_OgreRenderer->getWindowHandle());
+
     m_OgreRenderer->startRendering();
 }
 
@@ -52,9 +54,6 @@ void Game::initialise()
     // initialise renderer
     m_OgreRenderer->initialise();
 
-    // initialise input
-    m_Input->attachToWindow(m_OgreRenderer->getWindowHandle());
-
     Ogre::SceneManager* sm = Ogre::Root::getSingletonPtr()->getSceneManager("MainSceneManager");
 
     // create default light
@@ -64,11 +63,12 @@ void Game::initialise()
 
     // register as listener
     m_Input->event.addListener(this, "Game");
-    Ogre::Root::getSingletonPtr()->addFrameListener(this);
+    m_OgreRenderer->frameEvent.addListener(this, "Game");
 
     m_IsInitialised = true;
 }
 
+// ----------------------------------------------------------------------------
 void Game::loadPlayer(std::string entityName, std::string meshFileName)
 {
     if(m_EntityList.find(entityName) != m_EntityList.end())
@@ -79,6 +79,7 @@ void Game::loadPlayer(std::string entityName, std::string meshFileName)
     );
 }
 
+// ----------------------------------------------------------------------------
 void Game::attachCameraToEntity(std::string entityName, std::string cameraName)
 {
     auto it = m_EntityList.find(entityName);
@@ -86,6 +87,12 @@ void Game::attachCameraToEntity(std::string entityName, std::string cameraName)
         return;
     Ogre::SceneManager* sm = Ogre::Root::getSingletonPtr()->getSceneManager("MainSceneManager");
     it->second->attachCameraToOrbit(sm->getCamera(cameraName));
+}
+
+// ----------------------------------------------------------------------------
+void Game::addGameUpdateCallback(boost::python::object callable)
+{
+    m_GameUpdateCallbackList.push_back(callable);
 }
 
 // ----------------------------------------------------------------------------
@@ -100,20 +107,30 @@ void Game::cleanUp()
     sm->destroyLight(sm->getLight("MainLight"));
 
     // clean up input
-    Ogre::Root::getSingletonPtr()->removeFrameListener(this);
+    m_OgreRenderer->frameEvent.removeListener(this);
     m_Input->event.removeListener(this);
 
     m_IsInitialised = false;
 }
 
 // ----------------------------------------------------------------------------
-bool Game::frameStarted(const Ogre::FrameEvent&)
+bool Game::onPreUpdateRenderLoop(const float timeSinceLastUpdate)
 {
     // capture input before frame is rendered for maximum responsiveness
     m_Input->capture();
 
     if(m_Shutdown)
         return false;
+
+    return true;
+}
+
+// ----------------------------------------------------------------------------
+bool Game::onUpdateGameLoop(const float timeStep)
+{
+    for(auto it : m_GameUpdateCallbackList)
+        if(!it(timeStep))
+            return false;
 
     return true;
 }
