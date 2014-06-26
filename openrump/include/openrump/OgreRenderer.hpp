@@ -60,7 +60,12 @@ public:
     /*!
      * @brief Returns the render window handle
      */
-    std::size_t getWindowHandle();
+    std::size_t getWindowHandle() const;
+
+    /*!
+     * @brief Gets the main scene manager
+     */
+    Ogre::SceneManager* getMainSceneManager() const;
 
     ListenerDispatcher<RendererFrameListener> frameEvent;
 

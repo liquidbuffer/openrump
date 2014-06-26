@@ -54,7 +54,7 @@ void Game::initialise()
     // initialise renderer
     m_OgreRenderer->initialise();
 
-    Ogre::SceneManager* sm = Ogre::Root::getSingletonPtr()->getSceneManager("MainSceneManager");
+    Ogre::SceneManager* sm = m_OgreRenderer->getMainSceneManager();
 
     // create default light
     Ogre::Light* light = sm->createLight("MainLight");
@@ -73,7 +73,7 @@ void Game::loadPlayer(std::string entityName, std::string meshFileName)
 {
     if(m_EntityList.find(entityName) != m_EntityList.end())
         return;
-    Ogre::SceneManager* sm = Ogre::Root::getSingletonPtr()->getSceneManager("MainSceneManager");
+    Ogre::SceneManager* sm = m_OgreRenderer->getMainSceneManager();
     m_EntityList[entityName] = std::unique_ptr<EntityBase>(
         new EntityPlayer(m_Input.get(), m_OgreRenderer.get(), sm, entityName, meshFileName)
     );
@@ -85,7 +85,7 @@ void Game::attachCameraToEntity(std::string entityName, std::string cameraName)
     auto it = m_EntityList.find(entityName);
     if(it == m_EntityList.end())
         return;
-    Ogre::SceneManager* sm = Ogre::Root::getSingletonPtr()->getSceneManager("MainSceneManager");
+    Ogre::SceneManager* sm = m_OgreRenderer->getMainSceneManager();
     it->second->attachCameraToOrbit(sm->getCamera(cameraName));
 }
 
@@ -101,7 +101,7 @@ void Game::cleanUp()
     if(!m_IsInitialised)
         return;
 
-    Ogre::SceneManager* sm = Ogre::Root::getSingletonPtr()->getSceneManager("MainSceneManager");
+    Ogre::SceneManager* sm = m_OgreRenderer->getMainSceneManager();
 
     // remove lights
     sm->destroyLight(sm->getLight("MainLight"));

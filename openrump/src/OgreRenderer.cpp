@@ -118,11 +118,17 @@ void OgreRenderer::startRendering()
 }
 
 // ----------------------------------------------------------------------------
-std::size_t OgreRenderer::getWindowHandle()
+std::size_t OgreRenderer::getWindowHandle() const
 {
     std::size_t hwnd;
     m_Window->getCustomAttribute("WINDOW", &hwnd);
     return hwnd;
+}
+
+// ----------------------------------------------------------------------------
+Ogre::SceneManager* OgreRenderer::getMainSceneManager() const
+{
+    return m_SceneManager;
 }
 
 // ----------------------------------------------------------------------------
