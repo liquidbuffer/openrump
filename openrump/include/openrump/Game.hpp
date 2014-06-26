@@ -66,7 +66,17 @@ public:
      */
     void attachCameraToEntity(std::string entityName, std::string cameraName);
 
+    /*!
+     * @brief Registers a callback for when game updates occur.
+     * By default a game update occurs at a constant rate of 60 times a second,
+     * regardless of frame rate.
+     */
     void addGameUpdateCallback(boost::python::object callable);
+
+    /*!
+     * @brief Unregisters a callback for game updates.
+     */
+    void removeGameUpdateCallback(boost::python::object callable);
 
 private:
 

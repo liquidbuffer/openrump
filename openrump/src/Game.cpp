@@ -92,7 +92,23 @@ void Game::attachCameraToEntity(std::string entityName, std::string cameraName)
 // ----------------------------------------------------------------------------
 void Game::addGameUpdateCallback(boost::python::object callable)
 {
+    for(auto it : m_GameUpdateCallbackList)
+        if(it == callable)
+            return;
     m_GameUpdateCallbackList.push_back(callable);
+}
+
+// ----------------------------------------------------------------------------
+void Game::removeGameUpdateCallback(boost::python::object callable)
+{
+    for(auto it = m_GameUpdateCallbackList.begin();
+            it != m_GameUpdateCallbackList.end();
+            ++it)
+        if(*it == callable)
+        {
+            m_GameUpdateCallbackList.erase(it);
+            return;
+        }
 }
 
 // ----------------------------------------------------------------------------

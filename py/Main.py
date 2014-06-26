@@ -22,7 +22,8 @@ def load_player_parts():
 class Test(object):
 
     def __init__(self, game_obj):
-        game_obj.add_game_update_callback(self.__game_update)
+        self.game_obj = game_obj
+        self.game_obj.add_game_update_callback(self.__game_update)
         self.__count = 0
 
     def __game_update(self, time_step):
@@ -30,6 +31,7 @@ class Test(object):
         if self.__count == 60:
             self.__count = 0
             print time_step
+            self.game_obj.remove_game_update_callback(self.__game_update)
         return True
 
 
