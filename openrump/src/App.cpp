@@ -12,7 +12,7 @@
 #include <openrump/App.hpp>
 #include <openrump/OgreRenderer.hpp>
 #include <openrump/Game.hpp>
-#include <openrump/PyGameInterface.hpp>
+#include <openrump/PyInterface.hpp>
 
 #include <iostream>
 

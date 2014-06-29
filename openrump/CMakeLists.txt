@@ -19,6 +19,10 @@ set (OpenRump_SOURCES
 	"${OpenRump_SOURCE_DIR}/src/LoopTimer.cpp"
 	"${OpenRump_SOURCE_DIR}/src/OgreRenderer.cpp"
 	"${OpenRump_SOURCE_DIR}/src/OISInput.cpp"
+	"${OpenRump_SOURCE_DIR}/src/PyInterface.cpp"
+	"${OpenRump_SOURCE_DIR}/src/PyEntityBaseInterface.cpp"
+	"${OpenRump_SOURCE_DIR}/src/PyEntityPlayerInterface.cpp"
+	"${OpenRump_SOURCE_DIR}/src/PyRendererInterface.cpp"
 	"${OpenRump_SOURCE_DIR}/src/PyGameInterface.cpp"
 	"${OpenRump_SOURCE_DIR}/src/RendererFrameListener.cpp"
 )
@@ -36,7 +40,7 @@ set (OpenRump_HEADERS
 	"${OpenRump_SOURCE_DIR}/include/openrump/LoopTimer.hpp"
 	"${OpenRump_SOURCE_DIR}/include/openrump/OgreRenderer.hpp"
 	"${OpenRump_SOURCE_DIR}/include/openrump/OISInput.hpp"
-	"${OpenRump_SOURCE_DIR}/include/openrump/PyGameInterface.hpp"
+	"${OpenRump_SOURCE_DIR}/include/openrump/PyInterface.hpp"
 	"${OpenRump_SOURCE_DIR}/include/openrump/RendererFrameListener.hpp"
 )
 

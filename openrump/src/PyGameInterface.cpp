@@ -6,20 +6,30 @@
 // include files
 
 #include <boost/python.hpp>  // must be included before std to avoid warnings
-
 #include <openrump/Game.hpp>
-#include <openrump/PyGameInterface.hpp>
+#include <openrump/EntityBase.hpp>
 
-BOOST_PYTHON_MODULE(open_rump)
+using namespace OpenRump;
+
+// ----------------------------------------------------------------------------
+// overloads
+
+void (Game::*attachCameraToEntity_entityName)(std::string)                          = &Game::attachCameraToEntity;
+void (Game::*attachCameraToEntity_cameraName_entityName)(std::string, std::string)  = &Game::attachCameraToEntity;
+
+void exportGameInterface()
 {
     using namespace boost::python;
-
-    class_<OpenRump::Game, boost::noncopyable>("Game")
-        .def("run", &OpenRump::Game::run)
-        .def("stop", &OpenRump::Game::stop)
-        .def("load_player", &OpenRump::Game::loadPlayer)
-        .def("attach_camera_to_entity", &OpenRump::Game::attachCameraToEntity)
-        .def("add_game_update_callback", &OpenRump::Game::addGameUpdateCallback)
-        .def("remove_game_update_callback", &OpenRump::Game::removeGameUpdateCallback)
+    class_<Game, boost::noncopyable>("Game")
+        .def("run", &Game::run)
+        .def("stop", &Game::stop)
+        .def("load_player", &Game::loadPlayer,
+            return_value_policy<
+                reference_existing_object>())
+        .def("create_camera", &Game::createCamera)
+        .def("attach_camera_to_entity", attachCameraToEntity_entityName)
+        .def("attach_camera_to_entity", attachCameraToEntity_cameraName_entityName)
+        .def("add_game_update_callback", &Game::addGameUpdateCallback)
+        .def("remove_game_update_callback", &Game::removeGameUpdateCallback)
     ;
-}
+};

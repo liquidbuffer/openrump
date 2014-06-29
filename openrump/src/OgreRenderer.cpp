@@ -91,17 +91,9 @@ bool OgreRenderer::initialise()
     // initialise essential resources
     Ogre::ResourceGroupManager::getSingletonPtr()->initialiseResourceGroup("Essential");
 
-    // set up scene manager with a default camera
+    // set up scene manager
     m_SceneManager = m_Root->createSceneManager("OctreeSceneManager", "MainSceneManager");
-    m_Camera = m_SceneManager->createCamera("MainCamera");
-    Ogre::Viewport* vp = m_Window->addViewport(m_Camera);
-    vp->setBackgroundColour(Ogre::ColourValue(0.0f, 0.0f, 0.5f));
-    m_Camera->setAspectRatio(
-            Ogre::Real(vp->getActualWidth()) /
-            Ogre::Real(vp->getActualHeight())
-    );
-    m_Camera->setNearClipDistance(0.2);
-    m_Camera->setFarClipDistance(500);
+
     m_Root->addFrameListener(this);
 
     // set game loop fps to 60
@@ -129,6 +121,27 @@ std::size_t OgreRenderer::getWindowHandle() const
 Ogre::SceneManager* OgreRenderer::getMainSceneManager() const
 {
     return m_SceneManager;
+}
+
+// ----------------------------------------------------------------------------
+Ogre::Camera* OgreRenderer::createCamera(std::string name)
+{
+    m_Camera = m_SceneManager->createCamera(name);
+    Ogre::Viewport* vp = m_Window->addViewport(m_Camera);
+    vp->setBackgroundColour(Ogre::ColourValue(0.0f, 0.0f, 0.5f));
+    m_Camera->setAspectRatio(
+            Ogre::Real(vp->getActualWidth()) /
+            Ogre::Real(vp->getActualHeight())
+    );
+    m_Camera->setNearClipDistance(0.2);
+    m_Camera->setFarClipDistance(500);
+    return m_Camera;
+}
+
+// ----------------------------------------------------------------------------
+Ogre::Camera* OgreRenderer::getMainCamera() const
+{
+    return m_Camera;
 }
 
 // ----------------------------------------------------------------------------

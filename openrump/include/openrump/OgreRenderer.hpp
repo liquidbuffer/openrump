@@ -63,9 +63,22 @@ public:
     std::size_t getWindowHandle() const;
 
     /*!
-     * @brief Gets the main scene manager
+     * @brief Gets the main scene manager.
      */
     Ogre::SceneManager* getMainSceneManager() const;
+
+    /*!
+     * @brief Creates a new camera and returns it.
+     * The new camera is set to span the entire screen, and becomes the new
+     * main camera.
+     * @param name A globally unique name for the camera.
+     */
+    Ogre::Camera* createCamera(std::string name);
+
+    /*!
+     * @brief Gets the main camera.
+     */
+    Ogre::Camera* getMainCamera() const;
 
     ListenerDispatcher<RendererFrameListener> frameEvent;
 

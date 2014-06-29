@@ -57,14 +57,27 @@ public:
      * @param entityName A globally unique string identifying this entity.
      * @param meshFileName The name of the mesh file to load.
      */
-    void loadPlayer(std::string entityName, std::string meshFileName);
+    EntityBase* loadPlayer(std::string entityName, std::string meshFileName);
+
+    /*!
+     * @brief Creates a new camera and attaches it to the window.
+     * @param cameraName A globally unique name for this camera.
+     * @return The new camera,
+     */
+    void createCamera(std::string cameraName);
+
+    /*!
+     * @brief Attaches the main camera to the orbit of an entity.
+     * @param entityName The entity identifier string.
+     */
+    void attachCameraToEntity(std::string entityName);
 
     /*!
      * @brief Attaches a camera to the orbit of an entity.
-     * @param entityName The entity identifier string.
      * @param cameraName The camera identifier string.
+     * @param entityName The entity identifier string.
      */
-    void attachCameraToEntity(std::string entityName, std::string cameraName);
+    void attachCameraToEntity(std::string cameraName, std::string entityName);
 
     /*!
      * @brief Registers a callback for when game updates occur.
@@ -103,7 +116,7 @@ private:
     bool m_Shutdown;
     bool m_IsInitialised;
 
-    std::map< std::string, std::unique_ptr<EntityBase> > m_EntityList;
+    std::map< std::string, std::unique_ptr<EntityBase> > m_EntityMap;
     std::vector<boost::python::object> m_GameUpdateCallbackList;
 };
 

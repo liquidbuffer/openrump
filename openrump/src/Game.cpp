@@ -69,21 +69,38 @@ void Game::initialise()
 }
 
 // ----------------------------------------------------------------------------
-void Game::loadPlayer(std::string entityName, std::string meshFileName)
+EntityBase* Game::loadPlayer(std::string entityName, std::string meshFileName)
 {
-    if(m_EntityList.find(entityName) != m_EntityList.end())
-        return;
+    if(m_EntityMap.find(entityName) != m_EntityMap.end())
+        throw std::runtime_error("Entity \"" + entityName + "\" already loaded!");
+
     Ogre::SceneManager* sm = m_OgreRenderer->getMainSceneManager();
-    m_EntityList[entityName] = std::unique_ptr<EntityBase>(
-        new EntityPlayer(m_Input.get(), m_OgreRenderer.get(), sm, entityName, meshFileName)
-    );
+
+    EntityBase* entityPtr = new EntityPlayer(m_Input.get(), m_OgreRenderer.get(), sm, entityName, meshFileName);
+    m_EntityMap[entityName] = std::unique_ptr<EntityBase>(entityPtr);
+    return entityPtr;
 }
 
 // ----------------------------------------------------------------------------
-void Game::attachCameraToEntity(std::string entityName, std::string cameraName)
+void Game::createCamera(std::string cameraName)
 {
-    auto it = m_EntityList.find(entityName);
-    if(it == m_EntityList.end())
+    m_OgreRenderer->createCamera(cameraName);
+}
+
+// ----------------------------------------------------------------------------
+void Game::attachCameraToEntity(std::string entityName)
+{
+    auto it = m_EntityMap.find(entityName);
+    if(it == m_EntityMap.end())
+        return;
+    it->second->attachCameraToOrbit(m_OgreRenderer->getMainCamera());
+}
+
+// ----------------------------------------------------------------------------
+void Game::attachCameraToEntity(std::string cameraName, std::string entityName)
+{
+    auto it = m_EntityMap.find(entityName);
+    if(it == m_EntityMap.end())
         return;
     Ogre::SceneManager* sm = m_OgreRenderer->getMainSceneManager();
     it->second->attachCameraToOrbit(sm->getCamera(cameraName));
