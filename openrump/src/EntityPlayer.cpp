@@ -18,9 +18,9 @@
 namespace OpenRump {
 
 // ----------------------------------------------------------------------------
-EntityPlayer::EntityPlayer(Ogre::SceneManager* sm) :
+EntityPlayer::EntityPlayer(OgreRenderer* renderer) :
     m_Input(nullptr),
-    m_Renderer(nullptr),
+    m_Renderer(renderer),
     m_CameraDistance(0),
     m_MaxCameraDistance(0),
     m_MinCameraDistance(0),
@@ -39,7 +39,7 @@ EntityPlayer::EntityPlayer(Ogre::SceneManager* sm) :
     m_PitchAngle(0),
     m_MaxPitchAngle(0),
     m_CameraAngle(Ogre::Radian(0), Ogre::Radian(0)),
-    EntityBase(sm)
+    EntityBase(renderer)
 {
 }
 
@@ -47,13 +47,11 @@ EntityPlayer::EntityPlayer(Ogre::SceneManager* sm) :
 // DEPRECATED
 EntityPlayer::EntityPlayer(Input* input,
                            OgreRenderer* renderer,
-                           Ogre::SceneManager* sm,
                            Ogre::String instanceName,
                            Ogre::String meshName) :
-    EntityPlayer(sm)
+    EntityPlayer(renderer)
 {
     m_Input = input;
-    m_Renderer = renderer;
 
     this->load(instanceName, meshName);
 
@@ -77,12 +75,10 @@ EntityPlayer::EntityPlayer(Input* input,
 // ----------------------------------------------------------------------------
 EntityPlayer::EntityPlayer(Input* input,
                            OgreRenderer* renderer,
-                           Ogre::SceneManager* sm,
                            Ogre::String fileName) :
-    EntityPlayer(sm)
+    EntityPlayer(renderer)
 {
     m_Input = input;
-    m_Renderer = renderer;
 
     // open file stream and load from XML
     std::ifstream file(fileName);

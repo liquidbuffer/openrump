@@ -91,6 +91,11 @@ public:
      */
     void removeGameUpdateCallback(boost::python::object callable);
 
+    /*!
+     * @brief Removes each and every callback managed by this class.
+     */
+    void removeAllCallbacks();
+
 private:
 
     /*!

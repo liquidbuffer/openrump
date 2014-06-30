@@ -27,9 +27,9 @@ class EntityPlayer :
 private:
 
     /*!
-     * @brief Constructor with scene manager - only for delegating
+     * @brief Constructor with renderer - only for delegating
      */
-    EntityPlayer(Ogre::SceneManager* sm);
+    EntityPlayer(OgreRenderer* sm);
 
 public:
 
@@ -38,14 +38,13 @@ public:
      * @param input A pointer to the input controller, as the player entity
      * has internal methods that will react to user input, such as player
      * movement and camera movement.
-     * @param sm The Ogre scene manager to use to create this entity.
+     * @param renderer The renderer to use to load this entity.
      * @param instanceName A globally unique name for this instance.
      * @param meshName The name of the mesh to load for this instance.
      */
     // DEPRECATED
     EntityPlayer(Input* input,
                  OgreRenderer* renderer,
-                 Ogre::SceneManager* sm,
                  Ogre::String instanceName,
                  Ogre::String meshName);
 
@@ -54,12 +53,11 @@ public:
      * @param input A pointer to the input controller, as the player entity
      * has internal methods that will react to user input, such as player
      * movement and camera movement.
-     * @param sm The Ogre scene manager to use to create this entity.
+     * @param renderer The renderer to use to load this entity.
      * @param fileName The file name of the XML file to load.
      */
     EntityPlayer(Input* input,
                  OgreRenderer* renderer,
-                 Ogre::SceneManager* sm,
                  Ogre::String fileName);
 
     /*!

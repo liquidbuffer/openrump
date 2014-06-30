@@ -15,13 +15,13 @@
 
 namespace Ogre {
     class SceneManager;
-    class EntityBase;
     class SceneNode;
     class Camera;
 }
 
 namespace OpenRump {
     class AnimationController;
+    class OgreRenderer;
 }
 
 namespace OpenRump {
@@ -41,9 +41,9 @@ protected:
      * @brief Constructs an entity.
      * The entity will use the specified scene manager to load itself into
      * memory.
-     * @param sm The Ogre scene manager to use.
+     * @param renderer The renderer to use to create this entity.
      */
-    EntityBase(Ogre::SceneManager* sm);
+    EntityBase(OgreRenderer* renderer);
 
     /*!
      * @brief Loads the entity from a mesh name.
@@ -56,11 +56,11 @@ public:
 
     /*!
      * @brief Constructs an entity and loads the specified mesh.
-     * @param sm The Ogre scene manager to use.
+     * @param renderer The renderer to use to create this entity.
      * @param instanceName A globally unique name for this entity.
      * @param meshName The mesh file name to load.
      */
-    EntityBase(Ogre::SceneManager* sm,
+    EntityBase(OgreRenderer* renderer,
            Ogre::String instanceName,
            Ogre::String meshName);
 

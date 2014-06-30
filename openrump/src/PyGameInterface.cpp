@@ -31,5 +31,6 @@ void exportGameInterface()
         .def("attach_camera_to_entity", attachCameraToEntity_cameraName_entityName)
         .def("add_game_update_callback", &Game::addGameUpdateCallback)
         .def("remove_game_update_callback", &Game::removeGameUpdateCallback)
+        .def("remove_all_callbacks", &Game::removeAllCallbacks)
     ;
 };

@@ -43,13 +43,18 @@ void Game::run()
 void Game::stop()
 {
     m_Shutdown = true;
+
+    // remove all references to any python objects, otherwise destructor
+    // is not called
+    this->removeAllCallbacks();
 }
 
 // ----------------------------------------------------------------------------
 void Game::initialise()
 {
     if(m_IsInitialised)
-        return;
+        throw std::runtime_error(
+                "[Game::initialise] Error: Game already initialised!");
 
     // initialise renderer
     m_OgreRenderer->initialise();
@@ -72,11 +77,12 @@ void Game::initialise()
 EntityBase* Game::loadPlayer(std::string entityName, std::string meshFileName)
 {
     if(m_EntityMap.find(entityName) != m_EntityMap.end())
-        throw std::runtime_error("Entity \"" + entityName + "\" already loaded!");
+        throw std::runtime_error(
+                "[Game::loadPlayer] Error: Entity \""
+                + entityName + "\" already loaded!"
+        );
 
-    Ogre::SceneManager* sm = m_OgreRenderer->getMainSceneManager();
-
-    EntityBase* entityPtr = new EntityPlayer(m_Input.get(), m_OgreRenderer.get(), sm, entityName, meshFileName);
+    EntityBase* entityPtr = new EntityPlayer(m_Input.get(), m_OgreRenderer.get(), entityName, meshFileName);
     m_EntityMap[entityName] = std::unique_ptr<EntityBase>(entityPtr);
     return entityPtr;
 }
@@ -92,7 +98,10 @@ void Game::attachCameraToEntity(std::string entityName)
 {
     auto it = m_EntityMap.find(entityName);
     if(it == m_EntityMap.end())
-        return;
+        throw std::runtime_error(
+                "[Game::attachCameraToEntity] Error: Entity with name \""
+                + entityName + "\" doesn't exisẗ"
+        );
     it->second->attachCameraToOrbit(m_OgreRenderer->getMainCamera());
 }
 
@@ -101,7 +110,10 @@ void Game::attachCameraToEntity(std::string cameraName, std::string entityName)
 {
     auto it = m_EntityMap.find(entityName);
     if(it == m_EntityMap.end())
-        return;
+        throw std::runtime_error(
+                "[Game::attachCameraToEntity] Error: Entity with name \""
+                + entityName + "\" doesn't exist"
+        );
     Ogre::SceneManager* sm = m_OgreRenderer->getMainSceneManager();
     it->second->attachCameraToOrbit(sm->getCamera(cameraName));
 }
@@ -111,7 +123,10 @@ void Game::addGameUpdateCallback(boost::python::object callable)
 {
     for(auto it : m_GameUpdateCallbackList)
         if(it == callable)
-            return;
+            throw std::runtime_error(
+                    "[Game::addGameUpdateCallback] Error: \
+callback already registered"
+            );
     m_GameUpdateCallbackList.push_back(callable);
 }
 
@@ -126,6 +141,14 @@ void Game::removeGameUpdateCallback(boost::python::object callable)
             m_GameUpdateCallbackList.erase(it);
             return;
         }
+    throw std::runtime_error("[Game::removeGameUpdateCallback] Error: \
+callback not registered");
+}
+
+// ----------------------------------------------------------------------------
+void Game::removeAllCallbacks()
+{
+    m_GameUpdateCallbackList.clear();
 }
 
 // ----------------------------------------------------------------------------

@@ -7,6 +7,7 @@
 
 #include <openrump/EntityBase.hpp>
 #include <openrump/AnimationController.hpp>
+#include <openrump/OgreRenderer.hpp>
 
 #include <OgreSceneManager.h>
 #include <OgreEntity.h>
@@ -30,10 +31,10 @@ EntityBase::EntityBase() :
 }
 
 // ----------------------------------------------------------------------------
-EntityBase::EntityBase(Ogre::SceneManager* sm) :
+EntityBase::EntityBase(OgreRenderer* renderer) :
     EntityBase()
 {
-    m_SceneManager = sm;
+    m_SceneManager = renderer->getMainSceneManager();
 }
 
 // ----------------------------------------------------------------------------
@@ -57,12 +58,12 @@ void EntityBase::load(Ogre::String instanceName, Ogre::String meshName)
 }
 
 // ----------------------------------------------------------------------------
-EntityBase::EntityBase(Ogre::SceneManager* sm,
+EntityBase::EntityBase(OgreRenderer* renderer,
                        Ogre::String instanceName,
                        Ogre::String meshName) :
     EntityBase()
 {
-    m_SceneManager = sm;
+    m_SceneManager = renderer->getMainSceneManager();
     this->load(instanceName, meshName);
 }
 

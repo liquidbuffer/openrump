@@ -29,21 +29,19 @@ App::App(std::string workingDirectory) :
               workingDirectory.end(),
               m_PyWorkingDirectory.get());
     m_PyWorkingDirectory[workingDirectory.size()] = '\0';
-
-    // important for when python needs to load modules
-    Py_SetProgramName(m_PyWorkingDirectory.get());
-    Py_Initialize();
 }
 
 // ----------------------------------------------------------------------------
 App::~App()
 {
-    Py_Finalize();
 }
 
 // ----------------------------------------------------------------------------
 void App::onLoad()
 {
+    // important for when python needs to load modules
+    Py_SetProgramName(m_PyWorkingDirectory.get());
+    Py_Initialize();
 }
 
 // ----------------------------------------------------------------------------
@@ -65,6 +63,8 @@ void App::onRun()
 // ----------------------------------------------------------------------------
 void App::onExit()
 {
+    std::cout << "exit" << std::endl;
+    Py_Finalize();
 }
 
 } // namespace OpenRump

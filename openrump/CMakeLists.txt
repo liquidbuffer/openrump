@@ -20,9 +20,7 @@ set (OpenRump_SOURCES
 	"${OpenRump_SOURCE_DIR}/src/OgreRenderer.cpp"
 	"${OpenRump_SOURCE_DIR}/src/OISInput.cpp"
 	"${OpenRump_SOURCE_DIR}/src/PyInterface.cpp"
-	"${OpenRump_SOURCE_DIR}/src/PyEntityBaseInterface.cpp"
 	"${OpenRump_SOURCE_DIR}/src/PyEntityPlayerInterface.cpp"
-	"${OpenRump_SOURCE_DIR}/src/PyRendererInterface.cpp"
 	"${OpenRump_SOURCE_DIR}/src/PyGameInterface.cpp"
 	"${OpenRump_SOURCE_DIR}/src/RendererFrameListener.cpp"
 )

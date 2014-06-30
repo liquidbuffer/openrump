@@ -26,7 +26,6 @@ class Test(object):
         self.game_obj.add_game_update_callback(self.__game_update)
         self.player = self.game_obj.load_player('applejack_body', 'Cube.mesh')
         self.game_obj.attach_camera_to_entity('camera', 'applejack_body')
-        self.__count = 0
 
     def __game_update(self, time_step):
         return True
@@ -37,4 +36,3 @@ if __name__ == '__main__':
     game.create_camera('camera')
     test = Test(game)
     game.run()
-    sys.exit(0)
