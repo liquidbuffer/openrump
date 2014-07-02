@@ -62,7 +62,7 @@
 #       error Please define OPENRUMP_DYNAMIC OR OPENRUMP_STATIC
 #   endif
 
-namespace OPENRUMP {
+namespace OpenRump {
 
 // --------------------------------------------------------------
 // define fixed-type sizes
@@ -73,27 +73,27 @@ namespace OPENRUMP {
 // we can use them without doing any kind of check
 
 // 8 bits integer types
-typedef signed   char Int8;
-typedef unsigned char Uint8;
+typedef signed char int8;
+typedef unsigned char uint8;
 
 // 16 bits integer types
-typedef signed   short Int16;
-typedef unsigned short Uint16;
+typedef signed short int16;
+typedef unsigned short uint16;
 
 // 32 bits integer types
-typedef signed   int Int32;
-typedef unsigned int Uint32;
+typedef signed int int32;
+typedef unsigned int uint32;
 
 // 64 bits integer types
 #   if defined(_MSC_VER)
 typedef signed   __int64 Int64;
 typedef unsigned __int64 Uint64;
 #   else
-typedef signed   long long Int64;
-typedef unsigned long long Uint64;
+typedef signed long long int64;
+typedef unsigned long long uint64;
 #   endif
 
-} // namespace OPENRUMP
+} // namespace OpenRump
 
 #endif // __OPENRUMP_CONFIG_HPP__
 

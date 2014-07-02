@@ -37,16 +37,17 @@ void Game::run()
     m_Input->attachToWindow(m_OgreRenderer->getWindowHandle());
 
     m_OgreRenderer->startRendering();
+
+    // remove all references to any python objects, otherwise destructor
+    // is not called
+    // see issue #1
+    this->removeAllCallbacks();
 }
 
 // ----------------------------------------------------------------------------
 void Game::stop()
 {
     m_Shutdown = true;
-
-    // remove all references to any python objects, otherwise destructor
-    // is not called
-    this->removeAllCallbacks();
 }
 
 // ----------------------------------------------------------------------------
@@ -121,34 +122,19 @@ void Game::attachCameraToEntity(std::string cameraName, std::string entityName)
 // ----------------------------------------------------------------------------
 void Game::addGameUpdateCallback(boost::python::object callable)
 {
-    for(auto it : m_GameUpdateCallbackList)
-        if(it == callable)
-            throw std::runtime_error(
-                    "[Game::addGameUpdateCallback] Error: \
-callback already registered"
-            );
-    m_GameUpdateCallbackList.push_back(callable);
+    m_PyGameUpdate.addCallback(callable);
 }
 
 // ----------------------------------------------------------------------------
 void Game::removeGameUpdateCallback(boost::python::object callable)
 {
-    for(auto it = m_GameUpdateCallbackList.begin();
-            it != m_GameUpdateCallbackList.end();
-            ++it)
-        if(*it == callable)
-        {
-            m_GameUpdateCallbackList.erase(it);
-            return;
-        }
-    throw std::runtime_error("[Game::removeGameUpdateCallback] Error: \
-callback not registered");
+    m_PyGameUpdate.removeCallback(callable);
 }
 
 // ----------------------------------------------------------------------------
 void Game::removeAllCallbacks()
 {
-    m_GameUpdateCallbackList.clear();
+    m_PyGameUpdate.removeAllCallbacks();
 }
 
 // ----------------------------------------------------------------------------
@@ -184,11 +170,7 @@ bool Game::onPreUpdateRenderLoop(const float timeSinceLastUpdate)
 // ----------------------------------------------------------------------------
 bool Game::onUpdateGameLoop(const float timeStep)
 {
-    for(auto it : m_GameUpdateCallbackList)
-        if(!it(timeStep))
-            return false;
-
-    return true;
+    return m_PyGameUpdate.dispatchAndFindFalse(std::forward<const float>(timeStep));
 }
 
 // ----------------------------------------------------------------------------

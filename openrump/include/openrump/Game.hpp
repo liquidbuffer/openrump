@@ -7,8 +7,7 @@
 
 #include <openrump/InputListener.hpp>
 #include <openrump/RendererFrameListener.hpp>
-
-#include <boost/python.hpp>
+#include <openrump/PyCallbackDispatcher.hpp>
 
 #include <string>
 #include <memory>
@@ -122,7 +121,8 @@ private:
     bool m_IsInitialised;
 
     std::map< std::string, std::unique_ptr<EntityBase> > m_EntityMap;
-    std::vector<boost::python::object> m_GameUpdateCallbackList;
+
+    PyCallbackDispatcher m_PyGameUpdate;
 };
 
 } // namespace OpenRump
