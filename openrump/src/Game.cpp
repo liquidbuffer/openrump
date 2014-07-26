@@ -9,6 +9,7 @@
 #include <openrump/OISInput.hpp>
 #include <openrump/OgreRenderer.hpp>
 #include <openrump/EntityPlayer.hpp>
+#include <openrump/EntityControllerCameraOrbit.hpp>
 
 #include <OgreRoot.h>
 
@@ -31,7 +32,8 @@ Game::~Game()
 }
 
 // ----------------------------------------------------------------------------
-void Game::run()
+void
+Game::run()
 {
     // attach OIS to render window before running
     m_Input->attachToWindow(m_OgreRenderer->getWindowHandle());
@@ -45,13 +47,15 @@ void Game::run()
 }
 
 // ----------------------------------------------------------------------------
-void Game::stop()
+void
+Game::stop()
 {
     m_Shutdown = true;
 }
 
 // ----------------------------------------------------------------------------
-void Game::initialise()
+void
+Game::initialise()
 {
     if(m_IsInitialised)
         throw std::runtime_error(
@@ -75,7 +79,8 @@ void Game::initialise()
 }
 
 // ----------------------------------------------------------------------------
-EntityBase* Game::loadPlayer(std::string entityName, std::string meshFileName)
+EntityBase*
+Game::createEntityPlayer(std::string entityName, std::string meshFileName)
 {
     if(m_EntityMap.find(entityName) != m_EntityMap.end())
         throw std::runtime_error(
@@ -89,56 +94,93 @@ EntityBase* Game::loadPlayer(std::string entityName, std::string meshFileName)
 }
 
 // ----------------------------------------------------------------------------
-void Game::createCamera(std::string cameraName)
+void
+Game::destroyEntity(std::string entityName)
+{
+    auto it = m_EntityMap.find(entityName);
+    if(it == m_EntityMap.end())
+        throw std::runtime_error(
+            "[Game::destroyEntity] Error: Entity with name \"" + entityName + "\" does not exist"
+        );
+    m_EntityMap.erase(it);
+}
+
+// ----------------------------------------------------------------------------
+void
+Game::destroyEntity(EntityBase* entity)
+{
+    for(auto it = m_EntityMap.begin(); it != m_EntityMap.end(); ++it)
+        if(it->second.get() == entity)
+        {
+            m_EntityMap.erase(it);
+            return;
+        }
+    throw std::runtime_error("[Game::destroyEntity] Error: Entity does not exist");
+}
+
+// ----------------------------------------------------------------------------
+EntityController*
+Game::createEntityControllerCameraOrbit(std::string cameraName, float distance)
+{
+    // existing name
+    if(m_EntityControllerMap.find(controllerName) != m_EntityControllerMap.end())
+        throw std::runtime_error("[Game::createEntityController] Error: \
+Controller with name \"" + controllerName + "\" already exists");
+
+    // try to create controller of specified type
+    EntityController* newController = nullptr;
+    if(controllerType == "CameraOrbit")
+        newController = new EntityControllerCameraOrbit(m_OgreRenderer->getMainSceneManager(), m_Input.get())
+
+    else
+        throw std::runtime_error("[Game::createEntityController] Error: \
+Controller of type \"" + controllerType + "\" unknown");
+    }
+
+    m_EntityControllerMap[controllerName] = std::unique_ptr<EntityController>(newController.get());
+}
+
+// ----------------------------------------------------------------------------
+void Game
+
+// ----------------------------------------------------------------------------
+void
+Game::createCamera(std::string cameraName)
 {
     m_OgreRenderer->createCamera(cameraName);
 }
 
 // ----------------------------------------------------------------------------
-void Game::attachCameraToEntity(std::string entityName)
+void
+Game::destroyCamera(std::string cameraName)
 {
-    auto it = m_EntityMap.find(entityName);
-    if(it == m_EntityMap.end())
-        throw std::runtime_error(
-                "[Game::attachCameraToEntity] Error: Entity with name \""
-                + entityName + "\" doesn't exisẗ"
-        );
-    it->second->attachCameraToOrbit(m_OgreRenderer->getMainCamera());
+    // TODO implement destroying cameras
 }
 
 // ----------------------------------------------------------------------------
-void Game::attachCameraToEntity(std::string cameraName, std::string entityName)
-{
-    auto it = m_EntityMap.find(entityName);
-    if(it == m_EntityMap.end())
-        throw std::runtime_error(
-                "[Game::attachCameraToEntity] Error: Entity with name \""
-                + entityName + "\" doesn't exist"
-        );
-    Ogre::SceneManager* sm = m_OgreRenderer->getMainSceneManager();
-    it->second->attachCameraToOrbit(sm->getCamera(cameraName));
-}
-
-// ----------------------------------------------------------------------------
-void Game::addGameUpdateCallback(boost::python::object callable)
+void
+Game::addGameUpdateCallback(boost::python::object callable)
 {
     m_PyGameUpdate.addCallback(callable);
 }
 
 // ----------------------------------------------------------------------------
-void Game::removeGameUpdateCallback(boost::python::object callable)
+void
+Game::removeGameUpdateCallback(boost::python::object callable)
 {
     m_PyGameUpdate.removeCallback(callable);
 }
 
 // ----------------------------------------------------------------------------
-void Game::removeAllCallbacks()
+void
+Game::removeAllCallbacks()
 {
     m_PyGameUpdate.removeAllCallbacks();
 }
 
 // ----------------------------------------------------------------------------
-void Game::cleanUp()
+void
+Game::cleanUp()
 {
     if(!m_IsInitialised)
         return;
@@ -156,7 +198,8 @@ void Game::cleanUp()
 }
 
 // ----------------------------------------------------------------------------
-bool Game::onPreUpdateRenderLoop(const float timeSinceLastUpdate)
+bool
+Game::onPreUpdateRenderLoop(const float timeSinceLastUpdate)
 {
     // capture input before frame is rendered for maximum responsiveness
     m_Input->capture();
@@ -168,13 +211,15 @@ bool Game::onPreUpdateRenderLoop(const float timeSinceLastUpdate)
 }
 
 // ----------------------------------------------------------------------------
-bool Game::onUpdateGameLoop(const float timeStep)
+bool
+Game::onUpdateGameLoop(const float timeStep)
 {
     return m_PyGameUpdate.dispatchAndFindFalse(std::forward<const float>(timeStep));
 }
 
 // ----------------------------------------------------------------------------
-void Game::onButtonExit()
+void
+Game::onButtonExit()
 {
     this->stop();
 }

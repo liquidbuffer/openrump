@@ -23,13 +23,7 @@ class Test(object):
 
     def __init__(self, game_obj):
         self.game_obj = game_obj
-        self.game_obj.add_game_update_callback(self.game_update)
-        #self.player = self.game_obj.load_player('applejack_body', 'Cube.mesh')
-        #self.game_obj.attach_camera_to_entity('camera', 'applejack_body')
-
-    def game_update(self, time_step):
-        print time_step
-        return False
+        self.player = self.game_obj.create_entity_player('body', 'twilightsparkle.mesh')
 
 
 if __name__ == '__main__':

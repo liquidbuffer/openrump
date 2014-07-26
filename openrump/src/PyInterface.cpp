@@ -10,11 +10,13 @@
 // ----------------------------------------------------------------------------
 // foward declarations
 
-void exportEntityPlayerInterface();
 void exportGameInterface();
+void exportEntityBaseInterface();
+void exportEntityPlayerInterface();
 
 BOOST_PYTHON_MODULE(open_rump)
 {
     exportGameInterface();
+    exportEntityBaseInterface();
     exportEntityPlayerInterface();
 };

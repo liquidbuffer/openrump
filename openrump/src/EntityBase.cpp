@@ -6,7 +6,7 @@
 // include files
 
 #include <openrump/EntityBase.hpp>
-#include <openrump/AnimationController.hpp>
+#include <openrump/EntityControllerCameraOrbit.hpp>
 #include <openrump/OgreRenderer.hpp>
 
 #include <OgreSceneManager.h>
@@ -23,9 +23,6 @@ EntityBase::EntityBase() :
     m_OgreEntity(nullptr),
     m_OgreEntityTranslateNode(nullptr),
     m_OgreEntityRotateNode(nullptr),
-    m_CameraOrbitRotateNode(nullptr),
-    m_CameraOrbitAttachNode(nullptr),
-    m_OrbitingCamera(nullptr),
     m_Name("")
 {
 }
@@ -70,13 +67,6 @@ EntityBase::EntityBase(OgreRenderer* renderer,
 // ----------------------------------------------------------------------------
 EntityBase::~EntityBase()
 {
-    if(this->hasCameraOrbit())
-        this->destroyCameraOrbit();
-
-    assert(m_OgreEntity != nullptr);
-    assert(m_OgreEntityRotateNode != nullptr);
-    assert(m_OgreEntityTranslateNode != nullptr);
-
     m_OgreEntityRotateNode->detachObject(m_OgreEntity);
     m_SceneManager->destroyEntity(m_OgreEntity);
     m_OgreEntityTranslateNode->removeChild(m_OgreEntityRotateNode);
@@ -86,92 +76,36 @@ EntityBase::~EntityBase()
 }
 
 // ----------------------------------------------------------------------------
-EntityBase* EntityBase::createCameraOrbit()
+std::string EntityBase::getName() const
 {
-    if(m_CameraOrbitRotateNode)
-        return this;
-
-    m_CameraOrbitRotateNode = m_OgreEntityTranslateNode
-            ->createChildSceneNode(m_Name + "OrbitRotateNode");
-    m_CameraOrbitAttachNode = m_CameraOrbitRotateNode
-            ->createChildSceneNode(m_Name + "OrbitAttachNode");
-
-    return this;
+    return m_Name;
 }
 
 // ----------------------------------------------------------------------------
-Ogre::SceneNode* EntityBase::attachCameraToOrbit(Ogre::Camera* cam, float distance)
+void EntityBase::addController(std::shared_ptr<EntityController> controller, std::string controllerName)
 {
-    if(m_OrbitingCamera)
-        return m_CameraOrbitRotateNode;
+    // check for existing name
+    auto it = m_EntityControllerMap.find(controllerName);
+    if(it != m_EntityControllerMap.end())
+        throw std::runtime_error(std::string("[EntityBase::createController] Error: \
+Controller with name \"") + controllerName + "\" already exists");
 
-    if(!m_CameraOrbitRotateNode)
-        this->createCameraOrbit();
-
-    m_OrbitingCamera = cam;
-    m_CameraOrbitAttachNode->attachObject(m_OrbitingCamera);
-    this->setCameraDistance(distance);
-
-    return m_CameraOrbitRotateNode;
+    // register
+    m_EntityControllerMap[controllerName] = controller;
 }
 
 // ----------------------------------------------------------------------------
-Ogre::Camera* EntityBase::detachCameraFromOrbit()
+void EntityBase::removeController(std::string controllerName)
 {
-    if(!m_OrbitingCamera)
-        return nullptr;
-
-    m_CameraOrbitAttachNode->detachObject(m_OrbitingCamera);
-    Ogre::Camera* cam = m_OrbitingCamera;
-    m_OrbitingCamera = nullptr;
-
-    return cam;
-}
-
-// ----------------------------------------------------------------------------
-void EntityBase::setCameraDistance(float distance)
-{
-    if(!m_CameraOrbitAttachNode)
+    auto it = m_EntityControllerMap.find(controllerName);
+    if(it == m_EntityControllerMap.end())
+    {
+        throw std::runtime_error(std::string("[EntityBase::destroyController] Error: \
+Controller with name \"") + controllerName + "\" not registered");
         return;
-    m_CameraOrbitAttachNode->setPosition(0, 0, distance);
-}
+    }
 
-// ----------------------------------------------------------------------------
-Ogre::Camera* EntityBase::getCamera() const
-{
-    assert(m_OrbitingCamera != nullptr);
-    return m_OrbitingCamera;
-}
-
-// ----------------------------------------------------------------------------
-Ogre::SceneNode* EntityBase::getCameraRotateNode() const
-{
-    assert(m_CameraOrbitRotateNode != nullptr);
-    return m_CameraOrbitRotateNode;
-}
-
-// ----------------------------------------------------------------------------
-Ogre::Camera* EntityBase::destroyCameraOrbit()
-{
-    Ogre::Camera* cam = this->detachCameraFromOrbit();
-
-    if(!m_CameraOrbitRotateNode)
-        return cam;  // return nullptr
-
-    m_CameraOrbitRotateNode->removeChild(m_CameraOrbitAttachNode);
-    m_SceneManager->destroySceneNode(m_CameraOrbitAttachNode);
-    m_CameraOrbitAttachNode = nullptr;
-    m_OgreEntityTranslateNode->removeChild(m_CameraOrbitRotateNode);
-    m_SceneManager->destroySceneNode(m_CameraOrbitRotateNode);
-    m_CameraOrbitRotateNode = nullptr;
-
-    return cam;
-}
-
-// ----------------------------------------------------------------------------
-bool EntityBase::hasCameraOrbit() const
-{
-    return (m_CameraOrbitRotateNode != nullptr);
+    m_EntityControllerMap.erase(it);
 }
 
 // ----------------------------------------------------------------------------
@@ -217,35 +151,6 @@ void EntityBase::extractAnimation(Ogre::Animation* source,
             destKeyFrame->setScale(srcKeyFrame->getScale());
         }
     }
-}
-
-// ----------------------------------------------------------------------------
-void EntityBase::enableAnimation()
-{
-    m_AnimationController = std::unique_ptr<AnimationController>(
-            new AnimationController(m_OgreEntity)
-    );
-}
-
-// ----------------------------------------------------------------------------
-void EntityBase::disableAnimation()
-{
-    m_AnimationController.reset(nullptr);
-}
-
-// ----------------------------------------------------------------------------
-bool EntityBase::isAnimated() const
-{
-    return (m_AnimationController != nullptr);
-}
-
-// ----------------------------------------------------------------------------
-AnimationController* EntityBase::getAnimationController() const
-{
-    if(!this->isAnimated())
-        throw std::runtime_error("[Entity::getAnimationController] Error: \
-Animation not enabled");
-    return m_AnimationController.get();
 }
 
 // ----------------------------------------------------------------------------

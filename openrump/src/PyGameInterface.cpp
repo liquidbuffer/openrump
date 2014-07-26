@@ -14,8 +14,10 @@ using namespace OpenRump;
 // ----------------------------------------------------------------------------
 // overloads
 
-void (Game::*attachCameraToEntity_entityName)(std::string)                          = &Game::attachCameraToEntity;
-void (Game::*attachCameraToEntity_cameraName_entityName)(std::string, std::string)  = &Game::attachCameraToEntity;
+void (Game::*destroyEntity_name)(std::string) = &Game::destroyEntity;
+void (Game::*destroyEntity_pointer)(EntityBase*) = &Game::destroyEntity;
+
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(createEntityControllerCameraOrbit_overloads, createEntityControllerCameraOrbit, 0, 1);
 
 void exportGameInterface()
 {
@@ -23,12 +25,14 @@ void exportGameInterface()
     class_<Game, boost::noncopyable>("Game")
         .def("run", &Game::run)
         .def("stop", &Game::stop)
-        .def("load_player", &Game::loadPlayer,
+        .def("create_entity_player", &Game::createEntityPlayer,
             return_value_policy<
                 reference_existing_object>())
+        .def("destroy_entity", destroyEntity_name)
+        .def("destroy_entity", destroyEntity_pointer)
+        .def("create_entity_controller_camera_orbit", &Game::createEntityControllerCameraOrbit, createEntityControllerCameraOrbit_overloads())
         .def("create_camera", &Game::createCamera)
-        .def("attach_camera_to_entity", attachCameraToEntity_entityName)
-        .def("attach_camera_to_entity", attachCameraToEntity_cameraName_entityName)
+        .def("destroy_camera", &Game::destroyCamera)
         .def("add_game_update_callback", &Game::addGameUpdateCallback)
         .def("remove_game_update_callback", &Game::removeGameUpdateCallback)
         .def("remove_all_callbacks", &Game::removeAllCallbacks)

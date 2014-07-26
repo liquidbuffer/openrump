@@ -21,9 +21,6 @@ namespace OpenRump {
 EntityPlayer::EntityPlayer(OgreRenderer* renderer) :
     m_Input(nullptr),
     m_Renderer(renderer),
-    m_CameraDistance(0),
-    m_MaxCameraDistance(0),
-    m_MinCameraDistance(0),
     m_Direction(0, 0, 1),
     m_TargetSpeed(0),
     m_Speed(0),
@@ -38,7 +35,6 @@ EntityPlayer::EntityPlayer(OgreRenderer* renderer) :
     m_MaxRollAngle(0),
     m_PitchAngle(0),
     m_MaxPitchAngle(0),
-    m_CameraAngle(Ogre::Radian(0), Ogre::Radian(0)),
     EntityBase(renderer)
 {
 }
@@ -55,9 +51,6 @@ EntityPlayer::EntityPlayer(Input* input,
 
     this->load(instanceName, meshName);
 
-    m_CameraDistance = 5;
-    m_MaxCameraDistance = 15;
-    m_MinCameraDistance = 1;
     m_MaxSpeed = 10;
     m_AccelerationFactor = 4;
     m_TurnAccelerationFactor = 4;
@@ -120,13 +113,13 @@ Ogre::String EntityPlayer::loadFromXML(std::istream& stream)
             for(auto& mode : modes.second)
             {
                 if(mode.first == "camera")
-                {
+                {/* TODO read camera distance from XML
                     m_CameraDistance = mode.second.get
                             <Ogre::Real>("<xmlattr>.distance");
                     m_MaxCameraDistance = mode.second.get
                             <Ogre::Real>("<xmlattr>.max_distance");
                     m_MinCameraDistance  =mode.second.get
-                            <Ogre::Real>("<xmlattr>.min_distance");
+                            <Ogre::Real>("<xmlattr>.min_distance");*/
                 }
                 if(mode.first == "movement")
                 {
@@ -175,7 +168,7 @@ EntityPlayer::~EntityPlayer()
 
 // ----------------------------------------------------------------------------
 void EntityPlayer::onChangeDirectionAndVelocity(float x, float y)
-{
+{/* TODO requires camera to calculate player direction in world coordinates
     // rotate vector by camera angle to get real world direction
     if(x != 0 || y != 0)
     {
@@ -191,42 +184,7 @@ void EntityPlayer::onChangeDirectionAndVelocity(float x, float y)
 
     // directional vector of length 0.0 means target speed is 0
     }else
-        m_TargetSpeed = 0.0;
-}
-
-// ----------------------------------------------------------------------------
-void EntityPlayer::onChangeCameraAngleDelta(float deltaAngleX, float deltaAngleY)
-{
-    // add deltas and limit X angle to +90° and -90°
-    m_CameraAngle.x -= Ogre::Radian(deltaAngleX);
-    m_CameraAngle.y -= Ogre::Radian(deltaAngleY);
-    if(m_CameraAngle.x < Ogre::Radian(-Ogre::Math::PI*0.5))
-        m_CameraAngle.x = Ogre::Radian(-Ogre::Math::PI*0.5);
-    if(m_CameraAngle.x > Ogre::Radian(Ogre::Math::PI*0.5))
-        m_CameraAngle.x = Ogre::Radian(Ogre::Math::PI*0.5);
-
-    // apply to camera
-    if(this->hasCameraOrbit())
-    {
-        this->getCameraRotateNode()->setOrientation(Ogre::Quaternion());
-        this->getCameraRotateNode()->yaw(m_CameraAngle.y);
-        this->getCameraRotateNode()->pitch(m_CameraAngle.x);
-    }
-}
-
-// ----------------------------------------------------------------------------
-void EntityPlayer::onChangeCameraDistanceDelta(float deltaDistance)
-{
-    m_CameraDistance = Ogre::Math::Clamp(
-        (m_MinCameraDistance - m_CameraDistance - Ogre::Real(1))
-                * deltaDistance
-                + m_CameraDistance,
-        m_MinCameraDistance,
-        m_MaxCameraDistance
-    );
-
-    if(this->hasCameraOrbit())
-        this->setCameraDistance(m_CameraDistance);
+        m_TargetSpeed = 0.0;*/
 }
 
 // ----------------------------------------------------------------------------

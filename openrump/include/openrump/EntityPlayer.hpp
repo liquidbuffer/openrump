@@ -77,18 +77,12 @@ private:
 
     // override input events
     virtual void onChangeDirectionAndVelocity(float x, float y);
-    virtual void onChangeCameraAngleDelta(float deltaAngleX, float deltaAngleY);
-    virtual void onChangeCameraDistanceDelta(float deltaDistance);
 
     // override renderer events
     virtual bool onUpdateGameLoop(const float timeStep);
 
     Input* m_Input;
     OgreRenderer* m_Renderer;
-
-    Ogre::Real m_CameraDistance;
-    Ogre::Real m_MaxCameraDistance;
-    Ogre::Real m_MinCameraDistance;
 
     Ogre::Vector3 m_Direction;
     Ogre::Vector3 m_TargetDirection;
@@ -107,14 +101,6 @@ private:
     Ogre::Radian m_MaxRollAngle;
     Ogre::Radian m_PitchAngle;
     Ogre::Radian m_MaxPitchAngle;
-
-    // camera
-    struct CameraAngle_t
-    {
-        CameraAngle_t(Ogre::Radian x, Ogre::Radian y) : x(x), y(y) {}
-        Ogre::Radian x;
-        Ogre::Radian y;
-    } m_CameraAngle;
 };
 
 } // namespace OpenRump

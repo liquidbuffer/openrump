@@ -5,6 +5,7 @@
 // ----------------------------------------------------------------------------
 // include files
 
+#include <openrump/EntityController.hpp>
 #include <openrump/InputListener.hpp>
 #include <openrump/RendererFrameListener.hpp>
 #include <openrump/PyCallbackDispatcher.hpp>
@@ -44,68 +45,91 @@ public:
     /*!
      * @brief Stops the game and shuts down.
      */
-    void stop();
+    void
+    stop();
 
     /*!
      * @brief Begins running the game (main loop).
      */
-    void run();
+    void
+    run();
 
     /*!
      * @brief Loads a player into the game.
      * @param entityName A globally unique string identifying this entity.
      * @param meshFileName The name of the mesh file to load.
      */
-    EntityBase* loadPlayer(std::string entityName, std::string meshFileName);
+    EntityBase*
+    createEntityPlayer(std::string entityName, std::string meshFileName);
+
+    /*!
+     * @brief Destroys and entity by name.
+     * @param entityName The unique identifier of the entity to destroy.
+     */
+    void
+    destroyEntity(std::string entityName);
+
+    /*!
+     * @brief Destroys an entity by pointer.
+     * @param entity The pointer to the entity to destroy.
+     */
+    void
+    destroyEntity(EntityBase* entity);
+
+    /*!
+     * @brief Creates a camera orbit controller, ready to be attached to an entity.
+     */
+    std::shared_ptr<EntityController>
+    createEntityControllerCameraOrbit(std::string cameraName="", float distance=0.0f);
 
     /*!
      * @brief Creates a new camera and attaches it to the window.
      * @param cameraName A globally unique name for this camera.
      * @return The new camera,
      */
-    void createCamera(std::string cameraName);
+    void
+    createCamera(std::string cameraName);
 
     /*!
-     * @brief Attaches the main camera to the orbit of an entity.
-     * @param entityName The entity identifier string.
+     * @brief Destroys the specifed camera
+     * @param cameraName The name of the camera to destroy.
      */
-    void attachCameraToEntity(std::string entityName);
-
-    /*!
-     * @brief Attaches a camera to the orbit of an entity.
-     * @param cameraName The camera identifier string.
-     * @param entityName The entity identifier string.
-     */
-    void attachCameraToEntity(std::string cameraName, std::string entityName);
+    void
+    destroyCamera(std::string cameraName)
 
     /*!
      * @brief Registers a callback for when game updates occur.
      * By default a game update occurs at a constant rate of 60 times a second,
      * regardless of frame rate.
      */
-    void addGameUpdateCallback(boost::python::object callable);
+    void
+    addGameUpdateCallback(boost::python::object callable);
 
     /*!
      * @brief Unregisters a callback for game updates.
      */
-    void removeGameUpdateCallback(boost::python::object callable);
+    void
+    removeGameUpdateCallback(boost::python::object callable);
 
     /*!
      * @brief Removes each and every callback managed by this class.
      */
-    void removeAllCallbacks();
+    void
+    removeAllCallbacks();
 
 private:
 
     /*!
      * @brief Initialises the game so it's ready to run.
      */
-    void initialise();
+    void
+    initialise();
 
     /*!
      * @brief Cleans up everything.
      */
-    void cleanUp();
+    void
+    cleanUp();
 
     // override frame events
     virtual bool onPreUpdateRenderLoop(const float timeSinceLastUpdate);

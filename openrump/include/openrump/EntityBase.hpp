@@ -6,9 +6,12 @@
 // include files
 
 #include <string>
+#include <memory>
 
 #include <Ogre.h>
 #include <OgrePrerequisites.h>
+
+#include <openrump/EntityController.hpp>
 
 // ----------------------------------------------------------------------------
 // forward declarations
@@ -70,66 +73,23 @@ public:
     virtual ~EntityBase();
 
     /*!
-     * @brief Creates scene nodes to support an orbiting camera around the entity
-     * Will create two scene nodes, one for rotating, and one for attaching the
-     * a camera. It is recommended to use attachCameraToOrbit() instead of
-     * calling this method directly - the orbit is created automatically.
-     * @return Returns itself for chaining.
+     * @brief Returns the name of the entity.
+     * This is a globally unique identifier for this particular entity.
      */
-    EntityBase* createCameraOrbit();
+    std::string getName() const;
 
     /*!
-     * @brief Attaches a camera to an orbiting scene node.
-     * Will create the orbit nodes if they don't already exist, and attach
-     * the camera to it. The rotation scene node is returned - rotating it will
-     * rotate the camera in its orbit.
-     * @param cam The camera to attach.
-     * @param distance The distance the camera should have from the center of
-     * orbit.
-     * @return Returns the rotation scene node so the camera's orbit can be
-     * controlled.
+     * @brief Creates a new controller for this entity.
+     * @param controller The type of controller to create.
+     * @param controllerName A unique name for this controller so it can be referenced later.
      */
-    Ogre::SceneNode* attachCameraToOrbit(Ogre::Camera* cam, float distance=100.0f);
+    void addController(std::shared_ptr<EntityController> controller, std::string controllerName);
 
     /*!
-     * @brief Detaches the camera from orbit
-     * @note This does not remove the camera orbit nodes. If you wish to
-     * destroy the camera orbit nodes, use destroyCameraOrbit() instead.
-     * @return The camera that was detached is returned. If not camera was
-     * attached to begin with, nullptr is returned.
+     * @brief Destroys an existing controller from this entity.
+     * @param controllerName The unique name of the controller.
      */
-    Ogre::Camera* detachCameraFromOrbit();
-
-    /*!
-     * @brief Sets the camera's distance from the centre rotation point.
-     * @param distance The distance to set.
-     */
-    void setCameraDistance(float distance);
-
-    /*!
-     * @brief Gets the attached camera
-     * @return A pointer to the attached camera, or a nullptr if no camera is
-     * attached.
-     */
-    Ogre::Camera* getCamera() const;
-
-    /*!
-     * @brief Gets the rotation scene node for rotatin the camera
-     */
-    Ogre::SceneNode* getCameraRotateNode() const;
-
-    /*!
-     * @brief Destroys the camera orbit, and returns the camera if attached
-     * @return Returns the attached camera, or nullptr if there was no camera
-     * attached.
-     */
-    Ogre::Camera* destroyCameraOrbit();
-
-    /*!
-     * @brief Check to see if a camera orbit exists
-     * @return True if it exists, false if not.
-     */
-    bool hasCameraOrbit() const;
+    void removeController(std::string controllerName);
 
     Ogre::SceneNode* getTranslateSceneNode();
     Ogre::SceneNode* getRotateSceneNode();
@@ -155,38 +115,16 @@ protected:
                           Ogre::Real startTime,
                           Ogre::Real endTime);
 
-    /*!
-     * @brief Enables animation for this entity.
-     * Instantiates an animation controller for this entity.
-     */
-    void enableAnimation();
-
-    /*!
-     * @brief Disables animation for this entity.
-     */
-    void disableAnimation();
-
-    /*!
-     * @brief Returns true if animation is enabled.
-     */
-    bool isAnimated() const;
-
-    AnimationController* getAnimationController() const;
-
 private:
 
     Ogre::SceneManager* m_SceneManager;
     Ogre::Entity* m_OgreEntity;
     Ogre::SceneNode* m_OgreEntityTranslateNode;
     Ogre::SceneNode* m_OgreEntityRotateNode;
-    Ogre::SceneNode* m_CameraOrbitRotateNode;
-    Ogre::SceneNode* m_CameraOrbitAttachNode;
-    Ogre::Camera* m_OrbitingCamera;
 
-    std::unique_ptr<AnimationController> m_AnimationController;
+    std::map< std::string, std::shared_ptr<EntityController> > m_EntityControllerMap;
 
     Ogre::String m_Name;
-
 };
 
 } // namespace OpenRump
