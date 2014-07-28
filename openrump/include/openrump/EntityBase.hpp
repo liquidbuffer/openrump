@@ -80,16 +80,29 @@ public:
 
     /*!
      * @brief Attaches a camera to an orbiting scene node.
-     * Will create the orbit nodes if they don't already exist, and attach
+     * Will create the orbit nodes if they don't already exist and attach
      * the camera to it. The rotation scene node is returned - rotating it will
      * rotate the camera in its orbit.
      * @param cam The camera to attach.
      * @param distance The distance the camera should have from the center of
      * orbit.
-     * @return Returns the rotation scene node so the camera's orbit can be
+     * @return Returns the rotation scene node so the camera's angle can be
      * controlled.
      */
-    Ogre::SceneNode* attachCameraToOrbit(Ogre::Camera* cam, float distance=100.0f);
+    Ogre::SceneNode* attachCameraToOrbit(Ogre::Camera* cam, float distance=0.0f);
+
+    /*!
+     * @brief Attaches a camera to an orbiting scene node.
+     * Will create the orbit nodes if they don't already exist and attach
+     * the camera to it. The rotation scene node is returned - rotating it will
+     * rotate the camera in its orbit.
+     * @param cameraName The name of the camera to attach.
+     * @param distance The distance the camera should have from the center of
+     * orbit.
+     * @return Returns the rotation scene node so the camera's angle can be
+     * controlled.
+     */
+    Ogre::SceneNode* attachCameraToOrbit(std::string cameraName, float distance=0.0f)
 
     /*!
      * @brief Detaches the camera from orbit
