@@ -24,7 +24,6 @@ EntityControllerCameraOrbit::EntityControllerCameraOrbit(Ogre::SceneManager* sm,
     m_CameraOrbitRotateNode(nullptr),
     m_CameraOrbitAttachNode(nullptr),
     m_OrbitingCamera(nullptr),
-    m_Entity(nullptr),
     m_Input(input),
     m_CameraAngle(Ogre::Radian(0), Ogre::Radian(0), Ogre::Radian(0))
 {
@@ -37,18 +36,6 @@ EntityControllerCameraOrbit::EntityControllerCameraOrbit(Ogre::SceneManager* sm,
 EntityControllerCameraOrbit::~EntityControllerCameraOrbit()
 {
     this->destroyCameraOrbit();
-}
-
-// ----------------------------------------------------------------------------
-void EntityControllerCameraOrbit::attachToEntity(std::weak_ptr<EntityBase> entity)
-{
-    m_Entity = entity;
-}
-
-// ----------------------------------------------------------------------------
-void EntityControllerCameraOrbit::detachFromEntity()
-{
-    m_Entity = std::weak_ptr<EntityBase>(nullptr);
 }
 
 // ----------------------------------------------------------------------------

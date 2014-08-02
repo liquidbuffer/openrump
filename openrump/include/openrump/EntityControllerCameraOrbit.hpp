@@ -40,23 +40,13 @@ public:
      */
     EntityControllerCameraOrbit(Ogre::SceneManager* sm,
                                 Input* input,
-                                Ogre::Camera* camera,
+                                Ogre::Camera* camera=nullptr,
                                 float distance=0.0f);
 
     /*!
      * @brief Default destructor
      */
     ~EntityControllerCameraOrbit();
-
-    /*!
-     * @brief Attaches to an entity.
-     */
-    void attachToEntity(std::weak_ptr<EntityBase> entity);
-
-    /*!
-     * @brief Detaches from an entity.
-     */
-    void detachFromEntity();
 
     /*!
      * @brief Attaches a camera to an orbiting scene node.
@@ -148,8 +138,6 @@ private:
     Ogre::Camera* m_OrbitingCamera;
 
     Input* m_Input;
-
-    std::weak_ptr<EntityBase> m_Entity;
 
     CameraAngle m_CameraAngle;
 };

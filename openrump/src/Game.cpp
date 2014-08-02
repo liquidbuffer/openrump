@@ -120,28 +120,10 @@ Game::destroyEntity(EntityBase* entity)
 
 // ----------------------------------------------------------------------------
 EntityController*
-Game::createEntityControllerCameraOrbit(std::string cameraName, float distance)
+Game::createEntityControllerCameraOrbit(float distance)
 {
-    // existing name
-    if(m_EntityControllerMap.find(controllerName) != m_EntityControllerMap.end())
-        throw std::runtime_error("[Game::createEntityController] Error: \
-Controller with name \"" + controllerName + "\" already exists");
-
-    // try to create controller of specified type
-    EntityController* newController = nullptr;
-    if(controllerType == "CameraOrbit")
-        newController = new EntityControllerCameraOrbit(m_OgreRenderer->getMainSceneManager(), m_Input.get())
-
-    else
-        throw std::runtime_error("[Game::createEntityController] Error: \
-Controller of type \"" + controllerType + "\" unknown");
-    }
-
-    m_EntityControllerMap[controllerName] = std::unique_ptr<EntityController>(newController.get());
+    return new EntityControllerCameraOrbit(m_OgreRenderer->getMainSceneManager(), m_Input.get());
 }
-
-// ----------------------------------------------------------------------------
-void Game
 
 // ----------------------------------------------------------------------------
 void

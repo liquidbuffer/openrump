@@ -79,8 +79,8 @@ public:
     /*!
      * @brief Creates a camera orbit controller, ready to be attached to an entity.
      */
-    std::shared_ptr<EntityController>
-    createEntityControllerCameraOrbit(std::string cameraName="", float distance=0.0f);
+    EntityController*
+    createEntityControllerCameraOrbit(float distance=0.0f);
 
     /*!
      * @brief Creates a new camera and attaches it to the window.

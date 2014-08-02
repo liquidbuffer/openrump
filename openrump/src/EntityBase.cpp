@@ -14,6 +14,8 @@
 #include <OgreRoot.h>
 
 #include <iostream>
+#include <stdexcept>
+#include <string>
 
 namespace OpenRump {
 
@@ -67,6 +69,11 @@ EntityBase::EntityBase(OgreRenderer* renderer,
 // ----------------------------------------------------------------------------
 EntityBase::~EntityBase()
 {
+    // remove all controllers - controllers need to be notified before entity destruction
+    for(auto it : m_EntityControllerList)
+        this->removeController(it);
+
+    // destroy 3D object and all scene nodes
     m_OgreEntityRotateNode->detachObject(m_OgreEntity);
     m_SceneManager->destroyEntity(m_OgreEntity);
     m_OgreEntityTranslateNode->removeChild(m_OgreEntityRotateNode);
@@ -82,30 +89,28 @@ std::string EntityBase::getName() const
 }
 
 // ----------------------------------------------------------------------------
-void EntityBase::addController(std::shared_ptr<EntityController> controller, std::string controllerName)
+void EntityBase::addController(std::shared_ptr<EntityController> controller)
 {
     // check for existing name
-    auto it = m_EntityControllerMap.find(controllerName);
-    if(it != m_EntityControllerMap.end())
-        throw std::runtime_error(std::string("[EntityBase::createController] Error: \
-Controller with name \"") + controllerName + "\" already exists");
-
-    // register
-    m_EntityControllerMap[controllerName] = controller;
+    for(auto it : m_EntityControllerList)
+        if(it == controller)
+            throw std::runtime_error("[EntityBase::addController] Error: \
+Controller already exists");
+    m_EntityControllerList.push_back(controller);
 }
 
 // ----------------------------------------------------------------------------
-void EntityBase::removeController(std::string controllerName)
+void EntityBase::removeController(std::shared_ptr<EntityController> controller)
 {
-    auto it = m_EntityControllerMap.find(controllerName);
-    if(it == m_EntityControllerMap.end())
-    {
-        throw std::runtime_error(std::string("[EntityBase::destroyController] Error: \
-Controller with name \"") + controllerName + "\" not registered");
-        return;
-    }
+    for(auto it = m_EntityControllerList.begin(); it != m_EntityControllerList.end(); ++it)
+        if(*it == controller)
+        {
+            m_EntityControllerList.erase(it);
+            return;
+        }
 
-    m_EntityControllerMap.erase(it);
+    throw std::runtime_error("[EntityBase::destroyController] Error: \
+Controller not registered");
 }
 
 // ----------------------------------------------------------------------------

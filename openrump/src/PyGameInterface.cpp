@@ -17,7 +17,7 @@ using namespace OpenRump;
 void (Game::*destroyEntity_name)(std::string) = &Game::destroyEntity;
 void (Game::*destroyEntity_pointer)(EntityBase*) = &Game::destroyEntity;
 
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(createEntityControllerCameraOrbit_overloads, createEntityControllerCameraOrbit, 0, 1);
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(createEntityControllerCameraOrbit_overloads, createEntityControllerCameraOrbit, 1, 1);
 
 void exportGameInterface()
 {
@@ -30,7 +30,9 @@ void exportGameInterface()
                 reference_existing_object>())
         .def("destroy_entity", destroyEntity_name)
         .def("destroy_entity", destroyEntity_pointer)
-        .def("create_entity_controller_camera_orbit", &Game::createEntityControllerCameraOrbit, createEntityControllerCameraOrbit_overloads())
+        .def("create_entity_controller_camera_orbit", &Game::createEntityControllerCameraOrbit,
+                return_value_policy<
+                        manage_new_object>(), createEntityControllerCameraOrbit_overloads())
         .def("create_camera", &Game::createCamera)
         .def("destroy_camera", &Game::destroyCamera)
         .def("add_game_update_callback", &Game::addGameUpdateCallback)

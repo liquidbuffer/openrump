@@ -24,7 +24,7 @@ class Test(object):
     def __init__(self, game_obj):
         self.game_obj = game_obj
         self.player = self.game_obj.create_entity_player('body', 'twilightsparkle.mesh')
-
+        
 
 if __name__ == '__main__':
     game = open_rump.Game()
