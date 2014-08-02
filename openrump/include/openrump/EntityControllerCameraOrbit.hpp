@@ -14,6 +14,7 @@
 
 namespace OpenRump {
     class EntityBase;
+    class Input;
 }
 
 namespace OpenRump {

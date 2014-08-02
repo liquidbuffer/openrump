@@ -95,7 +95,7 @@ public:
      * @param cameraName The name of the camera to destroy.
      */
     void
-    destroyCamera(std::string cameraName)
+    destroyCamera(std::string cameraName);
 
     /*!
      * @brief Registers a callback for when game updates occur.
