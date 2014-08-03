@@ -27,7 +27,7 @@ class Test(object):
         self.camera_controller = self.game_obj.create_entity_controller_camera_orbit()
         self.player.add_controller(self.camera_controller)
         self.camera_controller.set_camera('camera')
-        self.camera_controller.set_distance_constraints(1, 100)
+        self.camera_controller.set_distance_constraints(1, 200)
         self.camera_controller.set_distance(10)
 
 if __name__ == '__main__':
