@@ -22,5 +22,6 @@ void exportEntityControllerCameraOrbitInterface()
         .def("set_distance_constraints", &EntityControllerCameraOrbit::setDistanceConstraints)
         .def("set_distance", &EntityControllerCameraOrbit::setDistance)
         .def("set_rotation", &EntityControllerCameraOrbit::pySetRotation)
+        .def("set_orbit_position", &EntityControllerCameraOrbit::setOrbitPosition)
     ;
 }

@@ -87,6 +87,8 @@ void EntityControllerCameraOrbit::setDistance(float distance)
 // ----------------------------------------------------------------------------
 void EntityControllerCameraOrbit::setRotationZYX(Ogre::Radian x, Ogre::Radian y, Ogre::Radian z)
 {
+    if(!m_CameraOrbitRotateNode)
+        return;
     this->getCameraRotateNode()->setOrientation(Ogre::Quaternion());
     this->getCameraRotateNode()->roll(z);
     this->getCameraRotateNode()->yaw(y);
@@ -101,6 +103,14 @@ void EntityControllerCameraOrbit::pySetRotation(float x, float y, float z)
             Ogre::Radian(y),
             Ogre::Radian(z)
     );
+}
+
+// ----------------------------------------------------------------------------
+void EntityControllerCameraOrbit::setOrbitPosition(float x, float y, float z)
+{
+    if(!m_CameraOrbitRotateNode)
+        return;
+    this->getCameraRotateNode()->setPosition(x, y, z);
 }
 
 // ----------------------------------------------------------------------------

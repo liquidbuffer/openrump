@@ -107,6 +107,11 @@ public:
     void pySetRotation(float x, float y, float z);
 
     /*!
+     * @brief Sets the position of the orbit (center offset)
+     */
+    void setOrbitPosition(float x, float y, float z);
+
+    /*!
      * @brief Gets the attached camera
      * @return A pointer to the attached camera, or a nullptr if no camera is
      * attached.
