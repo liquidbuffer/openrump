@@ -79,7 +79,7 @@ public:
     /*!
      * @brief Creates a camera orbit controller, ready to be attached to an entity.
      */
-    EntityController*
+    boost::shared_ptr<EntityController>
     createEntityControllerCameraOrbit(float distance=0.0f);
 
     /*!

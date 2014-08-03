@@ -30,14 +30,16 @@ public:
 
     /*!
      * @brief Sets the entity this controller should take control over.
-     * @note This should not be used manually (hackety)
+     * @note This should not be used manually - this is called by the entity
+     * when the controller is added to the entity.
      */
     virtual void setEntity(EntityBase* entity);
 
     /*!
-     * @brief Called when the entity being controlled is removed from the entity itself.
+     * @brief Called when the entity being controlled is switched.
+     * @param newEntity The new entity being switched to.
      */
-    virtual void onCleanUp();
+    virtual void notifyEntityChange(EntityBase* newEntity);
 
 protected:
 

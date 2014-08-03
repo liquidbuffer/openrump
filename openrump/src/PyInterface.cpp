@@ -13,10 +13,14 @@
 void exportGameInterface();
 void exportEntityBaseInterface();
 void exportEntityPlayerInterface();
+void exportEntityControllerInterface();
+void exportEntityControllerCameraOrbitInterface();
 
 BOOST_PYTHON_MODULE(open_rump)
 {
     exportGameInterface();
     exportEntityBaseInterface();
     exportEntityPlayerInterface();
+    exportEntityControllerInterface();
+    exportEntityControllerCameraOrbitInterface();
 };

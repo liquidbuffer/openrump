@@ -83,13 +83,13 @@ public:
      * @param controller The type of controller to create.
      * @param controllerName A unique name for this controller so it can be referenced later.
      */
-    void addController(std::shared_ptr<EntityController> controller);
+    void addController(boost::shared_ptr<EntityController> controller);
 
     /*!
      * @brief Destroys an existing controller from this entity.
      * @param controllerName The unique name of the controller.
      */
-    void removeController(std::shared_ptr<EntityController> controller);
+    void removeController(boost::shared_ptr<EntityController> controller);
 
     Ogre::SceneNode* getTranslateSceneNode();
     Ogre::SceneNode* getRotateSceneNode();
@@ -122,7 +122,7 @@ private:
     Ogre::SceneNode* m_OgreEntityTranslateNode;
     Ogre::SceneNode* m_OgreEntityRotateNode;
 
-    std::vector< std::shared_ptr<EntityController> > m_EntityControllerList;
+    std::vector< boost::shared_ptr<EntityController> > m_EntityControllerList;
 
     Ogre::String m_Name;
 };

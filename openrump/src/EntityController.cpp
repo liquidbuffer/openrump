@@ -24,12 +24,12 @@ EntityController::~EntityController()
 void EntityController::setEntity(EntityBase* entity)
 {
     if(m_Entity)
-        this->onCleanUp();
+        this->notifyEntityChange(entity);
     m_Entity = entity;
 }
 
 // ----------------------------------------------------------------------------
-void EntityController::onCleanUp()
+void EntityController::notifyEntityChange(EntityBase*)
 {
 }
 

@@ -89,7 +89,7 @@ std::string EntityBase::getName() const
 }
 
 // ----------------------------------------------------------------------------
-void EntityBase::addController(std::shared_ptr<EntityController> controller)
+void EntityBase::addController(boost::shared_ptr<EntityController> controller)
 {
     // check for existing name
     for(auto it : m_EntityControllerList)
@@ -97,14 +97,16 @@ void EntityBase::addController(std::shared_ptr<EntityController> controller)
             throw std::runtime_error("[EntityBase::addController] Error: \
 Controller already exists");
     m_EntityControllerList.push_back(controller);
+    controller->notifyEntityChange(this);
 }
 
 // ----------------------------------------------------------------------------
-void EntityBase::removeController(std::shared_ptr<EntityController> controller)
+void EntityBase::removeController(boost::shared_ptr<EntityController> controller)
 {
     for(auto it = m_EntityControllerList.begin(); it != m_EntityControllerList.end(); ++it)
         if(*it == controller)
         {
+            (*it)->notifyEntityChange(nullptr);
             m_EntityControllerList.erase(it);
             return;
         }

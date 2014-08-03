@@ -24,6 +24,8 @@ set (OpenRump_SOURCES
 	"${OpenRump_SOURCE_DIR}/src/PyCallbackDispatcher.cpp"
 	"${OpenRump_SOURCE_DIR}/src/PyInterface.cpp"
 	"${OpenRump_SOURCE_DIR}/src/PyEntityBaseInterface.cpp"
+	"${OpenRump_SOURCE_DIR}/src/PyEntityControllerInterface.cpp"
+	"${OpenRump_SOURCE_DIR}/src/PyEntityControllerCameraOrbitInterface.cpp"
 	"${OpenRump_SOURCE_DIR}/src/PyEntityPlayerInterface.cpp"
 	"${OpenRump_SOURCE_DIR}/src/PyGameInterface.cpp"
 	"${OpenRump_SOURCE_DIR}/src/RendererFrameListener.cpp"

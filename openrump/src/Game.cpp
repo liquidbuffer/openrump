@@ -119,10 +119,12 @@ Game::destroyEntity(EntityBase* entity)
 }
 
 // ----------------------------------------------------------------------------
-EntityController*
+boost::shared_ptr<EntityController>
 Game::createEntityControllerCameraOrbit(float distance)
 {
-    return new EntityControllerCameraOrbit(m_OgreRenderer->getMainSceneManager(), m_Input.get());
+    return boost::shared_ptr<EntityController>(
+        new EntityControllerCameraOrbit(m_OgreRenderer->getMainSceneManager(), m_Input.get())
+    );
 }
 
 // ----------------------------------------------------------------------------

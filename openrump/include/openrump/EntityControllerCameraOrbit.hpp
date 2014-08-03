@@ -39,9 +39,7 @@ public:
      * @param entity The entity to take control of.
      */
     EntityControllerCameraOrbit(Ogre::SceneManager* sm,
-                                Input* input,
-                                Ogre::Camera* camera=nullptr,
-                                float distance=0.0f);
+                                Input* input);
 
     /*!
      * @brief Default destructor
@@ -59,17 +57,13 @@ public:
      * @return Returns the rotation scene node so the camera's orbit can be
      * controlled.
      */
-    Ogre::SceneNode* attachCameraToOrbit(Ogre::Camera* cam, float distance=0.0f);
+    void setCamera(Ogre::Camera* cam);
 
     /*!
-     * @brief Python wrapper function version.
-     * Ogre::Camera is not exposed to python, and neither is Ogre::SceneNode.
-     * This function takes a camera name instead of a camera pointer, and
-     * returns nothing.
-     * @param camName The name of a camera to attach.
-     * @param distance The distance to set the camera at.
+     * @brief Python binding for setting the camera
+     * @param cameraName The global identifier of the camera to set.
      */
-    void pyAttachCameraToOrbit(std::string camName, float distance=0.0f);
+    void pySetCamera(std::string cameraName);
 
     /*!
      * @brief Detaches the camera from orbit
@@ -78,13 +72,13 @@ public:
      * @return The camera that was detached is returned. If not camera was
      * attached to begin with, nullptr is returned.
      */
-    Ogre::Camera* detachCameraFromOrbit();
+    Ogre::Camera* removeCamera();
 
     /*!
      * @brief Detaches the camera from the orbit.
      * @note This does the same as detachCameraFromOrbit.
      */
-    void pyDetachCameraFromOrbit();
+    void pyRemoveCamera();
 
     /*!
      * @brief Sets the distance constraints of the camera.
@@ -107,6 +101,12 @@ public:
     void setRotationZYX(Ogre::Radian x, Ogre::Radian y, Ogre::Radian z);
 
     /*!
+     * @brief Python exposed version
+     * Parameters are in radian.
+     */
+    void pySetRotation(float x, float y, float z);
+
+    /*!
      * @brief Gets the attached camera
      * @return A pointer to the attached camera, or a nullptr if no camera is
      * attached.
@@ -120,12 +120,29 @@ public:
 
 private:
 
-    void createCameraOrbit();
+    /*!
+     * @brief Will reconstruct all the supporting scene nodes and camera if required.
+     */
+    void reconstructSceneNodesAndCamera();
+
+    /*!
+     * @brief Creates the supporting scene node structure to attach the camera to.
+     * The scene nodes are attached to the entity's translate scene node.
+     * @param entity The entity to create the scene nodes on.
+     */
+    void createCameraOrbit(EntityBase* entity);
+
+    /*!
+     * @brief Removes the supporting scene node structure and detaches the camera.
+     */
     void destroyCameraOrbit();
 
     // override input events
     virtual void onChangeCameraAngleDelta(float deltaAngleX, float deltaAngleY);
     virtual void onChangeCameraDistanceDelta(float deltaDistance);
+
+    // override entity registration events
+    virtual void notifyEntityChange(EntityBase*);
 
     Ogre::Real m_CameraDistance;
     Ogre::Real m_MaxCameraDistance;
