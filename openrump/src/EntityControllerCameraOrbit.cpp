@@ -173,7 +173,7 @@ void EntityControllerCameraOrbit::onChangeCameraAngleDelta(float deltaAngleX, fl
 void EntityControllerCameraOrbit::onChangeCameraDistanceDelta(float deltaDistance)
 {
     this->setDistance(Ogre::Math::Clamp(
-        (m_MinCameraDistance - m_CameraDistance - Ogre::Real(1))
+        (m_MinCameraDistance - m_CameraDistance - Ogre::Real(2))
                 * deltaDistance
                 + m_CameraDistance,
         m_MinCameraDistance,
