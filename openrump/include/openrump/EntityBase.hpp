@@ -102,7 +102,7 @@ public:
      * @return Returns the rotation scene node so the camera's angle can be
      * controlled.
      */
-    Ogre::SceneNode* attachCameraToOrbit(std::string cameraName, float distance=0.0f)
+    Ogre::SceneNode* attachCameraToOrbit(std::string cameraName, float distance=0.0f);
 
     /*!
      * @brief Detaches the camera from orbit

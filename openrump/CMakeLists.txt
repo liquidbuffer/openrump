@@ -61,12 +61,18 @@ if (NOT OpenRump_USE_INTERNAL_DEPENDENCIES)
 	find_package (OIS REQUIRED)
 	include_directories (${OIS_INCLUDE_DIRS})
 	target_link_libraries (OpenRump ${OIS_LIBRARIES})
+
+	find_package (COMENT REQUIRED)
+	include_directories (${COMENT_INCLUDE_DIRS})
+	target_link_libraries (OpenRump ${COMENT_LIBRARIES})
 else ()
 	include_directories ("${CMAKE_SOURCE_DIR}/build.dep/include/OGRE")
 	include_directories ("${CMAKE_SOURCE_DIR}/build.dep/include/python2.7")
+	include_directories ("${CMAKE_SOURCE_DIR}/build.dep/include/coment")
 	target_link_libraries (OpenRump
 		"${CMAKE_SOURCE_DIR}/build.dep/lib/libOgreMain.so"
 		"${CMAKE_SOURCE_DIR}/build.dep/lib/libOIS.so"
 		"${CMAKE_SOURCE_DIR}/build.dep/lib/libboost_python.so"
+		"${CMAKE_SOURCE_DIR}/build.dep/lib/libcoment.so"
 	)
 endif ()

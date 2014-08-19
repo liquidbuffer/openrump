@@ -12,6 +12,8 @@
 
 #include <OgreRoot.h>
 
+#include <coment/World.h>
+
 namespace OpenRump {
 
 // ----------------------------------------------------------------------------
@@ -19,6 +21,7 @@ Game::Game() :
     m_OgreRenderer(new OgreRenderer),
     m_Input(new OISInput),
     m_Shutdown(false),
+    m_World(new coment::World)
     m_IsInitialised(false)
 {
     this->initialise();
@@ -72,6 +75,8 @@ void Game::initialise()
     m_OgreRenderer->frameEvent.addListener(this, "Game");
 
     m_IsInitialised = true;
+
+    coment::World* world = new coment::World();
 }
 
 // ----------------------------------------------------------------------------

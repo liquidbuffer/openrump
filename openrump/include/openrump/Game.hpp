@@ -17,6 +17,10 @@
 // ----------------------------------------------------------------------------
 // forward declarations
 
+namespace coment {
+    class World;
+}
+
 namespace OpenRump {
     class OgreRenderer;
     class Input;
@@ -116,6 +120,7 @@ private:
 
     std::unique_ptr<OgreRenderer> m_OgreRenderer;
     std::unique_ptr<Input> m_Input;
+    std::unique_ptr<coment::World> m_World;
 
     bool m_Shutdown;
     bool m_IsInitialised;
