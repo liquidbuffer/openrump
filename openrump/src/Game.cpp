@@ -18,10 +18,8 @@ namespace OpenRump {
 
 // ----------------------------------------------------------------------------
 Game::Game() :
-    m_OgreRenderer(new OgreRenderer),
-    m_Input(new OISInput),
+    m_World(new coment::World),
     m_Shutdown(false),
-    m_World(new coment::World)
     m_IsInitialised(false)
 {
     this->initialise();
@@ -61,13 +59,12 @@ void Game::initialise()
                 "[Game::initialise] Error: Game already initialised!");
 
     // initialise renderer
-    m_OgreRenderer->initialise();
+    m_World->addComponent<OgreRenderComponent>()
 
     Ogre::SceneManager* sm = m_OgreRenderer->getMainSceneManager();
 
-    // create default light
-    Ogre::Light* light = sm->createLight("MainLight");
-    light->setPosition(60, 200, -500);
+    // create default lights
+    sm->createLight("MainLight")->setPosition(60, 200, -500);
     sm->createLight("SecondLight")->setPosition(-60, -200, 500);
 
     // register as listener
@@ -75,8 +72,6 @@ void Game::initialise()
     m_OgreRenderer->frameEvent.addListener(this, "Game");
 
     m_IsInitialised = true;
-
-    coment::World* world = new coment::World();
 }
 
 // ----------------------------------------------------------------------------
@@ -175,6 +170,9 @@ bool Game::onPreUpdateRenderLoop(const float timeSinceLastUpdate)
 // ----------------------------------------------------------------------------
 bool Game::onUpdateGameLoop(const float timeStep)
 {
+    m_World->loopStart();
+    m_World->setDelta(timeStep);
+    m_World->update();
     return m_PyGameUpdate.dispatchAndFindFalse(std::forward<const float>(timeStep));
 }
 

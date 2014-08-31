@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
-// OgreRenderer.cpp
+// OgreRenderComponent.cpp
 // ----------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------
 // include files
 
-#include <openrump/OgreRenderer.hpp>
+#include <openrump/OgreRenderComponent.hpp>
 #include <openrump/RendererFrameListener.hpp>
 
 #include <OgreRoot.h>
@@ -17,7 +17,7 @@
 namespace OpenRump {
 
 // ----------------------------------------------------------------------------
-OgreRenderer::OgreRenderer() :
+OgreRenderComponent::OgreRenderComponent() :
     m_LoopTimer(new LoopTimer()),
     m_Root(nullptr),
     m_Window(nullptr),
@@ -39,12 +39,12 @@ OgreRenderer::OgreRenderer() :
 }
 
 // ----------------------------------------------------------------------------
-OgreRenderer::~OgreRenderer()
+OgreRenderComponent::~OgreRenderComponent()
 {
 }
 
 // ----------------------------------------------------------------------------
-bool OgreRenderer::initialise()
+bool OgreRenderComponent::initialise()
 {
     if(m_Root)
         return false;
@@ -103,14 +103,14 @@ bool OgreRenderer::initialise()
 }
 
 // ----------------------------------------------------------------------------
-void OgreRenderer::startRendering()
+void OgreRenderComponent::startRendering()
 {
     m_LoopTimer->reset();
     m_Root->startRendering();
 }
 
 // ----------------------------------------------------------------------------
-std::size_t OgreRenderer::getWindowHandle() const
+std::size_t OgreRenderComponent::getWindowHandle() const
 {
     std::size_t hwnd;
     m_Window->getCustomAttribute("WINDOW", &hwnd);
@@ -118,13 +118,13 @@ std::size_t OgreRenderer::getWindowHandle() const
 }
 
 // ----------------------------------------------------------------------------
-Ogre::SceneManager* OgreRenderer::getMainSceneManager() const
+Ogre::SceneManager* OgreRenderComponent::getMainSceneManager() const
 {
     return m_SceneManager;
 }
 
 // ----------------------------------------------------------------------------
-Ogre::Camera* OgreRenderer::createCamera(std::string name)
+Ogre::Camera* OgreRenderComponent::createCamera(std::string name)
 {
     m_Camera = m_SceneManager->createCamera(name);
     Ogre::Viewport* vp = m_Window->addViewport(m_Camera);
@@ -139,13 +139,13 @@ Ogre::Camera* OgreRenderer::createCamera(std::string name)
 }
 
 // ----------------------------------------------------------------------------
-Ogre::Camera* OgreRenderer::getMainCamera() const
+Ogre::Camera* OgreRenderComponent::getMainCamera() const
 {
     return m_Camera;
 }
 
 // ----------------------------------------------------------------------------
-bool OgreRenderer::frameStarted(const Ogre::FrameEvent& evt)
+bool OgreRenderComponent::frameStarted(const Ogre::FrameEvent& evt)
 {
     // dispatch pre render loop event
     return frameEvent.dispatchAndFindFalse(&RendererFrameListener::onPreUpdateRenderLoop,
@@ -153,7 +153,7 @@ bool OgreRenderer::frameStarted(const Ogre::FrameEvent& evt)
 }
 
 // ----------------------------------------------------------------------------
-bool OgreRenderer::frameRenderingQueued(const Ogre::FrameEvent& evt)
+bool OgreRenderComponent::frameRenderingQueued(const Ogre::FrameEvent& evt)
 {
     // dispatch game loop event
     int updates = 0;

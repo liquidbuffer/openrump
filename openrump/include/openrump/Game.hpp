@@ -118,8 +118,6 @@ private:
     // override input listener methods
     virtual void onButtonExit();
 
-    std::unique_ptr<OgreRenderer> m_OgreRenderer;
-    std::unique_ptr<Input> m_Input;
     std::unique_ptr<coment::World> m_World;
 
     bool m_Shutdown;

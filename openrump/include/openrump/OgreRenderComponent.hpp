@@ -12,6 +12,8 @@
 #include <OgreString.h>
 #include <OgreFrameListener.h>
 
+#include <coment/Component.h>
+
 #include <memory>
 
 // ----------------------------------------------------------------------------
@@ -30,20 +32,20 @@ namespace Ogre {
 
 namespace OpenRump {
 
-class OPENRUMP_API OgreRenderer :
-    public Ogre::FrameListener
+class OPENRUMP_API OgreRenderComponent :
+    public coment::Component
 {
 public:
 
     /*!
      * @brief Default constructor
      */
-    OgreRenderer();
+    OgreRenderComponent();
 
     /*!
      * @brief Default destructor
      */
-    ~OgreRenderer();
+    ~OgreRenderComponent();
 
     /*!
      * @brief Sets up Ogre3D
@@ -85,8 +87,8 @@ public:
 private:
 
     // override frame listeners
-    virtual bool frameStarted(const Ogre::FrameEvent& evt);
-    virtual bool frameRenderingQueued(const Ogre::FrameEvent&);
+    //virtual bool frameStarted(const Ogre::FrameEvent& evt);
+    //virtual bool frameRenderingQueued(const Ogre::FrameEvent&);
 
     std::unique_ptr<LoopTimer> m_LoopTimer;
     std::unique_ptr<Ogre::Root> m_Root;
