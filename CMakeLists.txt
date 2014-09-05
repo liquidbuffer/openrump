@@ -18,12 +18,14 @@ endif()
 
 ###############################################################################
 # set output locations
-# ".lib" files are exportet to the "lib" folder
-# ".exe" and ".dll" files are exported to the "bin" folder
 ###############################################################################
 set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
-set (CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+if (WIN32)
+	set (CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+else ()
+	set (CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+endif ()
 
 set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Packages")
 set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Utils")
@@ -56,22 +58,32 @@ if (CMAKE_BUILD_TYPE MATCHES Debug)
     )
 endif ()
 
+###############################################################################
+# generate ignored folders
+# these are populate later on during configuration of individual targets
+###############################################################################
+
+# generate ignored folders
+file (MAKE_DIRECTORY "res/plugins")
+file (WRITE "res/plugins/.gitignore" "*")
+file (MAKE_DIRECTORY "res/mesh")
+file (WRITE "res/mesh/.gitignore" "*")
 
 ###############################################################################
 # Detect internal dependencies
 ###############################################################################
-if (EXISTS "${CMAKE_SOURCE_DIR}/build.dep/")
+if (EXISTS "${CMAKE_SOURCE_DIR}/dep/")
+	add_subdirectory ("dep")
 	set (OpenRump_USE_INTERNAL_DEPENDENCIES 1)
-	include_directories ("${CMAKE_SOURCE_DIR}/build.dep/include")
-	link_directories ("${CMAKE_SOURCE_DIR}/build.dep/lib")
 else ()
-	set (_dep_message "WARNING: Dependencies directory \"build.dep\" not found. If the project failes to compile, \n")
-	set (_dep_message ${_dep_message} "   it is recommended to first build the dependencies and install them locally to")
-	set (_dep_message ${_dep_message} "   the folder \"build.dep\" in this project's root directory.:\n")
-	set (_dep_message ${_dep_message} "       $ git clone git://github.com/dep-openrump.git\n")
+	set (_dep_message "WARNING: Dependencies directory \"dep\" not found. If the project failes to compile, \n")
+	set (_dep_message ${_dep_message} "   try adding the dependency repository as a submodule like so:\n")
+	set (_dep_message ${_dep_message} "       $ git submodule add git://github.com/openrump-dep.git dep\n")
 	message (STATUS ${_dep_message})
 	set (OpenRump_USE_INTERNAL_DEPENDENCIES 0)
 endif ()
+
+include_directories ("openrump/include")
 
 add_subdirectory ("openrump")
 add_subdirectory ("app")

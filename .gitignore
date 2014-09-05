@@ -21,8 +21,9 @@
 *.app
 
 # build folders
-/build.*
+/build*
 
 # temporary files
 *.swp
 *~
+*.log
