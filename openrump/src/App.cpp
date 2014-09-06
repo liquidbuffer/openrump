@@ -10,7 +10,7 @@
 #include <boost/python.hpp>  // must be included before std to avoid warnings
 
 #include <openrump/App.hpp>
-#include <openrump/OgreRenderer.hpp>
+#include <openrump/OgreRenderSystem.hpp>
 #include <openrump/Game.hpp>
 #include <openrump/PyInterface.hpp>
 

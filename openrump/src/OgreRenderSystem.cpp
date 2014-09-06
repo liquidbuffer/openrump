@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
-// OgreRenderComponent.cpp
+// OgreRenderSystem.cpp
 // ----------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------
 // include files
 
-#include <openrump/OgreRenderComponent.hpp>
+#include <openrump/OgreRenderSystem.hpp>
 #include <openrump/RendererFrameListener.hpp>
 
 #include <OgreRoot.h>
@@ -17,7 +17,7 @@
 namespace OpenRump {
 
 // ----------------------------------------------------------------------------
-OgreRenderComponent::OgreRenderComponent() :
+OgreRenderSystem::OgreRenderSystem() :
     m_LoopTimer(new LoopTimer()),
     m_Root(nullptr),
     m_Window(nullptr),
@@ -39,12 +39,12 @@ OgreRenderComponent::OgreRenderComponent() :
 }
 
 // ----------------------------------------------------------------------------
-OgreRenderComponent::~OgreRenderComponent()
+OgreRenderSystem::~OgreRenderSystem()
 {
 }
 
 // ----------------------------------------------------------------------------
-bool OgreRenderComponent::initialise()
+bool OgreRenderSystem::initialise()
 {
     if(m_Root)
         return false;
@@ -94,7 +94,7 @@ bool OgreRenderComponent::initialise()
     // set up scene manager
     m_SceneManager = m_Root->createSceneManager("OctreeSceneManager", "MainSceneManager");
 
-    m_Root->addFrameListener(this);
+    //TODO m_Root->addFrameListener(this);
 
     // set game loop fps to 60
     m_LoopTimer->setFPS(60);
@@ -103,14 +103,14 @@ bool OgreRenderComponent::initialise()
 }
 
 // ----------------------------------------------------------------------------
-void OgreRenderComponent::startRendering()
+void OgreRenderSystem::startRendering()
 {
     m_LoopTimer->reset();
     m_Root->startRendering();
 }
 
 // ----------------------------------------------------------------------------
-std::size_t OgreRenderComponent::getWindowHandle() const
+std::size_t OgreRenderSystem::getWindowHandle() const
 {
     std::size_t hwnd;
     m_Window->getCustomAttribute("WINDOW", &hwnd);
@@ -118,13 +118,13 @@ std::size_t OgreRenderComponent::getWindowHandle() const
 }
 
 // ----------------------------------------------------------------------------
-Ogre::SceneManager* OgreRenderComponent::getMainSceneManager() const
+Ogre::SceneManager* OgreRenderSystem::getMainSceneManager() const
 {
     return m_SceneManager;
 }
 
 // ----------------------------------------------------------------------------
-Ogre::Camera* OgreRenderComponent::createCamera(std::string name)
+Ogre::Camera* OgreRenderSystem::createCamera(std::string name)
 {
     m_Camera = m_SceneManager->createCamera(name);
     Ogre::Viewport* vp = m_Window->addViewport(m_Camera);
@@ -139,13 +139,13 @@ Ogre::Camera* OgreRenderComponent::createCamera(std::string name)
 }
 
 // ----------------------------------------------------------------------------
-Ogre::Camera* OgreRenderComponent::getMainCamera() const
+Ogre::Camera* OgreRenderSystem::getMainCamera() const
 {
     return m_Camera;
 }
-
+/*
 // ----------------------------------------------------------------------------
-bool OgreRenderComponent::frameStarted(const Ogre::FrameEvent& evt)
+bool OgreRenderSystem::frameStarted(const Ogre::FrameEvent& evt)
 {
     // dispatch pre render loop event
     return frameEvent.dispatchAndFindFalse(&RendererFrameListener::onPreUpdateRenderLoop,
@@ -153,7 +153,7 @@ bool OgreRenderComponent::frameStarted(const Ogre::FrameEvent& evt)
 }
 
 // ----------------------------------------------------------------------------
-bool OgreRenderComponent::frameRenderingQueued(const Ogre::FrameEvent& evt)
+bool OgreRenderSystem::frameRenderingQueued(const Ogre::FrameEvent& evt)
 {
     // dispatch game loop event
     int updates = 0;
@@ -170,6 +170,6 @@ bool OgreRenderComponent::frameRenderingQueued(const Ogre::FrameEvent& evt)
     // dispatch render loop event
     return frameEvent.dispatchAndFindFalse(&RendererFrameListener::onUpdateRenderLoop,
             evt.timeSinceLastFrame);
-}
+}*/
 
 } // namespace OpenRump

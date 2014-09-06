@@ -7,7 +7,7 @@
 
 #include <openrump/EntityPlayer.hpp>
 #include <openrump/Input.hpp>
-#include <openrump/OgreRenderer.hpp>
+#include <openrump/OgreRenderSystem.hpp>
 
 #include <OgreRoot.h>
 
@@ -16,7 +16,7 @@
 #include <boost/foreach.hpp>
 
 namespace OpenRump {
-
+/*
 // ----------------------------------------------------------------------------
 EntityPlayer::EntityPlayer(OgreRenderer* renderer) :
     m_Input(nullptr),
@@ -280,6 +280,6 @@ bool EntityPlayer::onUpdateGameLoop(const float timeStep)
     );
 
     return true;
-}
+}*/
 
 } // namespace OpenRump

@@ -7,7 +7,7 @@
 
 #include <openrump/EntityBase.hpp>
 #include <openrump/AnimationController.hpp>
-#include <openrump/OgreRenderer.hpp>
+#include <openrump/OgreRenderSystem.hpp>
 
 #include <OgreSceneManager.h>
 #include <OgreEntity.h>
@@ -16,7 +16,7 @@
 #include <iostream>
 
 namespace OpenRump {
-
+/*
 // ----------------------------------------------------------------------------
 EntityBase::EntityBase() :
     m_SceneManager(nullptr),
@@ -261,5 +261,5 @@ Ogre::SceneNode* EntityBase::getRotateSceneNode()
     assert(m_OgreEntityRotateNode != nullptr);
     return m_OgreEntityRotateNode;
 }
-
+*/
 } // namespace OpenRump

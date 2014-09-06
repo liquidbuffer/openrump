@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------------
-// OgreRenderer.hpp
+// OgreRenderSystem.hpp
 // ----------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------
@@ -12,7 +12,7 @@
 #include <OgreString.h>
 #include <OgreFrameListener.h>
 
-#include <coment/Component.h>
+#include <Artemis/EntityProcessingSystem.h>
 
 #include <memory>
 
@@ -32,20 +32,20 @@ namespace Ogre {
 
 namespace OpenRump {
 
-class OPENRUMP_API OgreRenderComponent :
-    public coment::Component
+class OPENRUMP_API OgreRenderSystem :
+    public artemis::EntityProcessingSystem
 {
 public:
 
     /*!
      * @brief Default constructor
      */
-    OgreRenderComponent();
+    OgreRenderSystem();
 
     /*!
      * @brief Default destructor
      */
-    ~OgreRenderComponent();
+    ~OgreRenderSystem();
 
     /*!
      * @brief Sets up Ogre3D
@@ -89,6 +89,8 @@ private:
     // override frame listeners
     //virtual bool frameStarted(const Ogre::FrameEvent& evt);
     //virtual bool frameRenderingQueued(const Ogre::FrameEvent&);
+
+    virtual void processEntity(artemis::Entity &e) {};
 
     std::unique_ptr<LoopTimer> m_LoopTimer;
     std::unique_ptr<Ogre::Root> m_Root;

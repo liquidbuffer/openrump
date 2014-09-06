@@ -8,12 +8,12 @@ project (AppOpenRump)
 # definition and dump it in the cache along with proper documentation, otherwise
 # set MAKE_BUILD_TYPE to Debug prior to calling PROJECT()
 if (DEFINED CMAKE_BUILD_TYPE)
-    if (NOT CMAKE_BUILD_TYPE MATCHES Debug)
-        set (CMAKE_BUILD_TYPE Debug)
-    endif ()
-    set (CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE STRING "Choose the type of build, options are: None(CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel.")
+	if (NOT CMAKE_BUILD_TYPE MATCHES Debug)
+		set (CMAKE_BUILD_TYPE Debug)
+	endif ()
+	set (CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE STRING "Choose the type of build, options are: None(CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel.")
 else()
-    set (CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build, options are: None(CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel.")
+	set (CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build, options are: None(CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel.")
 endif()
 
 ###############################################################################
@@ -34,7 +34,7 @@ set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Utils")
 # library definitions
 ###############################################################################
 add_definitions (
-    -DOPENRUMP_DYNAMIC
+	-DOPENRUMP_DYNAMIC
 )
 
 ###############################################################################
@@ -44,18 +44,18 @@ if (MSVC)
 elseif (MINGW)
 elseif (APPLE)
 elseif (UNIX)
-    add_definitions(
-        -std=c++0x
-    )
+	add_definitions(
+		-std=c++0x
+	)
 else ()
-    message(FATAL_ERROR "Unsupported OS")
+	message(FATAL_ERROR "Unsupported OS")
 endif ()
 
 if (CMAKE_BUILD_TYPE MATCHES Debug)
-    add_definitions(
-        -D_DEBUG
-        -DDEBUG
-    )
+	add_definitions(
+		-D_DEBUG
+		-DDEBUG
+	)
 endif ()
 
 ###############################################################################
@@ -69,6 +69,13 @@ file (WRITE "res/plugins/.gitignore" "*")
 file (MAKE_DIRECTORY "res/mesh")
 file (WRITE "res/mesh/.gitignore" "*")
 
+# cmake's external dependencies
+set (EXTERNAL_DEP_DIR "${CMAKE_SOURCE_DIR}/cmake-dep")
+file (MAKE_DIRECTORY ${EXTERNAL_DEP_DIR})
+file (WRITE "${EXTERNAL_DEP_DIR}/.gitignore" "*")
+link_directories ("${EXTERNAL_DEP_DIR}/lib")
+include_directories ("${EXTERNAL_DEP_DIR}/include")
+
 ###############################################################################
 # Detect internal dependencies
 ###############################################################################
@@ -78,7 +85,7 @@ if (EXISTS "${CMAKE_SOURCE_DIR}/dep/")
 else ()
 	set (_dep_message "WARNING: Dependencies directory \"dep\" not found. If the project failes to compile, \n")
 	set (_dep_message ${_dep_message} "   try adding the dependency repository as a submodule like so:\n")
-	set (_dep_message ${_dep_message} "       $ git submodule add git://github.com/openrump-dep.git dep\n")
+	set (_dep_message ${_dep_message} "	   $ git submodule add git://github.com/openrump-dep.git dep\n")
 	message (STATUS ${_dep_message})
 	set (OpenRump_USE_INTERNAL_DEPENDENCIES 0)
 endif ()

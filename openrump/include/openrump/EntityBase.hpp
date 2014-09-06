@@ -6,6 +6,7 @@
 // include files
 
 #include <string>
+#include <memory>
 
 #include <Ogre.h>
 #include <OgrePrerequisites.h>

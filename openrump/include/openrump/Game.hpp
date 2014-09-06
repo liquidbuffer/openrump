@@ -9,6 +9,8 @@
 #include <openrump/RendererFrameListener.hpp>
 #include <openrump/PyCallbackDispatcher.hpp>
 
+#include <Artemis/World.h>
+
 #include <string>
 #include <memory>
 #include <vector>
@@ -16,10 +18,6 @@
 
 // ----------------------------------------------------------------------------
 // forward declarations
-
-namespace coment {
-    class World;
-}
 
 namespace OpenRump {
     class OgreRenderer;
@@ -118,7 +116,7 @@ private:
     // override input listener methods
     virtual void onButtonExit();
 
-    std::unique_ptr<coment::World> m_World;
+    artemis::World m_World;
 
     bool m_Shutdown;
     bool m_IsInitialised;
