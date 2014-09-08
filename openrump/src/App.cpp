@@ -40,13 +40,13 @@ App::~App()
 void App::onLoad()
 {
     // important for when python needs to load modules
-    Py_SetProgramName(m_PyWorkingDirectory.get());
-    Py_Initialize();
+    //Py_SetProgramName(m_PyWorkingDirectory.get());
+    //Py_Initialize();
 }
 
 // ----------------------------------------------------------------------------
 void App::onRun()
-{
+{/*
     using namespace boost::python;
     try
     {
@@ -57,14 +57,14 @@ void App::onRun()
     } catch(const error_already_set&)
     {
         PyErr_Print();
-    }
+    }*/
 }
 
 // ----------------------------------------------------------------------------
 void App::onExit()
 {
     std::cout << "exit" << std::endl;
-    Py_Finalize();
+    //Py_Finalize();
 }
 
 } // namespace OpenRump

@@ -10,7 +10,7 @@
 #include <openrump/EntityBase.hpp>
 
 using namespace OpenRump;
-
+/*
 // ----------------------------------------------------------------------------
 // overloads
 
@@ -34,3 +34,4 @@ void exportGameInterface()
         .def("remove_all_callbacks", &Game::removeAllCallbacks)
     ;
 };
+*/
