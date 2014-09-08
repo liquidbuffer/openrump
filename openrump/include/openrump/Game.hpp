@@ -58,7 +58,7 @@ public:
      * @param entityName A globally unique string identifying this entity.
      * @param meshFileName The name of the mesh file to load.
      */
-    EntityBase* loadPlayer(std::string entityName, std::string meshFileName);
+    //EntityBase* loadPlayer(std::string entityName, std::string meshFileName);
 
     /*!
      * @brief Creates a new camera and attaches it to the window.
@@ -71,14 +71,14 @@ public:
      * @brief Attaches the main camera to the orbit of an entity.
      * @param entityName The entity identifier string.
      */
-    void attachCameraToEntity(std::string entityName);
+    //void attachCameraToEntity(std::string entityName);
 
     /*!
      * @brief Attaches a camera to the orbit of an entity.
      * @param cameraName The camera identifier string.
      * @param entityName The entity identifier string.
      */
-    void attachCameraToEntity(std::string cameraName, std::string entityName);
+    //void attachCameraToEntity(std::string cameraName, std::string entityName);
 
     /*!
      * @brief Registers a callback for when game updates occur.
