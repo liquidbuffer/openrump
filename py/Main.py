@@ -35,4 +35,4 @@ if __name__ == '__main__':
     game = open_rump.Game()
     #game.create_camera('camera')
     #test = Test(game)
-    #game.run()
+    game.run()

@@ -6,7 +6,7 @@
 // include files
 
 #include <openrump/Game.hpp>
-#include <openrump/OISInput.hpp>
+#include <openrump/OISInputSystem.hpp>
 #include <openrump/OgreRenderSystem.hpp>
 #include <openrump/EntityPlayer.hpp>
 
@@ -59,12 +59,21 @@ void Game::initialise()
 
     artemis::SystemManager* systemManager = m_World.getSystemManager();
 
-    // create renderer
+    // create systems
     OgreRenderSystem* ogre = new OgreRenderSystem();
     systemManager->setSystem(ogre);
+    OISInputSystem* input = new OISInputSystem();
+    systemManager->setSystem(input);
 
     // initialise all systems
     systemManager->initializeAll();
+
+    // ogre can cancel initialisation proceedure
+    if(!ogre->isInitialised())
+        return;
+
+    // attach input system to render window
+    input->attachToWindow(ogre->getWindowHandle());
 
     Ogre::SceneManager* sm = ogre->getMainSceneManager();
 
@@ -73,7 +82,7 @@ void Game::initialise()
     sm->createLight("SecondLight")->setPosition(-60, -200, 500);
 
     // register as listener
-    //m_Input->event.addListener(this, "Game");
+    input->event.addListener(this, "Game");
     ogre->frameEvent.addListener(this, "Game");
 
     m_IsInitialised = true;
@@ -150,14 +159,19 @@ void Game::cleanUp()
     if(!m_IsInitialised)
         return;
 
-    Ogre::SceneManager* sm = m_World.getSystemManager()->getSystem<OgreRenderSystem>()->getMainSceneManager();
+    OgreRenderSystem* renderer = m_World.getSystemManager()->getSystem<OgreRenderSystem>();
+    OISInputSystem* input = m_World.getSystemManager()->getSystem<OISInputSystem>();
 
-    // remove lights
+    // detach input from render window
+    input->detachFromWindow();
+
+    // destroy scene
+    Ogre::SceneManager* sm = renderer->getMainSceneManager();
     sm->destroyLight(sm->getLight("MainLight"));
 
-    // clean up input
-    m_World.getSystemManager()->getSystem<OgreRenderSystem>()->frameEvent.removeListener(this);
-    //m_Input->event.removeListener(this);
+    // remove all listeners
+    renderer->frameEvent.removeListener(this);
+    input->event.removeListener(this);
 
     m_IsInitialised = false;
 }
@@ -166,7 +180,7 @@ void Game::cleanUp()
 bool Game::onPreUpdateRenderLoop(const float timeSinceLastUpdate)
 {
     // capture input before frame is rendered for maximum responsiveness
-    //m_Input->capture();
+    m_World.getSystemManager()->getSystem<OISInputSystem>()->capture();
 
     if(m_Shutdown)
         return false;

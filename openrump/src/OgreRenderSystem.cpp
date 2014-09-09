@@ -19,12 +19,12 @@ namespace OpenRump {
 // ----------------------------------------------------------------------------
 OgreRenderSystem::OgreRenderSystem() :
     m_LoopTimer(new LoopTimer()),
-    m_Root(nullptr),
     m_Window(nullptr),
     m_SceneManager(nullptr),
     m_Camera(nullptr),
     m_PluginsCfg(Ogre::StringUtil::BLANK),
-    m_ResourcesCfg(Ogre::StringUtil::BLANK)
+    m_ResourcesCfg(Ogre::StringUtil::BLANK),
+    m_IsInitialised(false)
 {
 
     // set where config files are located
@@ -41,6 +41,12 @@ OgreRenderSystem::OgreRenderSystem() :
 // ----------------------------------------------------------------------------
 OgreRenderSystem::~OgreRenderSystem()
 {
+}
+
+// ----------------------------------------------------------------------------
+bool OgreRenderSystem::isInitialised()
+{
+    return m_IsInitialised;
 }
 
 // ----------------------------------------------------------------------------
@@ -94,10 +100,12 @@ void OgreRenderSystem::initialize()
     // set up scene manager
     m_SceneManager = m_Root->createSceneManager("OctreeSceneManager", "MainSceneManager");
 
-    //TODO m_Root->addFrameListener(this);
+    m_Root->addFrameListener(this);
 
     // set game loop fps to 60
     m_LoopTimer->setFPS(60);
+
+    m_IsInitialised = true;
 }
 
 // ----------------------------------------------------------------------------
@@ -141,7 +149,7 @@ Ogre::Camera* OgreRenderSystem::getMainCamera() const
 {
     return m_Camera;
 }
-/*
+
 // ----------------------------------------------------------------------------
 bool OgreRenderSystem::frameStarted(const Ogre::FrameEvent& evt)
 {
@@ -168,6 +176,6 @@ bool OgreRenderSystem::frameRenderingQueued(const Ogre::FrameEvent& evt)
     // dispatch render loop event
     return frameEvent.dispatchAndFindFalse(&RendererFrameListener::onUpdateRenderLoop,
             evt.timeSinceLastFrame);
-}*/
+}
 
 } // namespace OpenRump

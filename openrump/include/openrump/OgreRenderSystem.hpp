@@ -33,7 +33,8 @@ namespace Ogre {
 namespace OpenRump {
 
 class OPENRUMP_API OgreRenderSystem :
-    public artemis::EntityProcessingSystem
+    public artemis::EntityProcessingSystem,
+    public Ogre::FrameListener
 {
 public:
 
@@ -46,6 +47,11 @@ public:
      * @brief Default destructor
      */
     ~OgreRenderSystem();
+
+    /*!
+     * @brief Checks if the renderer was successfully initialised.
+     */
+    bool isInitialised();
 
     /*!
      * @brief Enters an infinite loop
@@ -80,13 +86,12 @@ public:
 private:
 
     // override frame listeners
-    //virtual bool frameStarted(const Ogre::FrameEvent& evt);
-    //virtual bool frameRenderingQueued(const Ogre::FrameEvent&);
+    virtual bool frameStarted(const Ogre::FrameEvent& evt);
+    virtual bool frameRenderingQueued(const Ogre::FrameEvent&);
 
     /*!
      * @brief Sets up Ogre3D
      * Initialises Ogre, opens the render window, and sets up resources.
-     * @return False if the initialisation procedure is interrupted.
      */
     virtual void initialize();
 
@@ -99,6 +104,8 @@ private:
     Ogre::Camera* m_Camera;
     Ogre::String m_PluginsCfg;
     Ogre::String m_ResourcesCfg;
+
+    bool m_IsInitialised;
 };
 
 } // namespace OpenRump

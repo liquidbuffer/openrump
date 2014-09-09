@@ -1,15 +1,17 @@
 // ----------------------------------------------------------------------------
-// OISInput.hpp
+// OISInputSystem.hpp
 // ----------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------
 // include files
 
-#include <openrump/Input.hpp>
+#include <openrump/InputInterface.hpp>
 
 #include <OIS/OISKeyboard.h>
 #include <OIS/OISMouse.h>
 #include <OIS/OISJoyStick.h>
+
+#include <Artemis/EntityProcessingSystem.h>
 
 #include <cstddef>
 #include <vector>
@@ -23,8 +25,9 @@ namespace OIS {
 
 namespace OpenRump {
 
-class OPENRUMP_API OISInput :
-    public Input,
+class OPENRUMP_API OISInputSystem :
+    public InputInterface,
+    public artemis::EntityProcessingSystem,
     public OIS::KeyListener,
     public OIS::MouseListener,
     public OIS::JoyStickListener
@@ -34,12 +37,12 @@ public:
     /*!
      * @brief Default constructor
      */
-    OISInput();
+    OISInputSystem();
 
     /*!
      * @brief Default destructor
      */
-    ~OISInput();
+    ~OISInputSystem();
 
     // implement derived input methods
     virtual void attachToWindow(std::size_t windowHnd);
@@ -53,6 +56,9 @@ private:
      * @brief Computes the directional vector of the player and dispatches
      */
     void dispatchNewDirection();
+
+    // implement artemis methods
+    virtual void processEntity(artemis::Entity&) {};
 
     // implement OIS input events
     virtual bool keyPressed(const OIS::KeyEvent&);
