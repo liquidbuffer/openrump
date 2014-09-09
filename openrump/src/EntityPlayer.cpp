@@ -5,7 +5,7 @@
 // ----------------------------------------------------------------------------
 // include files
 
-#include <openrump/EntityPlayer.hpp>
+//#include <openrump/EntityPlayer.hpp>
 #include <openrump/Input.hpp>
 #include <openrump/OgreRenderSystem.hpp>
 

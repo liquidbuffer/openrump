@@ -34,7 +34,7 @@ private:
     /*!
      * @brief Default constructor - only for delegating.
      */
-    EntityBase();
+    //EntityBase();
 
 protected:
 
@@ -44,7 +44,7 @@ protected:
      * memory.
      * @param renderer The renderer to use to create this entity.
      */
-    EntityBase(OgreRenderer* renderer);
+    //EntityBase(OgreRenderer* renderer);
 
     /*!
      * @brief Loads the entity from a mesh name.
@@ -90,7 +90,7 @@ public:
      * @return Returns the rotation scene node so the camera's angle can be
      * controlled.
      */
-    Ogre::SceneNode* attachCameraToOrbit(Ogre::Camera* cam, float distance=0.0f);
+    //Ogre::SceneNode* attachCameraToOrbit(Ogre::Camera* cam, float distance=0.0f);
 
     /*!
      * @brief Attaches a camera to an orbiting scene node.
@@ -103,7 +103,7 @@ public:
      * @return Returns the rotation scene node so the camera's angle can be
      * controlled.
      */
-    Ogre::SceneNode* attachCameraToOrbit(std::string cameraName, float distance=0.0f);
+    //Ogre::SceneNode* attachCameraToOrbit(std::string cameraName, float distance=0.0f);
 
     /*!
      * @brief Detaches the camera from orbit

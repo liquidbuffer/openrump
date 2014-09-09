@@ -78,8 +78,7 @@ void Game::initialise()
 }
 
 // ----------------------------------------------------------------------------
-/*
-EntityBase* Game::loadPlayer(std::string entityName, std::string meshFileName)
+/*EntityBase* Game::loadPlayer(std::string entityName, std::string meshFileName)
 {
     if(m_EntityMap.find(entityName) != m_EntityMap.end())
         throw std::runtime_error(
@@ -99,7 +98,7 @@ void Game::createCamera(std::string cameraName)
 }
 
 // ----------------------------------------------------------------------------
-void Game::attachCameraToEntity(std::string entityName)
+/*void Game::attachCameraToEntity(std::string entityName)
 {
     auto it = m_EntityMap.find(entityName);
     if(it == m_EntityMap.end())
@@ -110,10 +109,10 @@ void Game::attachCameraToEntity(std::string entityName)
     it->second->attachCameraToOrbit(
             m_World.getSystemManager()->getSystem<OgreRenderSystem>()->getMainCamera()
     );
-}
+}*/
 
 // ----------------------------------------------------------------------------
-void Game::attachCameraToEntity(std::string cameraName, std::string entityName)
+/*void Game::attachCameraToEntity(std::string cameraName, std::string entityName)
 {
     auto it = m_EntityMap.find(entityName);
     if(it == m_EntityMap.end())
@@ -123,7 +122,7 @@ void Game::attachCameraToEntity(std::string cameraName, std::string entityName)
         );
     Ogre::SceneManager* sm = m_World.getSystemManager()->getSystem<OgreRenderSystem>()->getMainSceneManager();
     it->second->attachCameraToOrbit(sm->getCamera(cameraName));
-}
+}*/
 
 // ----------------------------------------------------------------------------
 void Game::addGameUpdateCallback(boost::python::object callable)

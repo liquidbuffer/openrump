@@ -17,7 +17,7 @@ target_link_libraries (AppOpenRump
 #find_package (Boost 1.46.0 REQUIRED COMPONENTS
 #		python)
 #include_directories (${Boost_INCLUDE_DIRS})
-#target_link_libraries (AppOpenRump ${Boost_python_LIBRARY})
+#target_link_libraries (AppOpenRump ${Boost_PYTHON_LIBRARY})
 
 ###############################################################################
 # Python

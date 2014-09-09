@@ -19,8 +19,9 @@ if (NOT OpenRump_USE_INTERNAL_DEPENDENCIES)
 
 	###############################################################################
 	# Python
-	set (Python_ADDITIONAL_VERSIONS "2.7")
-	find_package (PythonLibs REQUIRED)
+	message (STATUS "Looking for Python...")
+	find_package (PythonLibs 2.7 REQUIRED)
+	message (STATUS "Found Python: ${PYTHON_LIBRARIES}")
 	include_directories (${PYTHON_INCLUDE_DIRS})
 	target_link_libraries (OpenRump ${PYTHON_LIBRARIES})
 
@@ -29,7 +30,7 @@ if (NOT OpenRump_USE_INTERNAL_DEPENDENCIES)
 	find_package (Boost 1.46.0 REQUIRED COMPONENTS
 		python)
 	include_directories (${Boost_INCLUDE_DIRS})
-	target_link_libraries (OpenRump ${Boost_python_LIBRARY})
+	target_link_libraries (OpenRump ${Boost_PYTHON_LIBRARY})
 
 	###############################################################################
 	# Ogre3D
