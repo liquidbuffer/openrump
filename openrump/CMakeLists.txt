@@ -38,8 +38,17 @@ if (NOT OpenRump_USE_INTERNAL_DEPENDENCIES)
 	target_link_libraries (OpenRump ${OGRE_LIBRARIES})
 
 	# copy required plugins to local plugins folder
+	if (CMAKE_BUILD_TYPE MATCHES Release)
+		set (OGRE_PLUGIN_DIR ${OGRE_PLUGIN_DIR_REL})
+	else ()
+		set (OGRE_PLUGIN_DIR ${OGRE_PLUGIN_DIR_DBG})
+	endif ()
+	message (STATUS "Ogre plugin dir: ${OGRE_PLUGIN_DIR}")
 	file (GLOB OGRE_PLUGINS
-		"${OGRE_PLUGIN_DIR_REL}/RenderSystem_GL*")
+		"${OGRE_PLUGIN_DIR}/RenderSystem_GL*"
+		"${OGRE_PLUGIN_DIR}/Plugin_OctreeSceneManager*"
+	)
+	message (STATUS "Copying plugins: ${OGRE_PLUGINS}")
 	file (COPY ${OGRE_PLUGINS}
 		DESTINATION "${CMAKE_SOURCE_DIR}/res/plugins")
 
