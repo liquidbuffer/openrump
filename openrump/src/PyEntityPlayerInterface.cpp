@@ -11,11 +11,12 @@
 
 using namespace OpenRump;
 class OISInput;
-
+/*
 void exportEntityPlayerInterface()
 {
-    using namespace boost::python;/*
+    using namespace boost::python;
     class_<EntityPlayer, boost::noncopyable>("EntityPlayer", no_init)
-        .def("set_camera_distance", &EntityPlayer::setCameraDistance)*/
+        .def("set_camera_distance", &EntityPlayer::setCameraDistance)
     ;
 }
+*/

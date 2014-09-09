@@ -7,8 +7,6 @@
 
 #include <openrump/Export.hpp>
 #include <openrump/BaseApp.hpp>
-#include <openrump/InputListener.hpp>
-#include <openrump/RendererFrameListener.hpp>
 
 #include <memory>
 
@@ -22,9 +20,7 @@ namespace OpenRump {
 namespace OpenRump {
 
 class OPENRUMP_API App :
-    public BaseApp,
-    public InputListener,
-    public RendererFrameListener
+    public BaseApp
 {
 public:
 

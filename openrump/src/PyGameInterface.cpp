@@ -10,7 +10,7 @@
 #include <openrump/EntityBase.hpp>
 
 using namespace OpenRump;
-
+/*
 // ----------------------------------------------------------------------------
 // overloads
 /*
