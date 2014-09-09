@@ -48,13 +48,6 @@ public:
     ~OgreRenderSystem();
 
     /*!
-     * @brief Sets up Ogre3D
-     * Initialises Ogre, opens the render window, and sets up resources.
-     * @return False if the initialisation procedure is interrupted.
-     */
-    bool initialise();
-
-    /*!
      * @brief Enters an infinite loop
      */
     void startRendering();
@@ -89,6 +82,13 @@ private:
     // override frame listeners
     //virtual bool frameStarted(const Ogre::FrameEvent& evt);
     //virtual bool frameRenderingQueued(const Ogre::FrameEvent&);
+
+    /*!
+     * @brief Sets up Ogre3D
+     * Initialises Ogre, opens the render window, and sets up resources.
+     * @return False if the initialisation procedure is interrupted.
+     */
+    virtual void initialize();
 
     virtual void processEntity(artemis::Entity &e) {};
 

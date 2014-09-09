@@ -59,9 +59,12 @@ void Game::initialise()
 
     artemis::SystemManager* systemManager = m_World.getSystemManager();
 
-    // initialise renderer
+    // create renderer
     OgreRenderSystem* ogre = new OgreRenderSystem();
     systemManager->setSystem(ogre);
+
+    // initialise all systems
+    systemManager->initializeAll();
 
     Ogre::SceneManager* sm = ogre->getMainSceneManager();
 
@@ -73,7 +76,6 @@ void Game::initialise()
     //m_Input->event.addListener(this, "Game");
     ogre->frameEvent.addListener(this, "Game");
 
-    systemManager->initializeAll();
     m_IsInitialised = true;
 }
 

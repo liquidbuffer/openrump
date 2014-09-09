@@ -44,10 +44,10 @@ OgreRenderSystem::~OgreRenderSystem()
 }
 
 // ----------------------------------------------------------------------------
-bool OgreRenderSystem::initialise()
+void OgreRenderSystem::initialize()
 {
     if(m_Root)
-        return false;
+        return;
 
     m_Root = std::unique_ptr<Ogre::Root>(new Ogre::Root(m_PluginsCfg));
 
@@ -76,10 +76,10 @@ bool OgreRenderSystem::initialise()
     // configure rendering window
 #ifdef _DEBUG
     if(!(m_Root->restoreConfig() || m_Root->showConfigDialog()))
-        return false;
+        return;
 #else
     if(!m_Root->showConfigDialog());
-        return false;
+        return;
 #endif // _DEBUG
 
     // initialise render window
@@ -98,8 +98,6 @@ bool OgreRenderSystem::initialise()
 
     // set game loop fps to 60
     m_LoopTimer->setFPS(60);
-
-    return true;
 }
 
 // ----------------------------------------------------------------------------

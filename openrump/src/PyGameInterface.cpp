@@ -15,8 +15,8 @@ using namespace OpenRump;
 // overloads
 /*
 void (Game::*attachCameraToEntity_entityName)(std::string)                          = &Game::attachCameraToEntity;
-void (Game::*attachCameraToEntity_cameraName_entityName)(std::string, std::string)  = &Game::attachCameraToEntity;
-*/
+void (Game::*attachCameraToEntity_cameraName_entityName)(std::string, std::string)  = &Game::attachCameraToEntity;*/
+
 void exportGameInterface()
 {
     using namespace boost::python;
