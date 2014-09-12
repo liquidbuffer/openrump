@@ -10,7 +10,7 @@
 #include <openrump/OgreRenderSystem.hpp>
 #include <openrump/EntityPlayer.hpp>
 
-#include <Artemis/SystemManager.h>
+#include <ontology/SystemManager.hpp>
 
 #include <OgreRoot.h>
 
@@ -36,7 +36,7 @@ void Game::run()
     // attach OIS to render window before running
     //m_Input->attachToWindow(m_OgreRenderer->getWindowHandle());
 
-    m_World.getSystemManager()->getSystem<OgreRenderSystem>()->startRendering();
+    m_World.getSystemManager().getSystem<OgreRenderSystem>().startRendering();
 
     // remove all references to any python objects, otherwise destructor
     // is not called
@@ -57,33 +57,32 @@ void Game::initialise()
         throw std::runtime_error(
                 "[Game::initialise] Error: Game already initialised!");
 
-    artemis::SystemManager* systemManager = m_World.getSystemManager();
-
     // create systems
-    OgreRenderSystem* ogre = new OgreRenderSystem();
-    systemManager->setSystem(ogre);
-    OISInputSystem* input = new OISInputSystem();
-    systemManager->setSystem(input);
+    m_World.getSystemManager()
+        .addSystem(new OgreRenderSystem())
+        .addSystem(new OISInputSystem())
+        .initialise()
+        ;
 
-    // initialise all systems
-    systemManager->initializeAll();
+    OgreRenderSystem& renderer = m_World.getSystemManager().getSystem<OgreRenderSystem>();
+    OISInputSystem& input = m_World.getSystemManager().getSystem<OISInputSystem>();
 
     // ogre can cancel initialisation proceedure
-    if(!ogre->isInitialised())
+    if(!renderer.isInitialised())
         return;
 
     // attach input system to render window
-    input->attachToWindow(ogre->getWindowHandle());
+    input.attachToWindow(renderer.getWindowHandle());
 
-    Ogre::SceneManager* sm = ogre->getMainSceneManager();
+    Ogre::SceneManager* sm = renderer.getMainSceneManager();
 
     // create default lights
     sm->createLight("MainLight")->setPosition(60, 200, -500);
     sm->createLight("SecondLight")->setPosition(-60, -200, 500);
 
     // register as listener
-    input->event.addListener(this, "Game");
-    ogre->frameEvent.addListener(this, "Game");
+    input.event.addListener(this, "Game");
+    renderer.frameEvent.addListener(this, "Game");
 
     m_IsInitialised = true;
 }
@@ -105,7 +104,7 @@ void Game::initialise()
 // ----------------------------------------------------------------------------
 void Game::createCamera(std::string cameraName)
 {
-    m_World.getSystemManager()->getSystem<OgreRenderSystem>()->createCamera(cameraName);
+    m_World.getSystemManager().getSystem<OgreRenderSystem>().createCamera(cameraName);
 }
 
 // ----------------------------------------------------------------------------
@@ -159,19 +158,19 @@ void Game::cleanUp()
     if(!m_IsInitialised)
         return;
 
-    OgreRenderSystem* renderer = m_World.getSystemManager()->getSystem<OgreRenderSystem>();
-    OISInputSystem* input = m_World.getSystemManager()->getSystem<OISInputSystem>();
+    OgreRenderSystem& renderer = m_World.getSystemManager().getSystem<OgreRenderSystem>();
+    OISInputSystem& input = m_World.getSystemManager().getSystem<OISInputSystem>();
 
     // detach input from render window
-    input->detachFromWindow();
+    input.detachFromWindow();
 
     // destroy scene
-    Ogre::SceneManager* sm = renderer->getMainSceneManager();
+    Ogre::SceneManager* sm = renderer.getMainSceneManager();
     sm->destroyLight(sm->getLight("MainLight"));
 
     // remove all listeners
-    renderer->frameEvent.removeListener(this);
-    input->event.removeListener(this);
+    renderer.frameEvent.removeListener(this);
+    input.event.removeListener(this);
 
     m_IsInitialised = false;
 }
@@ -180,7 +179,7 @@ void Game::cleanUp()
 bool Game::onPreUpdateRenderLoop(const float timeSinceLastUpdate)
 {
     // capture input before frame is rendered for maximum responsiveness
-    m_World.getSystemManager()->getSystem<OISInputSystem>()->capture();
+    m_World.getSystemManager().getSystem<OISInputSystem>().capture();
 
     if(m_Shutdown)
         return false;
@@ -191,9 +190,8 @@ bool Game::onPreUpdateRenderLoop(const float timeSinceLastUpdate)
 // ----------------------------------------------------------------------------
 bool Game::onUpdateGameLoop(const float timeStep)
 {
-    m_World.loopStart();
-    m_World.setDelta(timeStep);
-    m_World.getSystemManager()->getSystem<OgreRenderSystem>()->process();
+    m_World.setDeltaTime(timeStep);
+    m_World.update();
     return m_PyGameUpdate.dispatchAndFindFalse(std::forward<const float>(timeStep));
 }
 

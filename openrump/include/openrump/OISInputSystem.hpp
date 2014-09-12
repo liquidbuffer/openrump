@@ -11,7 +11,7 @@
 #include <OIS/OISMouse.h>
 #include <OIS/OISJoyStick.h>
 
-#include <Artemis/EntityProcessingSystem.h>
+#include <ontology/System.hpp>
 
 #include <cstddef>
 #include <vector>
@@ -27,7 +27,7 @@ namespace OpenRump {
 
 class OPENRUMP_API OISInputSystem :
     public InputInterface,
-    public artemis::EntityProcessingSystem,
+    public Ontology::System,
     public OIS::KeyListener,
     public OIS::MouseListener,
     public OIS::JoyStickListener
@@ -57,8 +57,9 @@ private:
      */
     void dispatchNewDirection();
 
-    // implement artemis methods
-    virtual void processEntity(artemis::Entity&) {};
+    // implement ontology methods
+    virtual void initialise() {}
+    virtual void processEntity(Ontology::Entity&) {};
 
     // implement OIS input events
     virtual bool keyPressed(const OIS::KeyEvent&);

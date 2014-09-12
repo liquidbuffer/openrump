@@ -12,7 +12,7 @@
 #include <OgreString.h>
 #include <OgreFrameListener.h>
 
-#include <Artemis/EntityProcessingSystem.h>
+#include <ontology/System.hpp>
 
 #include <memory>
 
@@ -33,7 +33,7 @@ namespace Ogre {
 namespace OpenRump {
 
 class OPENRUMP_API OgreRenderSystem :
-    public artemis::EntityProcessingSystem,
+    public Ontology::System,
     public Ogre::FrameListener
 {
 public:
@@ -93,9 +93,9 @@ private:
      * @brief Sets up Ogre3D
      * Initialises Ogre, opens the render window, and sets up resources.
      */
-    virtual void initialize();
+    virtual void initialise();
 
-    virtual void processEntity(artemis::Entity &e) {};
+    virtual void processEntity(Ontology::Entity& e) {};
 
     std::unique_ptr<LoopTimer> m_LoopTimer;
     std::unique_ptr<Ogre::Root> m_Root;

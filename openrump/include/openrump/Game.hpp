@@ -9,7 +9,7 @@
 #include <openrump/RendererFrameListener.hpp>
 #include <openrump/PyCallbackDispatcher.hpp>
 
-#include <Artemis/World.h>
+#include <ontology/World.hpp>
 
 #include <string>
 #include <memory>
@@ -116,7 +116,7 @@ private:
     // override input listener methods
     virtual void onButtonExit();
 
-    artemis::World m_World;
+    Ontology::World m_World;
 
     bool m_Shutdown;
     bool m_IsInitialised;

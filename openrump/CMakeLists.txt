@@ -60,19 +60,22 @@ if (NOT OpenRump_USE_INTERNAL_DEPENDENCIES)
 	target_link_libraries (OpenRump ${OIS_LIBRARIES})
 
 	###############################################################################
-	# Artemis-CPP
+	# Ontology
 	include (ExternalProject)
-	externalproject_add (ArtemisCPP_PROJECT
+	externalproject_add (ontology_PROJECT
 		PREFIX ${EXTERNAL_DEP_DIR}
-		GIT_REPOSITORY "git://github.com/TheComet93/Artemis-Cpp.git"
+		GIT_REPOSITORY "git://github.com/TheComet93/ontology.git"
 		GIT_TAG "master"
 		CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_DEP_DIR}
-		-DPOSITION_INDEPENDENT_CODE=ON
 	)
-	target_link_libraries (OpenRump ArtemisCpp)
+	target_link_libraries (OpenRump ontology)
 
 else ()
 	include_directories ("${CMAKE_SOURCE_DIR}/dep/ogre_src_v1-9-0/OgreMain/include")
 	include_directories ("${CMAKE_BINARY_DIR}/dep/ogre_src_v1-9-0/include")
 	target_link_libraries (OpenRump OgreMain)
 endif ()
+
+add_dependencies (OpenRump
+	ontology_PROJECT
+)

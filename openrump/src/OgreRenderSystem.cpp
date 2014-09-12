@@ -50,7 +50,7 @@ bool OgreRenderSystem::isInitialised()
 }
 
 // ----------------------------------------------------------------------------
-void OgreRenderSystem::initialize()
+void OgreRenderSystem::initialise()
 {
     if(m_Root)
         return;
