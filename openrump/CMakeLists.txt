@@ -29,8 +29,11 @@ if (NOT OpenRump_USE_INTERNAL_DEPENDENCIES)
 	# Boost - Ogre requires at least 1.46.0
 	find_package (Boost 1.46.0 REQUIRED COMPONENTS
 		python)
+	# hack to force boost to use python2.7
+	string (REGEX REPLACE "[0-9].[0-9]" "2.7" Boost_PYTHON_LIBRARY ${Boost_PYTHON_LIBRARY})
 	include_directories (${Boost_INCLUDE_DIRS})
 	target_link_libraries (OpenRump ${Boost_PYTHON_LIBRARY})
+	message (STATUS "python library is: ${Boost_PYTHON_LIBRARY}")
 
 	###############################################################################
 	# Ogre3D
@@ -68,6 +71,7 @@ if (NOT OpenRump_USE_INTERNAL_DEPENDENCIES)
 		GIT_TAG "master"
 		CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_DEP_DIR}
 	)
+	add_definitions (-DONTOLOGY_SHARED)
 	target_link_libraries (OpenRump ontology)
 
 else ()

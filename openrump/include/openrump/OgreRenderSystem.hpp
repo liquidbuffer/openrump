@@ -95,7 +95,7 @@ private:
      */
     virtual void initialise();
 
-    virtual void processEntity(Ontology::Entity& e) {};
+    virtual void processEntity(const Ontology::Entity& e) const {}
 
     std::unique_ptr<LoopTimer> m_LoopTimer;
     std::unique_ptr<Ogre::Root> m_Root;

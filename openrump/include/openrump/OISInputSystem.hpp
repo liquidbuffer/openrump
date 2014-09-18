@@ -59,7 +59,7 @@ private:
 
     // implement ontology methods
     virtual void initialise() {}
-    virtual void processEntity(Ontology::Entity&) {};
+    virtual void processEntity(const Ontology::Entity&) const {};
 
     // implement OIS input events
     virtual bool keyPressed(const OIS::KeyEvent&);
