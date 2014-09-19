@@ -78,18 +78,8 @@ link_directories ("${EXTERNAL_DEP_DIR}/lib")
 include_directories ("${EXTERNAL_DEP_DIR}/include")
 
 ###############################################################################
-# Detect internal dependencies
+# Dependency settings
 ###############################################################################
-if (EXISTS "${CMAKE_SOURCE_DIR}/dep/")
-	add_subdirectory ("dep")
-	set (OpenRump_USE_INTERNAL_DEPENDENCIES 1)
-else ()
-	set (_dep_message "WARNING: Dependencies directory \"dep\" not found. If the project failes to compile, \n")
-	set (_dep_message ${_dep_message} "   try adding the dependency repository as a submodule like so:\n")
-	set (_dep_message ${_dep_message} "	   $ git submodule add git://github.com/openrump-dep.git dep\n")
-	message (STATUS ${_dep_message})
-	set (OpenRump_USE_INTERNAL_DEPENDENCIES 0)
-endif ()
 
 include_directories ("openrump/include")
 
