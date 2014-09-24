@@ -1,18 +1,18 @@
 // ----------------------------------------------------------------------------
-// OgreRenderSystem.hpp
+// OgreRenderer.hpp
 // ----------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------
 // include files
 
 #include <openrump/Export.hpp>
-#include <openrump/ListenerDispatcher.hxx>
-#include <openrump/LoopTimer.hpp>
 
 #include <OgreString.h>
 #include <OgreFrameListener.h>
 
 #include <ontology/System.hpp>
+
+#include <boost/signals2.hpp>
 
 #include <memory>
 
@@ -20,7 +20,7 @@
 // forward declarations
 
 namespace OpenRump {
-    class RendererFrameListener;
+    class OgreRendererListener;
 }
 
 namespace Ogre {
@@ -32,7 +32,7 @@ namespace Ogre {
 
 namespace OpenRump {
 
-class OPENRUMP_API OgreRenderSystem :
+class OPENRUMP_API OgreRenderer :
     public Ontology::System,
     public Ogre::FrameListener
 {
@@ -41,12 +41,12 @@ public:
     /*!
      * @brief Default constructor
      */
-    OgreRenderSystem();
+    OgreRenderer();
 
     /*!
      * @brief Default destructor
      */
-    ~OgreRenderSystem();
+    ~OgreRenderer();
 
     /*!
      * @brief Checks if the renderer was successfully initialised.
@@ -81,7 +81,8 @@ public:
      */
     Ogre::Camera* getMainCamera() const;
 
-    ListenerDispatcher<RendererFrameListener> frameEvent;
+    boost::signals2::signal<void ()> on_frame_started;
+    boost::signals2::signal<void ()> on_frame_queued;
 
 private:
 
@@ -97,7 +98,6 @@ private:
 
     virtual void processEntity(const Ontology::Entity& e) const {}
 
-    std::unique_ptr<LoopTimer> m_LoopTimer;
     std::unique_ptr<Ogre::Root> m_Root;
     Ogre::RenderWindow* m_Window;
     Ogre::SceneManager* m_SceneManager;

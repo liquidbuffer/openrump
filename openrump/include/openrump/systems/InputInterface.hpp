@@ -6,8 +6,6 @@
 // include files
 
 #include <openrump/Export.hpp>
-#include <openrump/ListenerDispatcher.hxx>
-#include <openrump/InputListener.hpp>
 
 #include <cstddef>
 
@@ -48,8 +46,6 @@ public:
      * @brief Captures InputInterface from all registered devices
      */
     virtual void capture() = 0;
-
-    ListenerDispatcher<InputListener> event;
 };
 
 }  // namespace OpenRump

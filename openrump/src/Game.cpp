@@ -6,8 +6,8 @@
 // include files
 
 #include <openrump/Game.hpp>
-#include <openrump/OISInputSystem.hpp>
-#include <openrump/OgreRenderSystem.hpp>
+#include <openrump/systems/OISInput.hpp>
+#include <openrump/systems/OgreRenderer.hpp>
 #include <openrump/EntityPlayer.hpp>
 
 #include <ontology/SystemManager.hpp>
@@ -33,10 +33,7 @@ Game::~Game()
 // ----------------------------------------------------------------------------
 void Game::run()
 {
-    // attach OIS to render window before running
-    //m_Input->attachToWindow(m_OgreRenderer->getWindowHandle());
-
-    m_World.getSystemManager().getSystem<OgreRenderSystem>().startRendering();
+    m_World.getSystemManager().getSystem<OgreRenderer>().startRendering();
 
     // remove all references to any python objects, otherwise destructor
     // is not called
@@ -59,30 +56,24 @@ void Game::initialise()
 
     // create systems
     m_World.getSystemManager()
-        .addSystem(new OgreRenderSystem())
-        .addSystem(new OISInputSystem())
+        .addSystem(new OgreRenderer())
+        .addSystem(new OISInput())
         .initialise()
         ;
 
-    OgreRenderSystem& renderer = m_World.getSystemManager().getSystem<OgreRenderSystem>();
-    OISInputSystem& input = m_World.getSystemManager().getSystem<OISInputSystem>();
+    OgreRenderer& renderer = m_World.getSystemManager().getSystem<OgreRenderer>();
+    OISInput&     input    = m_World.getSystemManager().getSystem<OISInput>();
 
-    // ogre can cancel initialisation proceedure
+    // ogre can cancel initialisation procedure without error
     if(!renderer.isInitialised())
         return;
 
-    // attach input system to render window
+    // attach OIS to Ogre's window
     input.attachToWindow(renderer.getWindowHandle());
 
-    Ogre::SceneManager* sm = renderer.getMainSceneManager();
-
-    // create default lights
-    sm->createLight("MainLight")->setPosition(60, 200, -500);
-    sm->createLight("SecondLight")->setPosition(-60, -200, 500);
-
-    // register as listener
-    input.event.addListener(this, "Game");
-    renderer.frameEvent.addListener(this, "Game");
+    // create connections
+    renderer.on_frame_started.connect(boost::bind(&OISInput::capture, &input));
+    input.on_exit.connect(boost::bind(&Game::onButtonExit, this));
 
     m_IsInitialised = true;
 }
@@ -104,7 +95,7 @@ void Game::initialise()
 // ----------------------------------------------------------------------------
 void Game::createCamera(std::string cameraName)
 {
-    m_World.getSystemManager().getSystem<OgreRenderSystem>().createCamera(cameraName);
+    m_World.getSystemManager().getSystem<OgreRenderer>().createCamera(cameraName);
 }
 
 // ----------------------------------------------------------------------------
@@ -158,37 +149,11 @@ void Game::cleanUp()
     if(!m_IsInitialised)
         return;
 
-    OgreRenderSystem& renderer = m_World.getSystemManager().getSystem<OgreRenderSystem>();
-    OISInputSystem& input = m_World.getSystemManager().getSystem<OISInputSystem>();
-
-    // detach input from render window
-    input.detachFromWindow();
-
-    // destroy scene
-    Ogre::SceneManager* sm = renderer.getMainSceneManager();
-    sm->destroyLight(sm->getLight("MainLight"));
-
-    // remove all listeners
-    renderer.frameEvent.removeListener(this);
-    input.event.removeListener(this);
-
     m_IsInitialised = false;
 }
 
 // ----------------------------------------------------------------------------
-bool Game::onPreUpdateRenderLoop(const float timeSinceLastUpdate)
-{
-    // capture input before frame is rendered for maximum responsiveness
-    m_World.getSystemManager().getSystem<OISInputSystem>().capture();
-
-    if(m_Shutdown)
-        return false;
-
-    return true;
-}
-
-// ----------------------------------------------------------------------------
-bool Game::onUpdateGameLoop(const float timeStep)
+void Game::onUpdateGameLoop()
 {
     m_World.setDeltaTime(timeStep);
     m_World.update();

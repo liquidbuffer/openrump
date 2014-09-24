@@ -5,8 +5,6 @@
 // ----------------------------------------------------------------------------
 // include files
 
-#include <openrump/InputListener.hpp>
-#include <openrump/RendererFrameListener.hpp>
 #include <openrump/PyCallbackDispatcher.hpp>
 
 #include <ontology/World.hpp>
@@ -27,9 +25,7 @@ namespace OpenRump {
 
 namespace OpenRump {
 
-class Game :
-    public RendererFrameListener,
-    public InputListener
+class Game
 {
 public:
 
@@ -109,12 +105,10 @@ private:
      */
     void cleanUp();
 
-    // override frame events
-    virtual bool onPreUpdateRenderLoop(const float timeSinceLastUpdate);
-    virtual bool onUpdateGameLoop(const float timeStep);
-
-    // override input listener methods
-    virtual void onButtonExit();
+    // slot receivers
+    void onButtonExit();
+    void onUpdateRenderLoop();
+    void onUpdateGameLoop();
 
     Ontology::World m_World;
 

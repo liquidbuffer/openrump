@@ -1,17 +1,19 @@
 // ----------------------------------------------------------------------------
-// OISInputSystem.hpp
+// OISInput.hpp
 // ----------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------
 // include files
 
-#include <openrump/InputInterface.hpp>
+#include <openrump/systems/InputInterface.hpp>
 
 #include <OIS/OISKeyboard.h>
 #include <OIS/OISMouse.h>
 #include <OIS/OISJoyStick.h>
 
 #include <ontology/System.hpp>
+
+#include <boost/signals2.hpp>
 
 #include <cstddef>
 #include <vector>
@@ -25,7 +27,7 @@ namespace OIS {
 
 namespace OpenRump {
 
-class OPENRUMP_API OISInputSystem :
+class OPENRUMP_API OISInput :
     public InputInterface,
     public Ontology::System,
     public OIS::KeyListener,
@@ -37,18 +39,23 @@ public:
     /*!
      * @brief Default constructor
      */
-    OISInputSystem();
+    OISInput();
 
     /*!
      * @brief Default destructor
      */
-    ~OISInputSystem();
+    ~OISInput();
 
     // implement derived input methods
     virtual void attachToWindow(std::size_t windowHnd);
     virtual void detachFromWindow();
     virtual void setWindowExtents(unsigned int width, unsigned int height);
     virtual void capture();
+
+    boost::signals2::signal<void ()>             on_exit;
+    boost::signals2::signal<void (float, float)> on_new_direction;
+    boost::signals2::signal<void (float, float)> on_new_camera_angle;
+    boost::signals2::signal<void (float)>        on_new_camera_distance;
 
 private:
 
@@ -58,8 +65,11 @@ private:
     void dispatchNewDirection();
 
     // implement ontology methods
-    virtual void initialise() {}
+    virtual void initialise();
     virtual void processEntity(const Ontology::Entity&) const {};
+
+    // implement RenderFrameListener methods
+    bool onPreUpdateRenderLoop(const float timeSinceLastUpdate);
 
     // implement OIS input events
     virtual bool keyPressed(const OIS::KeyEvent&);

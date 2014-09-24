@@ -5,9 +5,7 @@
 // ----------------------------------------------------------------------------
 // include files
 
-//#include <openrump/EntityBase.hpp>
-#include <openrump/AnimationController.hpp>
-#include <openrump/OgreRenderSystem.hpp>
+#include <openrump/systems/OgreRenderer.hpp>
 
 #include <OgreSceneManager.h>
 #include <OgreEntity.h>

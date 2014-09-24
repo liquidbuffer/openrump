@@ -1,12 +1,11 @@
 // ----------------------------------------------------------------------------
-// OgreRenderSystem.cpp
+// OgreRenderer.cpp
 // ----------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------
 // include files
 
-#include <openrump/OgreRenderSystem.hpp>
-#include <openrump/RendererFrameListener.hpp>
+#include <openrump/systems/OgreRenderer.hpp>
 
 #include <OgreRoot.h>
 #include <OgreConfigFile.h>
@@ -17,8 +16,7 @@
 namespace OpenRump {
 
 // ----------------------------------------------------------------------------
-OgreRenderSystem::OgreRenderSystem() :
-    m_LoopTimer(new LoopTimer()),
+OgreRenderer::OgreRenderer() :
     m_Window(nullptr),
     m_SceneManager(nullptr),
     m_Camera(nullptr),
@@ -39,18 +37,24 @@ OgreRenderSystem::OgreRenderSystem() :
 }
 
 // ----------------------------------------------------------------------------
-OgreRenderSystem::~OgreRenderSystem()
+OgreRenderer::~OgreRenderer()
 {
+    m_Root->removeFrameListener(this);
+
+    // destroy scene
+    m_SceneManager->destroyLight(m_SceneManager->getLight("SecondLight"));
+    m_SceneManager->destroyLight(m_SceneManager->getLight("MainLight"));
+    m_Root->destroySceneManager(m_SceneManager);
 }
 
 // ----------------------------------------------------------------------------
-bool OgreRenderSystem::isInitialised()
+bool OgreRenderer::isInitialised()
 {
     return m_IsInitialised;
 }
 
 // ----------------------------------------------------------------------------
-void OgreRenderSystem::initialise()
+void OgreRenderer::initialise()
 {
     if(m_Root)
         return;
@@ -100,23 +104,23 @@ void OgreRenderSystem::initialise()
     // set up scene manager
     m_SceneManager = m_Root->createSceneManager("OctreeSceneManager", "MainSceneManager");
 
-    m_Root->addFrameListener(this);
+    // create default lights
+    m_SceneManager->createLight("MainLight")->setPosition(60, 200, -500);
+    m_SceneManager->createLight("SecondLight")->setPosition(-60, -200, 500);
 
-    // set game loop fps to 60
-    m_LoopTimer->setFPS(60);
+    m_Root->addFrameListener(this);
 
     m_IsInitialised = true;
 }
 
 // ----------------------------------------------------------------------------
-void OgreRenderSystem::startRendering()
+void OgreRenderer::startRendering()
 {
-    m_LoopTimer->reset();
     m_Root->startRendering();
 }
 
 // ----------------------------------------------------------------------------
-std::size_t OgreRenderSystem::getWindowHandle() const
+std::size_t OgreRenderer::getWindowHandle() const
 {
     std::size_t hwnd;
     m_Window->getCustomAttribute("WINDOW", &hwnd);
@@ -124,13 +128,13 @@ std::size_t OgreRenderSystem::getWindowHandle() const
 }
 
 // ----------------------------------------------------------------------------
-Ogre::SceneManager* OgreRenderSystem::getMainSceneManager() const
+Ogre::SceneManager* OgreRenderer::getMainSceneManager() const
 {
     return m_SceneManager;
 }
 
 // ----------------------------------------------------------------------------
-Ogre::Camera* OgreRenderSystem::createCamera(std::string name)
+Ogre::Camera* OgreRenderer::createCamera(std::string name)
 {
     m_Camera = m_SceneManager->createCamera(name);
     Ogre::Viewport* vp = m_Window->addViewport(m_Camera);
@@ -145,37 +149,36 @@ Ogre::Camera* OgreRenderSystem::createCamera(std::string name)
 }
 
 // ----------------------------------------------------------------------------
-Ogre::Camera* OgreRenderSystem::getMainCamera() const
+Ogre::Camera* OgreRenderer::getMainCamera() const
 {
     return m_Camera;
 }
 
 // ----------------------------------------------------------------------------
-bool OgreRenderSystem::frameStarted(const Ogre::FrameEvent& evt)
+bool OgreRenderer::frameStarted(const Ogre::FrameEvent& evt)
 {
-    // dispatch pre render loop event
-    return frameEvent.dispatchAndFindFalse(&RendererFrameListener::onPreUpdateRenderLoop,
-            evt.timeSinceLastFrame);
+    this->on_frame_started();
+    return true;
 }
 
 // ----------------------------------------------------------------------------
-bool OgreRenderSystem::frameRenderingQueued(const Ogre::FrameEvent& evt)
+bool OgreRenderer::frameRenderingQueued(const Ogre::FrameEvent& evt)
 {
     // dispatch game loop event
+    /* TODO should be in LoopTimer
     int updates = 0;
     while(m_LoopTimer->isTimeToUpdate())
     {
-        if(!frameEvent.dispatchAndFindFalse(&RendererFrameListener::onUpdateGameLoop,
+        if(!this->event.dispatchAndFindFalse(&OgreRendererListener::onUpdateGameLoop,
             m_LoopTimer->getTimeBetweenFrames()))
             return false;
 
         if(++updates >= 10)  // don't allow more than 10 game loop updates
             break;           // without a render loop update
-    }
+    }*/
 
-    // dispatch render loop event
-    return frameEvent.dispatchAndFindFalse(&RendererFrameListener::onUpdateRenderLoop,
-            evt.timeSinceLastFrame);
+    this->on_frame_queued();
+    return true;
 }
 
 } // namespace OpenRump

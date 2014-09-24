@@ -1,12 +1,11 @@
 // ----------------------------------------------------------------------------
-// OISInputSystem.cpp
+// OISInput.cpp
 // ----------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------
 // include files
 
-#include <openrump/OISInputSystem.hpp>
-#include <openrump/ListenerDispatcher.hxx>
+#include <openrump/systems/OISInput.hpp>
 
 #include <OIS/OISInputManager.h>
 
@@ -19,7 +18,7 @@
 namespace OpenRump {
 
 // ----------------------------------------------------------------------------
-OISInputSystem::OISInputSystem() :
+OISInput::OISInput() :
     m_InputSystem(nullptr),
     m_Keyboard(nullptr),
     m_Mouse(nullptr),
@@ -29,13 +28,13 @@ OISInputSystem::OISInputSystem() :
 }
 
 // ----------------------------------------------------------------------------
-OISInputSystem::~OISInputSystem()
+OISInput::~OISInput()
 {
     this->detachFromWindow();
 }
 
 // ----------------------------------------------------------------------------
-void OISInputSystem::attachToWindow(std::size_t windowHnd)
+void OISInput::attachToWindow(std::size_t windowHnd)
 {
     if(m_InputSystem)
         this->detachFromWindow();
@@ -53,7 +52,7 @@ void OISInputSystem::attachToWindow(std::size_t windowHnd)
         m_Keyboard = static_cast<OIS::Keyboard*>(m_InputSystem->createInputObject(OIS::OISKeyboard, true));
         m_Keyboard->setEventCallback(this);
 #ifdef _DEBUG
-        std::cout << "[OISInputSystem::attachToWindow] Info: Detected keyboard" << std::endl;
+        std::cout << "[OISInput::attachToWindow] Info: Detected keyboard" << std::endl;
 #endif // _DEBUG
     }
 
@@ -63,7 +62,7 @@ void OISInputSystem::attachToWindow(std::size_t windowHnd)
         m_Mouse = static_cast<OIS::Mouse*>(m_InputSystem->createInputObject(OIS::OISMouse, true));
         m_Mouse->setEventCallback(this);
 #ifdef _DEBUG
-        std::cout << "[OISInputSystem::attachToWindow] Info: Detected mouse" << std::endl;
+        std::cout << "[OISInput::attachToWindow] Info: Detected mouse" << std::endl;
 #endif // _DEBUG
     }
 
@@ -78,27 +77,19 @@ void OISInputSystem::attachToWindow(std::size_t windowHnd)
             m_Joysticks.push_back(newJoy);
         }
 #ifdef _DEBUG
-        std::cout << "[OISInputSystem::attachToWindow] Info: Detected " << count << " joysticks" << std::endl;
+        std::cout << "[OISInput::attachToWindow] Info: Detected " << count << " joysticks" << std::endl;
 #endif // _DEBUG
     }
     //this->detachFromWindow();
 }
 
 // ----------------------------------------------------------------------------
-void OISInputSystem::setWindowExtents(unsigned int width, unsigned int height)
-{
-    const OIS::MouseState& mouseState = m_Mouse->getMouseState();
-    mouseState.width = width;
-    mouseState.height = height;
-}
-
-// ----------------------------------------------------------------------------
-void OISInputSystem::detachFromWindow()
+void OISInput::detachFromWindow()
 {
     if(!m_InputSystem)
         return;
 
-    event.removeAllListeners();
+    // TODO disconnect all signals
 
     if(m_Keyboard)
     {
@@ -124,7 +115,15 @@ void OISInputSystem::detachFromWindow()
 }
 
 // ----------------------------------------------------------------------------
-void OISInputSystem::capture()
+void OISInput::setWindowExtents(unsigned int width, unsigned int height)
+{
+    const OIS::MouseState& mouseState = m_Mouse->getMouseState();
+    mouseState.width = width;
+    mouseState.height = height;
+}
+
+// ----------------------------------------------------------------------------
+void OISInput::capture()
 {
     if(m_Keyboard)
         m_Keyboard->capture();
@@ -135,78 +134,11 @@ void OISInputSystem::capture()
 }
 
 // ----------------------------------------------------------------------------
-bool OISInputSystem::keyPressed(const OIS::KeyEvent& evt)
-{
-    // exit with escape key
-    if(evt.key == OIS::KC_ESCAPE)
-        event.dispatch(&InputListener::onButtonExit);
-
-    // process WASD
-    bool directionChanged = false;
-    if(evt.key == OIS::KC_W)
-    {
-        m_PlayerMoveUpDown -= 1000;
-        directionChanged = true;
-    }
-    if(evt.key == OIS::KC_S)
-    {
-        m_PlayerMoveUpDown += 1000;
-        directionChanged = true;
-    }
-    if(evt.key == OIS::KC_A)
-    {
-        m_PlayerMoveLeftRight -= 1000;
-        directionChanged = true;
-    }
-    if(evt.key == OIS::KC_D)
-    {
-        m_PlayerMoveLeftRight += 1000;
-        directionChanged = true;
-    }
-    if(directionChanged)
-        this->dispatchNewDirection();
-
-    return true; // Don't clear input buffer
-}
-
-// ----------------------------------------------------------------------------
-
-bool OISInputSystem::keyReleased(const OIS::KeyEvent& evt)
-{
-    // process WASD
-    bool directionChanged = false;
-    if(evt.key == OIS::KC_W)
-    {
-        m_PlayerMoveUpDown += 1000;
-        directionChanged = true;
-    }
-    if(evt.key == OIS::KC_S)
-    {
-        m_PlayerMoveUpDown -= 1000;
-        directionChanged = true;
-    }
-    if(evt.key == OIS::KC_A)
-    {
-        m_PlayerMoveLeftRight += 1000;
-        directionChanged = true;
-    }
-    if(evt.key == OIS::KC_D)
-    {
-        m_PlayerMoveLeftRight -= 1000;
-        directionChanged = true;
-    }
-    if(directionChanged)
-        this->dispatchNewDirection();
-
-    return true; // Don't clear input buffer
-}
-
-// ----------------------------------------------------------------------------
-void OISInputSystem::dispatchNewDirection()
+void OISInput::dispatchNewDirection()
 {
     if(m_PlayerMoveLeftRight == 0 && m_PlayerMoveUpDown == 0)
     {
-        event.dispatch(&InputListener::onChangeDirectionAndVelocity, 0, 0);
+        this->on_new_direction(0, 0);
         return;
     }
 
@@ -219,63 +151,140 @@ void OISInputSystem::dispatchNewDirection()
         normaliseX /= length;
         normaliseY /= length;
     }
-    event.dispatch(&InputListener::onChangeDirectionAndVelocity, normaliseX, normaliseY);
+    this->on_new_direction(normaliseX, normaliseY);
 }
 
 // ----------------------------------------------------------------------------
-bool OISInputSystem::mouseMoved(const OIS::MouseEvent& evt)
+void OISInput::initialise()
 {
-    event.dispatch(
-            &InputListener::onChangeCameraAngleDelta,
+}
+
+// ----------------------------------------------------------------------------
+bool OISInput::onPreUpdateRenderLoop(const float timeSinceLastUpdate)
+{
+    this->capture();
+}
+
+// ----------------------------------------------------------------------------
+bool OISInput::keyPressed(const OIS::KeyEvent& evt)
+{
+    // exit with escape key
+    if(evt.key == OIS::KC_ESCAPE)
+        this->on_exit();
+
+    // process WASD
+    bool directionChanged = false;
+    if(evt.key == OIS::KC_W)
+    {
+        m_PlayerMoveUpDown -= 1000;
+        directionChanged = true;
+    }
+    if(evt.key == OIS::KC_S)
+    {
+        m_PlayerMoveUpDown += 1000;
+        directionChanged = true;
+    }
+    if(evt.key == OIS::KC_A)
+    {
+        m_PlayerMoveLeftRight -= 1000;
+        directionChanged = true;
+    }
+    if(evt.key == OIS::KC_D)
+    {
+        m_PlayerMoveLeftRight += 1000;
+        directionChanged = true;
+    }
+    if(directionChanged)
+        this->dispatchNewDirection();
+
+    return true; // Don't clear input buffer
+}
+
+// ----------------------------------------------------------------------------
+
+bool OISInput::keyReleased(const OIS::KeyEvent& evt)
+{
+    // process WASD
+    bool directionChanged = false;
+    if(evt.key == OIS::KC_W)
+    {
+        m_PlayerMoveUpDown += 1000;
+        directionChanged = true;
+    }
+    if(evt.key == OIS::KC_S)
+    {
+        m_PlayerMoveUpDown -= 1000;
+        directionChanged = true;
+    }
+    if(evt.key == OIS::KC_A)
+    {
+        m_PlayerMoveLeftRight += 1000;
+        directionChanged = true;
+    }
+    if(evt.key == OIS::KC_D)
+    {
+        m_PlayerMoveLeftRight -= 1000;
+        directionChanged = true;
+    }
+    if(directionChanged)
+        this->dispatchNewDirection();
+
+    return true; // Don't clear input buffer
+}
+
+// ----------------------------------------------------------------------------
+bool OISInput::mouseMoved(const OIS::MouseEvent& evt)
+{
+    this->on_new_camera_angle(
             static_cast<float>(evt.state.Y.rel) * 0.02,
             static_cast<float>(evt.state.X.rel) * 0.02
     );
-    event.dispatch(
-        &InputListener::onChangeCameraDistanceDelta,
+    this->on_new_camera_distance(
         static_cast<float>(evt.state.Z.rel) * 0.0005
     );
     this->dispatchNewDirection();
+
     return true; // Don't clear input buffer
 }
 
 // ----------------------------------------------------------------------------
-bool OISInputSystem::mousePressed(const OIS::MouseEvent& evt, OIS::MouseButtonID mbid)
-{
-    return true; // Don't clear input buffer
-}
-
-// ----------------------------------------------------------------------------
-bool OISInputSystem::mouseReleased(const OIS::MouseEvent& evt, OIS::MouseButtonID mbid)
+bool OISInput::mousePressed(const OIS::MouseEvent& evt, OIS::MouseButtonID mbid)
 {
     return true; // Don't clear input buffer
 }
 
 // ----------------------------------------------------------------------------
-bool OISInputSystem::povMoved( const OIS::JoyStickEvent &evt, int pov )
+bool OISInput::mouseReleased(const OIS::MouseEvent& evt, OIS::MouseButtonID mbid)
+{
+    return true; // Don't clear input buffer
+}
+
+// ----------------------------------------------------------------------------
+bool OISInput::povMoved( const OIS::JoyStickEvent &evt, int pov )
 {
     return true; // True means: don't clear input buffer
 }
 
 // ----------------------------------------------------------------------------
-bool OISInputSystem::axisMoved( const OIS::JoyStickEvent &evt, int axis )
+bool OISInput::axisMoved( const OIS::JoyStickEvent &evt, int axis )
 {
     return true; // True means: don't clear input buffer
 }
 
 // ----------------------------------------------------------------------------
-bool OISInputSystem::sliderMoved( const OIS::JoyStickEvent &evt, int sliderID )
+bool OISInput::sliderMoved( const OIS::JoyStickEvent &evt, int sliderID )
 {
     return true; // True means: don't clear input buffer
 }
 
 // ----------------------------------------------------------------------------
-bool OISInputSystem::buttonPressed( const OIS::JoyStickEvent &evt, int button )
+bool OISInput::buttonPressed( const OIS::JoyStickEvent &evt, int button )
 {
     return true; // True means: don't clear input buffer
 }
 
 // ----------------------------------------------------------------------------
-bool OISInputSystem::buttonReleased( const OIS::JoyStickEvent &evt, int button )
+bool OISInput::buttonReleased( const OIS::JoyStickEvent &evt, int button )
 {
     return true; // True means: don't clear input buffer
 }

@@ -6,8 +6,6 @@
 // include files
 
 #include <openrump/EntityBase.hpp>
-#include <openrump/InputListener.hpp>
-#include <openrump/RendererFrameListener.hpp>
 
 // ----------------------------------------------------------------------------
 // forward declarations
@@ -20,9 +18,7 @@ namespace OpenRump {
 namespace OpenRump {
 
 class EntityPlayer :
-    public EntityBase,
-    public InputListener,
-    public RendererFrameListener
+    public EntityBase
 {
 private:
 
@@ -74,14 +70,6 @@ private:
      * as specified in the XML file.
      */
     Ogre::String loadFromXML(std::istream& stream);
-
-    // override input events
-    virtual void onChangeDirectionAndVelocity(float x, float y);
-    virtual void onChangeCameraAngleDelta(float deltaAngleX, float deltaAngleY);
-    virtual void onChangeCameraDistanceDelta(float deltaDistance);
-
-    // override renderer events
-    virtual bool onUpdateGameLoop(const float timeStep);
 
     Input* m_Input;
     OgreRenderer* m_Renderer;

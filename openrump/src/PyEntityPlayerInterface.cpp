@@ -7,7 +7,7 @@
 
 #include <boost/python.hpp>  // must be included before std to avoid warnings
 #include <openrump/EntityPlayer.hpp>
-#include <openrump/OgreRenderSystem.hpp>
+#include <openrump/systems/OgreRenderer.hpp>
 
 using namespace OpenRump;
 class OISInput;

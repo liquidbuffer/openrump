@@ -46,7 +46,6 @@ elseif (APPLE)
 elseif (UNIX)
 	add_definitions(
 		-std=c++11
-		-pedantic
 	)
 else ()
 	message(FATAL_ERROR "Unsupported OS")

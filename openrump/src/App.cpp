@@ -10,7 +10,7 @@
 #include <boost/python.hpp>  // must be included before std to avoid warnings
 
 #include <openrump/App.hpp>
-#include <openrump/OgreRenderSystem.hpp>
+#include <openrump/systems/OgreRenderer.hpp>
 #include <openrump/Game.hpp>
 #include <openrump/PyInterface.hpp>
 
@@ -24,7 +24,7 @@ App::App(std::string workingDirectory) :
     m_PyWorkingDirectory(new char[workingDirectory.size()+1])
 {
 
-    // python requires a writable char* of the working directory
+    // python requires a writeable char* of the working directory
     std::copy(workingDirectory.begin(),
               workingDirectory.end(),
               m_PyWorkingDirectory.get());

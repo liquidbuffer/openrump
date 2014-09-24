@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-#include <openrump/LoopTimer.hpp>
+#include <openrump/systems/LoopTimer.hpp>
 
 namespace OpenRump {
 
@@ -78,7 +78,7 @@ bool LoopTimer::isTimeToUpdate()
 #endif // _DEBUG
 	}
 
-	// calling this method means a render loop has occured
+	// calling this method means a render loop has occurred
 	++m_RenderLoopCounter;
 
 	// if time that has passed is smaller than the time that should have

@@ -5,8 +5,7 @@
 // ----------------------------------------------------------------------------
 // include files
 
-//#include <openrump/EntityPlayer.hpp>
-#include <openrump/OgreRenderSystem.hpp>
+#include <openrump/systems/OgreRenderer.hpp>
 
 #include <OgreRoot.h>
 
