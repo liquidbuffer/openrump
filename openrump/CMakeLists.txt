@@ -90,7 +90,7 @@ add_library (OpenRump SHARED
 			"--with-atomic"
 			"--with-system"
 			"--with-python"
-			"--with-signals2"
+			"--with-signals"
 		)
 
 		externalproject_add (BOOST_PROJECT

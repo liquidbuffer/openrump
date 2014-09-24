@@ -16,6 +16,13 @@ LoopTimer::LoopTimer() :
 }
 
 // ----------------------------------------------------------------------------
+LoopTimer::LoopTimer(unsigned long fps) :
+    LoopTimer()
+{
+    this->setFPS(fps);
+}
+
+// ----------------------------------------------------------------------------
 LoopTimer::statistics_t::statistics_t() :
 	renderFrameRate( 0 ),
 	gameFrameRate( 0 )
@@ -103,6 +110,19 @@ unsigned long LoopTimer::getRenderFPS()
 unsigned long LoopTimer::getUpdateFPS()
 {
 	return m_Statistics.gameFrameRate;
+}
+
+// ----------------------------------------------------------------------------
+void LoopTimer::onFrameRendered()
+{
+    // dispatch game loop event
+    int updates = 0;
+    while(this->isTimeToUpdate())
+    {
+        this->on_game_loop();
+        if(++updates >= 10)  // don't allow more than 10 game loop updates
+            break;           // without a render loop update
+    }
 }
 
 } // namespace OpenRump

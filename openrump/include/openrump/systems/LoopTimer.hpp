@@ -1,7 +1,10 @@
 // ----------------------------------------------------------------------------
 // include files
 
+#include <ontology/System.hpp>
+
 #include <chrono>
+#include <boost/signals2.hpp>
 
 // ----------------------------------------------------------------------------
 // forward declarations
@@ -18,7 +21,8 @@ namespace OpenRump {
  * This class takes care of counting and synchronizing the
  * game loop
  */
-class LoopTimer
+class LoopTimer :
+public Ontology::System
 {
 public:
 
@@ -26,6 +30,11 @@ public:
 	 * @brief Default constructor
 	 */
 	LoopTimer();
+
+	/*!
+	 * @brief Constructor with FPS setting.
+	 */
+    LoopTimer(unsigned long fps);
 
 	/*!
 	 * @brief Default destructor
@@ -72,23 +81,34 @@ public:
 	 */
 	unsigned long getUpdateFPS();
 
+	/*!
+	 * @brief Should be called by the renderer every render frame.
+	 */
+    void onFrameRendered();
+
+    boost::signals2::signal<void()> on_game_loop;
+
 private:
 
-	// timer implementation
+    // implement ontology methods
+    void initialise() override {};
+    void processEntity(const Ontology::Entity&) const override {};
+
+	/// timer implementation
 	std::chrono::system_clock::time_point m_Timer;
 
-	// counts how many render loops have passed
-	// this is incremented every time checkUpdateLoop() is called
+	/// counts how many render loops have passed
+	/// this is incremented every time checkUpdateLoop() is called
 	unsigned long m_GameLoopCounter;
 
-	// counts how many update loops were authorized
-	// this is only incremented whenever it is time to update the logic loop
+	/// counts how many update loops were authorized
+	/// this is only incremented whenever it is time to update the logic loop
 	unsigned long m_RenderLoopCounter;
 
-	// stores how much time is allowed to be between frames
+	/// stores how much time is allowed to be between frames
 	float m_TimeBetweenFrames;
 
-	// statistics
+	/// statistics
 	struct statistics_t
 	{
 		statistics_t( void );

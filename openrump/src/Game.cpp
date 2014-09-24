@@ -8,7 +8,7 @@
 #include <openrump/Game.hpp>
 #include <openrump/systems/OISInput.hpp>
 #include <openrump/systems/OgreRenderer.hpp>
-#include <openrump/EntityPlayer.hpp>
+#include <openrump/systems/LoopTimer.hpp>
 
 #include <ontology/SystemManager.hpp>
 
@@ -18,7 +18,6 @@ namespace OpenRump {
 
 // ----------------------------------------------------------------------------
 Game::Game() :
-    m_Shutdown(false),
     m_IsInitialised(false)
 {
     this->initialise();
@@ -44,7 +43,7 @@ void Game::run()
 // ----------------------------------------------------------------------------
 void Game::stop()
 {
-    m_Shutdown = true;
+    m_World.getSystemManager().getSystem<OgreRenderer>().stopRendering();
 }
 
 // ----------------------------------------------------------------------------
@@ -56,6 +55,7 @@ void Game::initialise()
 
     // create systems
     m_World.getSystemManager()
+        .addSystem(new LoopTimer())
         .addSystem(new OgreRenderer())
         .addSystem(new OISInput())
         .initialise()
@@ -63,6 +63,7 @@ void Game::initialise()
 
     OgreRenderer& renderer = m_World.getSystemManager().getSystem<OgreRenderer>();
     OISInput&     input    = m_World.getSystemManager().getSystem<OISInput>();
+    LoopTimer& loopTimer   = m_World.getSystemManager().getSystem<LoopTimer>();
 
     // ogre can cancel initialisation procedure without error
     if(!renderer.isInitialised())
@@ -73,6 +74,7 @@ void Game::initialise()
 
     // create connections
     renderer.on_frame_started.connect(boost::bind(&OISInput::capture, &input));
+    renderer.on_frame_queued.connect(boost::bind(&LoopTimer::onFrameRendered, &loopTimer));
     input.on_exit.connect(boost::bind(&Game::onButtonExit, this));
 
     m_IsInitialised = true;
@@ -150,14 +152,6 @@ void Game::cleanUp()
         return;
 
     m_IsInitialised = false;
-}
-
-// ----------------------------------------------------------------------------
-void Game::onUpdateGameLoop()
-{
-    m_World.setDeltaTime(timeStep);
-    m_World.update();
-    return m_PyGameUpdate.dispatchAndFindFalse(std::forward<const float>(timeStep));
 }
 
 // ----------------------------------------------------------------------------
