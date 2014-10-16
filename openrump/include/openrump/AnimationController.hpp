@@ -100,7 +100,7 @@ public:
 private:
 
     // override virtual functions
-    virtual bool frameRenderingQueued(const Ogre::FrameEvent&);
+    bool frameRenderingQueued(const Ogre::FrameEvent&) override;
 
     std::vector<Animation> m_ActiveAnimations;
 

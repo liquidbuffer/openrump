@@ -112,10 +112,7 @@ private:
 
     Ontology::World m_World;
 
-    bool m_Shutdown;
     bool m_IsInitialised;
-
-    std::map< std::string, std::unique_ptr<EntityBase> > m_EntityMap;
 
     PyCallbackDispatcher m_PyGameUpdate;
 };

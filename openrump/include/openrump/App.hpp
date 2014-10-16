@@ -39,17 +39,17 @@ private:
     /*!
      * @brief Called when the application should load
      */
-    virtual void onLoad();
+    void onLoad() override;
 
     /*!
      * @brief Called when the application should run
      */
-    virtual void onRun();
+    void onRun() override;
 
     /*!
      * @brief Called when the application is exiting
      */
-    virtual void onExit();
+    void onExit() override;
 
     std::string m_WorkingDirectory;
     std::unique_ptr<char[]> m_PyWorkingDirectory;

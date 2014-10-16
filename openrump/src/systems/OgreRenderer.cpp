@@ -22,7 +22,8 @@ OgreRenderer::OgreRenderer() :
     m_Camera(nullptr),
     m_PluginsCfg(Ogre::StringUtil::BLANK),
     m_ResourcesCfg(Ogre::StringUtil::BLANK),
-    m_IsInitialised(false)
+    m_IsInitialised(false),
+    m_Shutdown(false)
 {
 
     // set where config files are located
@@ -120,6 +121,12 @@ void OgreRenderer::startRendering()
 }
 
 // ----------------------------------------------------------------------------
+void OgreRenderer::stopRendering()
+{
+    m_Shutdown = true;
+}
+
+// ----------------------------------------------------------------------------
 std::size_t OgreRenderer::getWindowHandle() const
 {
     std::size_t hwnd;
@@ -158,27 +165,14 @@ Ogre::Camera* OgreRenderer::getMainCamera() const
 bool OgreRenderer::frameStarted(const Ogre::FrameEvent& evt)
 {
     this->on_frame_started();
-    return true;
+    return !m_Shutdown;
 }
 
 // ----------------------------------------------------------------------------
 bool OgreRenderer::frameRenderingQueued(const Ogre::FrameEvent& evt)
 {
-    // dispatch game loop event
-    /* TODO should be in LoopTimer
-    int updates = 0;
-    while(m_LoopTimer->isTimeToUpdate())
-    {
-        if(!this->event.dispatchAndFindFalse(&OgreRendererListener::onUpdateGameLoop,
-            m_LoopTimer->getTimeBetweenFrames()))
-            return false;
-
-        if(++updates >= 10)  // don't allow more than 10 game loop updates
-            break;           // without a render loop update
-    }*/
-
     this->on_frame_queued();
-    return true;
+    return !m_Shutdown;
 }
 
 } // namespace OpenRump

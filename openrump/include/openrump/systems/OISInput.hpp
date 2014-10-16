@@ -47,10 +47,10 @@ public:
     ~OISInput();
 
     // implement derived input methods
-    virtual void attachToWindow(std::size_t windowHnd);
-    virtual void detachFromWindow();
-    virtual void setWindowExtents(unsigned int width, unsigned int height);
-    virtual void capture();
+    void attachToWindow(std::size_t windowHnd) override;
+    void detachFromWindow() override;
+    void setWindowExtents(unsigned int width, unsigned int height) override;
+    void capture() override;
 
     boost::signals2::signal<void ()>             on_exit;
     boost::signals2::signal<void (float, float)> on_new_direction;
@@ -72,16 +72,16 @@ private:
     bool onPreUpdateRenderLoop(const float timeSinceLastUpdate);
 
     // implement OIS input events
-    virtual bool keyPressed(const OIS::KeyEvent&);
-    virtual bool keyReleased(const OIS::KeyEvent&);
-    virtual bool mouseMoved(const OIS::MouseEvent&);
-    virtual bool mousePressed(const OIS::MouseEvent&, OIS::MouseButtonID);
-    virtual bool mouseReleased(const OIS::MouseEvent&, OIS::MouseButtonID);
-    virtual bool povMoved( const OIS::JoyStickEvent&, int pov );
-    virtual bool axisMoved( const OIS::JoyStickEvent&, int axis );
-    virtual bool sliderMoved( const OIS::JoyStickEvent&, int sliderID );
-    virtual bool buttonPressed( const OIS::JoyStickEvent&, int button );
-    virtual bool buttonReleased( const OIS::JoyStickEvent&, int button );
+    bool keyPressed(const OIS::KeyEvent&) override;
+    bool keyReleased(const OIS::KeyEvent&) override;
+    bool mouseMoved(const OIS::MouseEvent&) override;
+    bool mousePressed(const OIS::MouseEvent&, OIS::MouseButtonID) override;
+    bool mouseReleased(const OIS::MouseEvent&, OIS::MouseButtonID) override;
+    bool povMoved( const OIS::JoyStickEvent&, int pov ) override;
+    bool axisMoved( const OIS::JoyStickEvent&, int axis ) override;
+    bool sliderMoved( const OIS::JoyStickEvent&, int sliderID ) override;
+    bool buttonPressed( const OIS::JoyStickEvent&, int button ) override;
+    bool buttonReleased( const OIS::JoyStickEvent&, int button ) override;
 
     OIS::InputManager*              m_InputSystem;
     OIS::Keyboard*                  m_Keyboard;

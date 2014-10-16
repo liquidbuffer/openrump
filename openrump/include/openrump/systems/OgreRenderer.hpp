@@ -59,6 +59,11 @@ public:
     void startRendering();
 
     /*!
+     * @brief Stops the rendering process
+     */
+    void stopRendering();
+
+    /*!
      * @brief Returns the render window handle
      */
     std::size_t getWindowHandle() const;
@@ -87,8 +92,8 @@ public:
 private:
 
     // override frame listeners
-    virtual bool frameStarted(const Ogre::FrameEvent& evt);
-    virtual bool frameRenderingQueued(const Ogre::FrameEvent&);
+    bool frameStarted(const Ogre::FrameEvent& evt) override;
+    bool frameRenderingQueued(const Ogre::FrameEvent&) override;
 
     /*!
      * @brief Sets up Ogre3D
@@ -106,6 +111,7 @@ private:
     Ogre::String m_ResourcesCfg;
 
     bool m_IsInitialised;
+    bool m_Shutdown;
 };
 
 } // namespace OpenRump
