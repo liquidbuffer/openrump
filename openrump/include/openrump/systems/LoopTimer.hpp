@@ -92,7 +92,7 @@ private:
 
     // implement ontology methods
     void initialise() override {};
-    void processEntity(const Ontology::Entity&) const override {};
+    void processEntity(Ontology::Entity&) override {};
 
 	/// timer implementation
 	std::chrono::system_clock::time_point m_Timer;
