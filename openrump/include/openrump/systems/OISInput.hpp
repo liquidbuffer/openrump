@@ -65,8 +65,8 @@ private:
     void dispatchNewDirection();
 
     // implement ontology methods
-    virtual void initialise();
-    virtual void processEntity(const Ontology::Entity&) const {};
+    void initialise() override;
+    void processEntity(Ontology::Entity&) override {};
 
     // implement RenderFrameListener methods
     bool onPreUpdateRenderLoop(const float timeSinceLastUpdate);

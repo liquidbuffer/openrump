@@ -94,9 +94,9 @@ private:
      * @brief Sets up Ogre3D
      * Initialises Ogre, opens the render window, and sets up resources.
      */
-    virtual void initialise();
+    void initialise() override;
 
-    virtual void processEntity(const Ontology::Entity& e) const {}
+    void processEntity(Ontology::Entity& e) override {}
 
     std::unique_ptr<Ogre::Root> m_Root;
     Ogre::RenderWindow* m_Window;

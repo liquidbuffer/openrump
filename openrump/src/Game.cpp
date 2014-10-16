@@ -55,11 +55,9 @@ void Game::initialise()
                 "[Game::initialise] Error: Game already initialised!");
 
     // create systems
-    m_World.getSystemManager()
-        .addSystem(new OgreRenderer())
-        .addSystem(new OISInput())
-        .initialise()
-        ;
+    m_World.getSystemManager().addSystem<OgreRenderer>();
+    m_World.getSystemManager().addSystem<OISInput>();
+    m_World.getSystemManager().initialise();
 
     OgreRenderer& renderer = m_World.getSystemManager().getSystem<OgreRenderer>();
     OISInput&     input    = m_World.getSystemManager().getSystem<OISInput>();
@@ -155,9 +153,8 @@ void Game::cleanUp()
 // ----------------------------------------------------------------------------
 void Game::onUpdateGameLoop()
 {
-    m_World.setDeltaTime(timeStep);
+    //m_World.setDeltaTime();
     m_World.update();
-    return m_PyGameUpdate.dispatchAndFindFalse(std::forward<const float>(timeStep));
 }
 
 // ----------------------------------------------------------------------------
