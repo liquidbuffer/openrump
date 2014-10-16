@@ -44,12 +44,12 @@ void exportOntologyInterface()
         .def("process_entity", pure_virtual(&System::processEntity))
         ;
     class_<Entity, boost::noncopyable>("Entity", no_init)
-        .def("add_component_camera", &Entity::addComponent<OpenRump::OgreCamera>,
+        /*.def("add_component_camera", &Entity::addComponent<OpenRump::OgreCamera>,
              return_value_policy<
-                reference_existing_object>())
+                reference_existing_object>())*/
         .def("remove_component_camera", &Entity::removeComponent<OpenRump::OgreCamera>)
-        .def("get_component_camera", &Entity::getComponent<OpenRump::OgreCamera>,
+        /*.def("get_component_camera", &Entity::getComponent<OpenRump::OgreCamera>,
              return_value_policy<
-                reference_existing_object>())
+                reference_existing_object>())*/
         ;
 }

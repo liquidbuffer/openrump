@@ -7,6 +7,7 @@
 
 #include <openrump/PyCallbackDispatcher.hpp>
 
+#include <ontology/Entity.hxx>
 #include <ontology/World.hpp>
 
 #include <string>
@@ -16,10 +17,6 @@
 
 // ----------------------------------------------------------------------------
 // forward declarations
-
-namespace Ontology {
-    class Entity;
-}
 
 namespace OpenRump {
     class OgreRenderer;
@@ -58,20 +55,20 @@ public:
      * @param entityName A globally unique string identifying this entity.
      * @param meshFileName The name of the mesh file to load.
      */
-    Ontology::Entity& loadPlayer(std::string entityName, std::string meshFileName);
+    Ontology::Entity::ID loadPlayer(std::string entityName, std::string meshFileName);
 
     /*!
      * @brief Creates a new camera and attaches it to the window.
      * @param cameraName A globally unique name for this camera.
      * @return The new camera,
      */
-    Ontology::Entity& createCamera(std::string cameraName);
+    Ontology::Entity::ID createCamera(std::string cameraName);
 
     /*!
      * @brief Attaches the main camera to the orbit of an entity.
      * @param entityName The entity identifier string.
      */
-    void attachCameraToEntity(Ontology::Entity& camera, Ontology::Entity& object);
+    void attachCameraToEntity(Ontology::Entity::ID camera, Ontology::Entity::ID object);
 
     /*!
      * @brief Registers a callback for when game updates occur.

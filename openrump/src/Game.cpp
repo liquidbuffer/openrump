@@ -99,7 +99,7 @@ void Game::initialise()
 }
 
 // ----------------------------------------------------------------------------
-Ontology::Entity& Game::loadPlayer(std::string entityName, std::string meshFileName)
+Ontology::Entity::ID Game::loadPlayer(std::string entityName, std::string meshFileName)
 {
     OgreRenderer& renderer = m_World.getSystemManager().getSystem<OgreRenderer>();
     Ogre::SceneManager* sm = renderer.getMainSceneManager();
@@ -112,24 +112,30 @@ Ontology::Entity& Game::loadPlayer(std::string entityName, std::string meshFileN
     return m_World.getEntityManager().createEntity(entityName.c_str())
         .addComponent<OgreTranslateRotateNode>(translateNode, rotateNode)
         .addComponent<OgreEntity>(entity)
+        .getID()
         ;
 }
 
 // ----------------------------------------------------------------------------
-Ontology::Entity& Game::createCamera(std::string cameraName)
+Ontology::Entity::ID Game::createCamera(std::string cameraName)
 {
     Ogre::Camera* camera = m_World.getSystemManager().getSystem<OgreRenderer>().createCamera(cameraName);
-    m_World.getEntityManager().createEntity(cameraName.c_str())
+    return m_World.getEntityManager().createEntity(cameraName.c_str())
         .addComponent<OgreCamera>(camera)
+        .getID()
         ;
 }
 
 // ----------------------------------------------------------------------------
-void Game::attachCameraToEntity(Ontology::Entity& camera, Ontology::Entity& entity)
+void Game::attachCameraToEntity(Ontology::Entity::ID cameraID, Ontology::Entity::ID entityID)
 {
+    Ontology::Entity& camera = m_World.getEntityManager().getEntity(cameraID);
+    Ontology::Entity& entity = m_World.getEntityManager().getEntity(entityID);
+    
     Ogre::SceneNode* attachNode = entity.getComponent<OgreTranslateRotateNode>().translation;
     Ogre::SceneNode* rotateNode = attachNode->createChildSceneNode(entity.getName()+std::string("CameraRotateNode"));
     Ogre::SceneNode* translateNode = rotateNode->createChildSceneNode(entity.getName()+std::string("CameraTranslateNode"));
+    
     translateNode->attachObject(camera.getComponent<OgreCamera>().camera);
 
     entity.addComponent<OgreCameraOrbitNode>(rotateNode, translateNode);
