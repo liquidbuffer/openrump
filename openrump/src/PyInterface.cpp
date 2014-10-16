@@ -11,8 +11,14 @@
 // ----------------------------------------------------------------------------
 // foward declarations
 
+void exportOntologyInterface();
 //void exportEntityPlayerInterface();
 void exportGameInterface();
+
+BOOST_PYTHON_MODULE(ontology)
+{
+    exportOntologyInterface();
+}
 
 BOOST_PYTHON_MODULE(open_rump)
 {

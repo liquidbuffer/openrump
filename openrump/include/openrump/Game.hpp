@@ -17,6 +17,10 @@
 // ----------------------------------------------------------------------------
 // forward declarations
 
+namespace Ontology {
+    class Entity;
+}
+
 namespace OpenRump {
     class OgreRenderer;
     class Input;
@@ -54,27 +58,20 @@ public:
      * @param entityName A globally unique string identifying this entity.
      * @param meshFileName The name of the mesh file to load.
      */
-    //EntityBase* loadPlayer(std::string entityName, std::string meshFileName);
+    Ontology::Entity& loadPlayer(std::string entityName, std::string meshFileName);
 
     /*!
      * @brief Creates a new camera and attaches it to the window.
      * @param cameraName A globally unique name for this camera.
      * @return The new camera,
      */
-    void createCamera(std::string cameraName);
+    Ontology::Entity& createCamera(std::string cameraName);
 
     /*!
      * @brief Attaches the main camera to the orbit of an entity.
      * @param entityName The entity identifier string.
      */
-    //void attachCameraToEntity(std::string entityName);
-
-    /*!
-     * @brief Attaches a camera to the orbit of an entity.
-     * @param cameraName The camera identifier string.
-     * @param entityName The entity identifier string.
-     */
-    //void attachCameraToEntity(std::string cameraName, std::string entityName);
+    void attachCameraToEntity(Ontology::Entity& camera, Ontology::Entity& object);
 
     /*!
      * @brief Registers a callback for when game updates occur.
@@ -92,6 +89,8 @@ public:
      * @brief Removes each and every callback managed by this class.
      */
     void removeAllCallbacks();
+
+    void onGameLoop();
 
 private:
 

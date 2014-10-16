@@ -66,7 +66,7 @@ private:
 
     // implement ontology methods
     void initialise() override;
-    void processEntity(const Ontology::Entity&) const override {};
+    void processEntity(Ontology::Entity&) override {};
 
     // implement RenderFrameListener methods
     bool onPreUpdateRenderLoop(const float timeSinceLastUpdate);

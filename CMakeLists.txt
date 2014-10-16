@@ -71,6 +71,9 @@ file (WRITE "res/mesh/.gitignore" "*")
 
 # cmake's external dependencies
 set (EXTERNAL_DEP_DIR "${CMAKE_SOURCE_DIR}/cmake-dep")
+set (CMAKE_PREFIX_PATH "${EXTERNAL_DEP_DIR}")
+set (CMAKE_INCLUDE_PATH "${EXTERNAL_DEP_DIR}/include")
+set (CMAKE_LIBRARY_PATH "${EXTERNAL_DEP_DIR}/lib")
 file (MAKE_DIRECTORY ${EXTERNAL_DEP_DIR})
 file (WRITE "${EXTERNAL_DEP_DIR}/.gitignore" "*")
 link_directories ("${EXTERNAL_DEP_DIR}/lib")

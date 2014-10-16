@@ -6,13 +6,20 @@
 // include files
 
 #include <openrump/Game.hpp>
+#include <openrump/systems/CameraOrbit.hpp>
 #include <openrump/systems/OISInput.hpp>
 #include <openrump/systems/OgreRenderer.hpp>
 #include <openrump/systems/LoopTimer.hpp>
+#include <openrump/components/OgreCamera.hpp>
+#include <openrump/components/OgreCameraOrbitNode.hpp>
+#include <openrump/components/OgreEntity.hpp>
+#include <openrump/components/OgreTranslateRotateNode.hpp>
 
 #include <ontology/SystemManager.hpp>
+#include <ontology/Entity.hpp>
 
 #include <OgreRoot.h>
+#include <OgreEntity.h>
 
 namespace OpenRump {
 
@@ -54,16 +61,24 @@ void Game::initialise()
                 "[Game::initialise] Error: Game already initialised!");
 
     // create systems
+    using namespace Ontology;
     m_World.getSystemManager()
-        .addSystem(new LoopTimer())
-        .addSystem(new OgreRenderer())
-        .addSystem(new OISInput())
+        .addSystem(new LoopTimer(),
+            SupportsComponents<None>())
+        .addSystem(new OgreRenderer(),
+            SupportsComponents<None>())
+        .addSystem(new OISInput(),
+            SupportsComponents<None>())
+        .addSystem(new CameraOrbit(),
+            SupportsComponents<
+                OgreCameraOrbitNode>())
         .initialise()
         ;
 
-    OgreRenderer& renderer = m_World.getSystemManager().getSystem<OgreRenderer>();
-    OISInput&     input    = m_World.getSystemManager().getSystem<OISInput>();
-    LoopTimer& loopTimer   = m_World.getSystemManager().getSystem<LoopTimer>();
+    CameraOrbit&    cameraOrbit = m_World.getSystemManager().getSystem<CameraOrbit>();
+    LoopTimer&      loopTimer   = m_World.getSystemManager().getSystem<LoopTimer>();
+    OgreRenderer&   renderer    = m_World.getSystemManager().getSystem<OgreRenderer>();
+    OISInput&       input       = m_World.getSystemManager().getSystem<OISInput>();
 
     // ogre can cancel initialisation procedure without error
     if(!renderer.isInitialised())
@@ -73,46 +88,53 @@ void Game::initialise()
     input.attachToWindow(renderer.getWindowHandle());
 
     // create connections
-    renderer.on_frame_started.connect(boost::bind(&OISInput::capture, &input));
     renderer.on_frame_queued.connect(boost::bind(&LoopTimer::onFrameRendered, &loopTimer));
+    renderer.on_frame_started.connect(boost::bind(&OISInput::capture, &input));
     input.on_exit.connect(boost::bind(&Game::onButtonExit, this));
+    input.on_new_camera_angle.connect(boost::bind(&CameraOrbit::onNewCameraAngle, &cameraOrbit, _1, _2));
+    input.on_new_camera_distance.connect(boost::bind(&CameraOrbit::onNewCameraDistance, &cameraOrbit, _1));
+    loopTimer.on_game_loop.connect(boost::bind(&Game::onGameLoop, this));
 
     m_IsInitialised = true;
 }
 
 // ----------------------------------------------------------------------------
-/*EntityBase* Game::loadPlayer(std::string entityName, std::string meshFileName)
+Ontology::Entity& Game::loadPlayer(std::string entityName, std::string meshFileName)
 {
-    if(m_EntityMap.find(entityName) != m_EntityMap.end())
-        throw std::runtime_error(
-                "[Game::loadPlayer] Error: Entity \""
-                + entityName + "\" already loaded!"
-        );
+    OgreRenderer& renderer = m_World.getSystemManager().getSystem<OgreRenderer>();
+    Ogre::SceneManager* sm = renderer.getMainSceneManager();
 
-    EntityBase* entityPtr = new EntityPlayer(m_Input.get(), m_OgreRenderer.get(), entityName, meshFileName);
-    m_EntityMap[entityName] = std::unique_ptr<EntityBase>(entityPtr);
-    return entityPtr;
-}*/
+    Ogre::SceneNode* translateNode = sm->getRootSceneNode()->createChildSceneNode(entityName+"TranslateNode");
+    Ogre::SceneNode* rotateNode = translateNode->createChildSceneNode(entityName+"RotateNode");
+    Ogre::Entity* entity = sm->createEntity(entityName, meshFileName);
+    rotateNode->attachObject(entity);
 
-// ----------------------------------------------------------------------------
-void Game::createCamera(std::string cameraName)
-{
-    m_World.getSystemManager().getSystem<OgreRenderer>().createCamera(cameraName);
+    return m_World.getEntityManager().createEntity(entityName.c_str())
+        .addComponent(new OgreTranslateRotateNode(translateNode, rotateNode))
+        .addComponent(new OgreEntity(entity))
+        ;
 }
 
 // ----------------------------------------------------------------------------
-/*void Game::attachCameraToEntity(std::string entityName)
+Ontology::Entity& Game::createCamera(std::string cameraName)
 {
-    auto it = m_EntityMap.find(entityName);
-    if(it == m_EntityMap.end())
-        throw std::runtime_error(
-                "[Game::attachCameraToEntity] Error: Entity with name \""
-                + entityName + "\" doesn't exisẗ"
-        );
-    it->second->attachCameraToOrbit(
-            m_World.getSystemManager()->getSystem<OgreRenderSystem>()->getMainCamera()
-    );
-}*/
+    Ogre::Camera* camera = m_World.getSystemManager().getSystem<OgreRenderer>().createCamera(cameraName);
+    m_World.getEntityManager().createEntity(cameraName.c_str())
+        .addComponent(new OgreCamera(camera))
+        ;
+}
+
+// ----------------------------------------------------------------------------
+void Game::attachCameraToEntity(Ontology::Entity& camera, Ontology::Entity& entity)
+{
+    Ogre::SceneNode* attachNode = entity.getComponent<OgreTranslateRotateNode>().translation;
+    Ogre::SceneNode* rotateNode = attachNode->createChildSceneNode(entity.getName()+std::string("CameraRotateNode"));
+    Ogre::SceneNode* translateNode = rotateNode->createChildSceneNode(entity.getName()+std::string("CameraTranslateNode"));
+    translateNode->attachObject(camera.getComponent<OgreCamera>().camera);
+
+    entity.addComponent(new OgreCameraOrbitNode(rotateNode, translateNode));
+    translateNode->setPosition(0, 0, 100);
+}
 
 // ----------------------------------------------------------------------------
 /*void Game::attachCameraToEntity(std::string cameraName, std::string entityName)
@@ -151,6 +173,9 @@ void Game::cleanUp()
     if(!m_IsInitialised)
         return;
 
+    this->removeAllCallbacks();
+    m_World.getSystemManager().getSystem<OISInput>().detachFromWindow();
+
     m_IsInitialised = false;
 }
 
@@ -158,6 +183,12 @@ void Game::cleanUp()
 void Game::onButtonExit()
 {
     this->stop();
+}
+
+// ----------------------------------------------------------------------------
+void Game::onGameLoop()
+{
+    m_World.update();
 }
 
 } // namespace OpenRump

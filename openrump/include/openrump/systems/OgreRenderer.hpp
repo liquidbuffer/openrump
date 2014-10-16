@@ -101,7 +101,7 @@ private:
      */
     void initialise() override;
 
-    void processEntity(const Ontology::Entity& e) const override {}
+    void processEntity(Ontology::Entity& e) override {}
 
     std::unique_ptr<Ogre::Root> m_Root;
     Ogre::RenderWindow* m_Window;

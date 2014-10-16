@@ -115,6 +115,9 @@ unsigned long LoopTimer::getUpdateFPS()
 // ----------------------------------------------------------------------------
 void LoopTimer::onFrameRendered()
 {
+    // dispatch render loop event
+    this->on_render_loop();
+
     // dispatch game loop event
     int updates = 0;
     while(this->isTimeToUpdate())

@@ -33,6 +33,8 @@ class Test(object):
 
 if __name__ == '__main__':
     game = open_rump.Game()
-    #game.create_camera('camera')
+    cam = game.create_camera('camera')
+    player = game.load_player('player', 'twilightsparkle.mesh')
+    game.attach_camera_to_entity(cam, player)
     #test = Test(game)
     game.run()

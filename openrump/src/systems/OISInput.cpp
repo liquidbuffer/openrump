@@ -89,8 +89,6 @@ void OISInput::detachFromWindow()
     if(!m_InputSystem)
         return;
 
-    // TODO disconnect all signals
-
     if(m_Keyboard)
     {
         m_InputSystem->destroyInputObject(m_Keyboard);
@@ -236,11 +234,11 @@ bool OISInput::keyReleased(const OIS::KeyEvent& evt)
 bool OISInput::mouseMoved(const OIS::MouseEvent& evt)
 {
     this->on_new_camera_angle(
-            static_cast<float>(evt.state.Y.rel) * 0.02,
-            static_cast<float>(evt.state.X.rel) * 0.02
+            static_cast<float>(-evt.state.Y.rel) * 0.2,
+            static_cast<float>(-evt.state.X.rel) * 0.2
     );
     this->on_new_camera_distance(
-        static_cast<float>(evt.state.Z.rel) * 0.0005
+        static_cast<float>(-evt.state.Z.rel) * 0.005
     );
     this->dispatchNewDirection();
 

@@ -60,6 +60,7 @@ void App::onRun()
     try
     {
         initopen_rump();
+        initontology();
         object main_module = import("__main__");
         object main_namespace = main_module.attr("__dict__");
         object ignored = exec_file("../../py/Main.py", main_namespace);
