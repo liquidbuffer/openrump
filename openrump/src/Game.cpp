@@ -15,8 +15,7 @@
 #include <openrump/components/OgreEntity.hpp>
 #include <openrump/components/OgreTranslateRotateNode.hpp>
 
-#include <ontology/SystemManager.hpp>
-#include <ontology/Entity.hpp>
+#include <ontology/Ontology.hpp>
 
 #include <OgreRoot.h>
 #include <OgreEntity.h>
@@ -62,18 +61,19 @@ void Game::initialise()
 
     // create systems
     using namespace Ontology;
-    m_World.getSystemManager()
-        .addSystem(new LoopTimer(),
-            SupportsComponents<None>())
-        .addSystem(new OgreRenderer(),
-            SupportsComponents<None>())
-        .addSystem(new OISInput(),
-            SupportsComponents<None>())
-        .addSystem(new CameraOrbit(),
-            SupportsComponents<
-                OgreCameraOrbitNode>())
-        .initialise()
-        ;
+    m_World.getSystemManager().addSystem<LoopTimer>()
+        .supportsComponents<
+            None>();
+    m_World.getSystemManager().addSystem<OgreRenderer>()
+        .supportsComponents<
+            None>();
+    m_World.getSystemManager().addSystem<OISInput>()
+        .supportsComponents<
+            None>();
+    m_World.getSystemManager().addSystem<CameraOrbit>()
+        .supportsComponents<
+            OgreCameraOrbitNode>();
+    m_World.getSystemManager().initialise();
 
     CameraOrbit&    cameraOrbit = m_World.getSystemManager().getSystem<CameraOrbit>();
     LoopTimer&      loopTimer   = m_World.getSystemManager().getSystem<LoopTimer>();
@@ -110,8 +110,8 @@ Ontology::Entity& Game::loadPlayer(std::string entityName, std::string meshFileN
     rotateNode->attachObject(entity);
 
     return m_World.getEntityManager().createEntity(entityName.c_str())
-        .addComponent(new OgreTranslateRotateNode(translateNode, rotateNode))
-        .addComponent(new OgreEntity(entity))
+        .addComponent<OgreTranslateRotateNode>(translateNode, rotateNode)
+        .addComponent<OgreEntity>(entity)
         ;
 }
 
@@ -120,7 +120,7 @@ Ontology::Entity& Game::createCamera(std::string cameraName)
 {
     Ogre::Camera* camera = m_World.getSystemManager().getSystem<OgreRenderer>().createCamera(cameraName);
     m_World.getEntityManager().createEntity(cameraName.c_str())
-        .addComponent(new OgreCamera(camera))
+        .addComponent<OgreCamera>(camera)
         ;
 }
 
@@ -132,7 +132,7 @@ void Game::attachCameraToEntity(Ontology::Entity& camera, Ontology::Entity& enti
     Ogre::SceneNode* translateNode = rotateNode->createChildSceneNode(entity.getName()+std::string("CameraTranslateNode"));
     translateNode->attachObject(camera.getComponent<OgreCamera>().camera);
 
-    entity.addComponent(new OgreCameraOrbitNode(rotateNode, translateNode));
+    entity.addComponent<OgreCameraOrbitNode>(rotateNode, translateNode);
     translateNode->setPosition(0, 0, 100);
 }
 
@@ -177,6 +177,13 @@ void Game::cleanUp()
     m_World.getSystemManager().getSystem<OISInput>().detachFromWindow();
 
     m_IsInitialised = false;
+}
+
+// ----------------------------------------------------------------------------
+void Game::onUpdateGameLoop()
+{
+    //m_World.setDeltaTime();
+    m_World.update();
 }
 
 // ----------------------------------------------------------------------------

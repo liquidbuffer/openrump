@@ -27,3 +27,6 @@
 *.swp
 *~
 *.log
+
+# project files
+*.kdev4
