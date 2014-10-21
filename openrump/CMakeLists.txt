@@ -56,7 +56,17 @@ endif ()
 # Python
 message (STATUS "Looking for Python...")
 find_package (PythonLibs 2.7 REQUIRED)
-message (STATUS "Found Python: ${PYTHON_LIBRARIES}")
+# hack to force python 2.7
+string (REGEX REPLACE "[0-9]\\.[0-9]" "2.7" PYTHON_LIBRARIES
+	${PYTHON_LIBRARIES})
+string (REGEX REPLACE "[0-9]\\.[0-9]" "2.7" PYTHON_INCLUDE_DIRS
+	${PYTHON_INCLUDE_DIRS})
+# make sure the replaced version exists
+if (NOT EXISTS ${PYTHON_LIBRARIES} OR NOT EXISTS ${PYTHON_INCLUDE_DIRS})
+        message (FATAL "Could NOT Find Python 2.7. Please download and install Python 2.7.")
+endif ()
+message (STATUS "Found Python library: ${PYTHON_LIBRARIES}")
+message (STATUS "Found Python headers: ${PYTHON_INCLUDE_DIRS}")
 include_directories (${PYTHON_INCLUDE_DIRS})
 target_link_libraries (OpenRump ${PYTHON_LIBRARIES})
 
@@ -67,7 +77,11 @@ find_package (Boost 1.46.0 COMPONENTS
 if (Boost_FOUND)
 	add_custom_target (BOOST_PROJECT)
 	# hack to force boost to use python2.7
-	string (REGEX REPLACE "[0-9].[0-9]" "2.7" Boost_PYTHON_LIBRARY ${Boost_PYTHON_LIBRARY})
+	string (REGEX REPLACE "[0-9]\\.[0-9]" "2.7" Boost_PYTHON_LIBRARY ${Boost_PYTHON_LIBRARY})
+	# make sure the replaced version exists
+	if (NOT EXISTS ${Boost_PYTHON_LIBRARY})
+		message (FATAL "Failed to downgrade Boost.Python to version 2.7. Please make sure you've built Boost.Python with python 2.7 support.")
+	endif ()
 	include_directories (${Boost_INCLUDE_DIRS})
 	target_link_libraries (OpenRump ${Boost_PYTHON_LIBRARY})
 	message (STATUS "python library is: ${Boost_PYTHON_LIBRARY}")
@@ -76,10 +90,12 @@ else (Boost_FOUND)
 
 	# windows specific settings
 	if (WIN32)
-		set (BOOST_CONFIGURE_COMMAND "bootstrap.bat")
+		set (BOOST_CONFIGURE_COMMAND "bootstrap.bat"
+			"--with-python-version=2.7")
 		set (BOOST_BUILD_COMMAND "b2")
 	else (WIN32)
-		set (BOOST_CONFIGURE_COMMAND "./bootstrap.sh")
+		set (BOOST_CONFIGURE_COMMAND "./bootstrap.sh"
+			"--with-python-version=2.7")
 		set (BOOST_BUILD_COMMAND "./b2")
 	endif (WIN32)
 	set (BOOST_BUILD_COMMAND ${BOOST_BUILD_COMMAND}
@@ -204,7 +220,6 @@ else ()
 		CMAKE_ARGS ${COMMON_CMAKE_FLAGS}
 	)
 endif ()
-add_definitions (-DONTOLOGY_SHARED)
 target_link_libraries (OpenRump ontology)
 
 add_dependencies (OpenRump
