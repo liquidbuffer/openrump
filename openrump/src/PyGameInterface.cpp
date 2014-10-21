@@ -30,4 +30,4 @@ void exportGameInterface()
         .def("remove_game_update_callback", &Game::removeGameUpdateCallback)
         .def("remove_all_callbacks", &Game::removeAllCallbacks)
     ;
-};
+}

@@ -24,4 +24,4 @@ BOOST_PYTHON_MODULE(open_rump)
 {
     exportGameInterface();
     /*exportEntityPlayerInterface();*/
-};
+}
