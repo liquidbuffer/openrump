@@ -61,7 +61,7 @@ void Game::initialise()
 
     // create systems
     using namespace Ontology;
-    m_World.getSystemManager().addSystem<LoopTimer>()
+    m_World.getSystemManager().addSystem<LoopTimer>(60)
         .supportsComponents<
             None>();
     m_World.getSystemManager().addSystem<OgreRenderer>()
@@ -73,6 +73,8 @@ void Game::initialise()
     m_World.getSystemManager().addSystem<CameraOrbit>()
         .supportsComponents<
             OgreCameraOrbitNode>();
+    
+    // initialise all systems
     m_World.getSystemManager().initialise();
 
     CameraOrbit&    cameraOrbit = m_World.getSystemManager().getSystem<CameraOrbit>();
@@ -89,7 +91,7 @@ void Game::initialise()
 
     // create connections
     renderer.on_frame_queued.connect(boost::bind(&LoopTimer::onFrameRendered, &loopTimer));
-    renderer.on_frame_started.connect(boost::bind(&OISInput::capture, &input));
+    loopTimer.on_game_loop.connect(boost::bind(&OISInput::capture, &input));
     input.on_exit.connect(boost::bind(&Game::onButtonExit, this));
     input.on_new_camera_angle.connect(boost::bind(&CameraOrbit::onNewCameraAngle, &cameraOrbit, _1, _2));
     input.on_new_camera_distance.connect(boost::bind(&CameraOrbit::onNewCameraDistance, &cameraOrbit, _1));

@@ -73,6 +73,7 @@ target_link_libraries (OpenRump ${PYTHON_LIBRARIES})
 ###############################################################################
 # Boost - Ogre requires at least 1.46.0
 find_package (Boost 1.46.0 COMPONENTS
+	system
 	python)
 if (Boost_FOUND)
 	add_custom_target (BOOST_PROJECT)
@@ -83,7 +84,10 @@ if (Boost_FOUND)
 		message (FATAL "Failed to downgrade Boost.Python to version 2.7. Please make sure you've built Boost.Python with python 2.7 support.")
 	endif ()
 	include_directories (${Boost_INCLUDE_DIRS})
-	target_link_libraries (OpenRump ${Boost_PYTHON_LIBRARY})
+	target_link_libraries (OpenRump
+		${Boost_SYSTEM_LIBRARY}
+		${Boost_PYTHON_LIBRARY}
+	)
 	message (STATUS "python library is: ${Boost_PYTHON_LIBRARY}")
 else (Boost_FOUND)
 	message (STATUS "Boost will be downloaded automatically")
@@ -122,6 +126,7 @@ else (Boost_FOUND)
 		INSTALL_COMMAND ""
 	)
 	target_link_libraries (OpenRump
+		boost_system
 		boost_python
 	)
 endif (Boost_FOUND)

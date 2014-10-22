@@ -241,6 +241,8 @@ bool OISInput::mouseMoved(const OIS::MouseEvent& evt)
         static_cast<float>(-evt.state.Z.rel) * 0.005
     );
     this->dispatchNewDirection();
+    
+    std::cout << evt.state.Y.rel << std::endl;
 
     return true; // Don't clear input buffer
 }
