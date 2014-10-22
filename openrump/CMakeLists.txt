@@ -204,7 +204,6 @@ else ()
 		CMAKE_ARGS ${COMMON_CMAKE_FLAGS}
 	)
 endif ()
-add_definitions (-DONTOLOGY_SHARED)
 target_link_libraries (OpenRump ontology)
 
 add_dependencies (OpenRump
