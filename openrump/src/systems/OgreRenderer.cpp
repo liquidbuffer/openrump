@@ -13,13 +13,17 @@
 #include <OgreSceneManager.h>
 #include <OgreEntity.h>
 
+#include <SDL.h>
+#include <SDL_syswm.h>
+
 namespace OpenRump {
 
 // ----------------------------------------------------------------------------
 OgreRenderer::OgreRenderer() :
-    m_Window(nullptr),
+    m_OgreWindow(nullptr),
     m_SceneManager(nullptr),
     m_Camera(nullptr),
+    m_SDLWindow(nullptr),
     m_PluginsCfg(Ogre::StringUtil::BLANK),
     m_ResourcesCfg(Ogre::StringUtil::BLANK),
     m_IsInitialised(false),
@@ -46,6 +50,10 @@ OgreRenderer::~OgreRenderer()
     m_SceneManager->destroyLight(m_SceneManager->getLight("SecondLight"));
     m_SceneManager->destroyLight(m_SceneManager->getLight("MainLight"));
     m_Root->destroySceneManager(m_SceneManager);
+    
+    m_Root.reset(nullptr);
+    SDL_DestroyWindow(m_SDLWindow);
+    SDL_Quit();
 }
 
 // ----------------------------------------------------------------------------
@@ -92,9 +100,67 @@ void OgreRenderer::initialise()
     if(!m_Root->showConfigDialog());
         return;
 #endif // _DEBUG
+    
+    // read ogre configuration file and extract window dimensions
+    int width, height;
+    cf.load("ogre.cfg");
+    seci = cf.getSectionIterator();
+    while(seci.hasMoreElements())
+    {
+        secName = seci.peekNextKey();
+        Ogre::ConfigFile::SettingsMultiMap* settings = seci.getNext();
+        Ogre::ConfigFile::SettingsMultiMap::iterator it;
+        for(it = settings->begin(); it != settings->end(); ++it)
+        {
+            typeName = it->first;
+            archName = it->second;
+            if(typeName == "Video Mode")
+            {
+                std::size_t split = archName.find("x");
+                if(split == Ogre::String::npos)
+                    throw std::runtime_error("Failed to parse video mode from ogre.cfg");
+                width = std::stoi(archName.substr(0, split));
+                height = std::stoi(archName.substr(split+1));
+            }
+        }
+    }
+    
+    SDL_Init(SDL_INIT_VIDEO);
+    
+    m_SDLWindow = SDL_CreateWindow(
+        "Open Rump",        // window title
+        0,                  // initial x position
+        0,                  // initial y position
+        width,              // width
+        height,             // height
+        SDL_WINDOW_SHOWN    // flags, see below
+    );
+    if(!m_SDLWindow)
+        throw std::runtime_error(std::string("Could not create SDL window: ") + SDL_GetError());
 
-    // initialise render window
-    m_Window = m_Root->initialise(true, "Open Rump");
+    m_Root->initialise(false);
+    
+    SDL_SysWMinfo wmInfo;
+    SDL_VERSION(&wmInfo.version);
+    if(SDL_GetWindowWMInfo(m_SDLWindow, &wmInfo) == SDL_FALSE)
+        throw std::runtime_error("Couldn't get SDL window info");
+    
+    Ogre::String winHandle;
+    switch(wmInfo.subsystem)
+    {
+        case SDL_SYSWM_X11:
+            winHandle = Ogre::StringConverter::toString((unsigned long)wmInfo.info.x11.window);
+            break;
+        default:
+            throw std::runtime_error("Unexpected WM");
+            break;
+    }
+    
+    Ogre::NameValuePairList params;
+    params.insert(std::make_pair("parentWindowHandle", winHandle));
+    
+    m_OgreWindow = Ogre::Root::getSingleton().createRenderWindow("OGRE Window", width, height, false, &params);
+    m_OgreWindow->setVisible(true);
 
     // set default mipmap level (note: some APIs ignore this)
     Ogre::TextureManager::getSingletonPtr()->setDefaultNumMipmaps(5);
@@ -130,7 +196,7 @@ void OgreRenderer::stopRendering()
 std::size_t OgreRenderer::getWindowHandle() const
 {
     std::size_t hwnd;
-    m_Window->getCustomAttribute("WINDOW", &hwnd);
+    m_OgreWindow->getCustomAttribute("WINDOW", &hwnd);
     return hwnd;
 }
 
@@ -144,7 +210,7 @@ Ogre::SceneManager* OgreRenderer::getMainSceneManager() const
 Ogre::Camera* OgreRenderer::createCamera(std::string name)
 {
     m_Camera = m_SceneManager->createCamera(name);
-    Ogre::Viewport* vp = m_Window->addViewport(m_Camera);
+    Ogre::Viewport* vp = m_OgreWindow->addViewport(m_Camera);
     vp->setBackgroundColour(Ogre::ColourValue(0.0f, 0.0f, 0.5f));
     m_Camera->setAspectRatio(
             Ogre::Real(vp->getActualWidth()) /

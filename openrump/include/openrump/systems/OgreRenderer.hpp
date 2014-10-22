@@ -30,6 +30,8 @@ namespace Ogre {
     class Camera;
 }
 
+typedef struct SDL_Window SDL_Window;
+
 namespace OpenRump {
 
 class OPENRUMP_API OgreRenderer :
@@ -104,9 +106,10 @@ private:
     void processEntity(Ontology::Entity& e) override {}
 
     std::unique_ptr<Ogre::Root> m_Root;
-    Ogre::RenderWindow* m_Window;
+    Ogre::RenderWindow* m_OgreWindow;
     Ogre::SceneManager* m_SceneManager;
     Ogre::Camera* m_Camera;
+    SDL_Window* m_SDLWindow;
     Ogre::String m_PluginsCfg;
     Ogre::String m_ResourcesCfg;
 

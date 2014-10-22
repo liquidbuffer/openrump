@@ -132,6 +132,28 @@ else (Boost_FOUND)
 endif (Boost_FOUND)
 
 ###############################################################################
+# SDL2
+find_package (SDL2)
+if (SDL2_FOUND)
+    add_custom_target (SDL2_PROJECT)
+else (SDL2_FOUND)
+    message (STATUS "SDL2 will be downloaded automatically")
+    
+    externalproject_add (SDL2_PROJECT
+        PREFIX ${EXTERNAL_DEP_DIR}
+        URL "https://www.libsdl.org/release/SDL2-2.0.3.tar.gz"
+        URL_HASH "https://www.libsdl.org/release/SDL2-2.0.3.tar.gz.sig"
+        CMAKE_ARGS ${COMMON_CMAKE_FLAGS}
+    )
+    
+    set (SDL2_INCLUDE_DIR "${EXTERNAL_DEP_DIR}/include/sdl2")
+    set (SDL2_LIBRARY SDL)
+endif (SDL2_FOUND)
+
+include_directories (${SDL2_INCLUDE_DIR})
+target_link_libraries (OpenRump ${SDL2_LIBRARY})
+
+###############################################################################
 # Bullet
 find_package (BULLET)
 if (BULLET_FOUND)
