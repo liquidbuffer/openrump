@@ -40,15 +40,13 @@ add_definitions (
 ###############################################################################
 # compiler definitions and flags
 ###############################################################################
-if (MSVC)
-elseif (MINGW)
-elseif (APPLE)
-elseif (UNIX)
-	add_definitions(
-		-std=c++11
-	)
-else ()
-	message(FATAL_ERROR "Unsupported OS")
+
+if (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
+	add_definitions (-std=c++11 -pedantic)
+elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
+	add_definitions (-std=c++11 -pedantic)
+elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "Intel")
+elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
 endif ()
 
 if (CMAKE_BUILD_TYPE MATCHES Debug)
