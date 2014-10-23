@@ -20,6 +20,9 @@
 #include <OgreRoot.h>
 #include <OgreEntity.h>
 
+#include <SDL.h>
+#include <boost/graph/graph_concepts.hpp>
+
 namespace OpenRump {
 
 // ----------------------------------------------------------------------------
@@ -67,9 +70,9 @@ void Game::initialise()
     m_World.getSystemManager().addSystem<OgreRenderer>()
         .supportsComponents<
             None>();
-    m_World.getSystemManager().addSystem<OISInput>()
+    /*m_World.getSystemManager().addSystem<OISInput>()
         .supportsComponents<
-            None>();
+            None>();*/
     m_World.getSystemManager().addSystem<CameraOrbit>()
         .supportsComponents<
             OgreCameraOrbitNode>();
@@ -80,22 +83,22 @@ void Game::initialise()
     CameraOrbit&    cameraOrbit = m_World.getSystemManager().getSystem<CameraOrbit>();
     LoopTimer&      loopTimer   = m_World.getSystemManager().getSystem<LoopTimer>();
     OgreRenderer&   renderer    = m_World.getSystemManager().getSystem<OgreRenderer>();
-    OISInput&       input       = m_World.getSystemManager().getSystem<OISInput>();
+    //OISInput&       input       = m_World.getSystemManager().getSystem<OISInput>();
 
     // ogre can cancel initialisation procedure without error
     if(!renderer.isInitialised())
         return;
 
     // attach OIS to Ogre's window
-    input.attachToWindow(renderer.getWindowHandle());
+    //input.attachToWindow(renderer.getWindowHandle());
 
     // create connections
     renderer.on_frame_queued.connect(boost::bind(&LoopTimer::onFrameRendered, &loopTimer));
-    loopTimer.on_game_loop.connect(boost::bind(&OISInput::capture, &input));
-    input.on_exit.connect(boost::bind(&Game::onButtonExit, this));
-    input.on_new_camera_angle.connect(boost::bind(&CameraOrbit::onNewCameraAngle, &cameraOrbit, _1, _2));
-    input.on_new_camera_distance.connect(boost::bind(&CameraOrbit::onNewCameraDistance, &cameraOrbit, _1));
-    loopTimer.on_game_loop.connect(boost::bind(&Game::onGameLoop, this));
+    //loopTimer.on_game_loop.connect(boost::bind(&OISInput::capture, &input));
+    //input.on_exit.connect(boost::bind(&Game::onButtonExit, this));
+    //input.on_new_camera_angle.connect(boost::bind(&CameraOrbit::onNewCameraAngle, &cameraOrbit, _1, _2));
+    //input.on_new_camera_distance.connect(boost::bind(&CameraOrbit::onNewCameraDistance, &cameraOrbit, _1));
+    loopTimer.on_game_loop.connect(boost::bind(&Game::onUpdateGameLoop, this));
 
     m_IsInitialised = true;
 }
@@ -182,7 +185,7 @@ void Game::cleanUp()
         return;
 
     this->removeAllCallbacks();
-    m_World.getSystemManager().getSystem<OISInput>().detachFromWindow();
+    //m_World.getSystemManager().getSystem<OISInput>().detachFromWindow();
 
     m_IsInitialised = false;
 }
@@ -192,18 +195,25 @@ void Game::onUpdateGameLoop()
 {
     //m_World.setDeltaTime();
     m_World.update();
+
+    SDL_Event event;
+    while(SDL_PollEvent(&event))
+    {
+        if(event.type == SDL_KEYDOWN)
+        {
+            std::cout << "key down event" << std::endl;
+        }
+        if(event.type == SDL_QUIT)
+        {
+            this->onButtonExit();
+        }
+    }
 }
 
 // ----------------------------------------------------------------------------
 void Game::onButtonExit()
 {
     this->stop();
-}
-
-// ----------------------------------------------------------------------------
-void Game::onGameLoop()
-{
-    m_World.update();
 }
 
 } // namespace OpenRump

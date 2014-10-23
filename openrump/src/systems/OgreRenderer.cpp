@@ -44,15 +44,23 @@ OgreRenderer::OgreRenderer() :
 // ----------------------------------------------------------------------------
 OgreRenderer::~OgreRenderer()
 {
-    m_Root->removeFrameListener(this);
+    if(m_Root.get())
+        m_Root->removeFrameListener(this);
 
     // destroy scene
-    m_SceneManager->destroyLight(m_SceneManager->getLight("SecondLight"));
-    m_SceneManager->destroyLight(m_SceneManager->getLight("MainLight"));
-    m_Root->destroySceneManager(m_SceneManager);
+    if(m_SceneManager)
+    {
+        m_SceneManager->destroyLight(m_SceneManager->getLight("SecondLight"));
+        m_SceneManager->destroyLight(m_SceneManager->getLight("MainLight"));
+        if(m_Root.get())
+            m_Root->destroySceneManager(m_SceneManager);
+    }
     
     m_Root.reset(nullptr);
-    SDL_DestroyWindow(m_SDLWindow);
+    
+    // for some reason, SDL window has to be destroyed after Ogre Root was destroyed
+    if(m_SDLWindow)
+        SDL_DestroyWindow(m_SDLWindow);
     SDL_Quit();
 }
 
@@ -65,7 +73,7 @@ bool OgreRenderer::isInitialised()
 // ----------------------------------------------------------------------------
 void OgreRenderer::initialise()
 {
-    if(m_Root)
+    if(m_Root.get())
         return;
 
     m_Root = std::unique_ptr<Ogre::Root>(new Ogre::Root(m_PluginsCfg));
@@ -125,20 +133,18 @@ void OgreRenderer::initialise()
         }
     }
     
-    SDL_Init(SDL_INIT_VIDEO);
-    
+    SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
+
     m_SDLWindow = SDL_CreateWindow(
-        "Open Rump",        // window title
-        0,                  // initial x position
-        0,                  // initial y position
-        width,              // width
-        height,             // height
-        SDL_WINDOW_SHOWN    // flags, see below
+        "Open Rump",            // window title
+        SDL_WINDOWPOS_CENTERED, // initial x position
+        SDL_WINDOWPOS_CENTERED, // initial y position
+        width,                  // width
+        height,                 // height
+        SDL_WINDOW_SHOWN        // flags, see below
     );
     if(!m_SDLWindow)
         throw std::runtime_error(std::string("Could not create SDL window: ") + SDL_GetError());
-
-    m_Root->initialise(false);
     
     SDL_SysWMinfo wmInfo;
     SDL_VERSION(&wmInfo.version);
@@ -158,6 +164,8 @@ void OgreRenderer::initialise()
     
     Ogre::NameValuePairList params;
     params.insert(std::make_pair("parentWindowHandle", winHandle));
+    
+    m_Root->initialise(false, "", "");
     
     m_OgreWindow = Ogre::Root::getSingleton().createRenderWindow("OGRE Window", width, height, false, &params);
     m_OgreWindow->setVisible(true);

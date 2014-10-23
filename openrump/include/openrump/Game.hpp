@@ -87,7 +87,6 @@ public:
      */
     void removeAllCallbacks();
 
-    void onGameLoop();
 
 private:
 

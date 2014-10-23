@@ -30,6 +30,11 @@ endif (APPLE)
 # Dependencies
 ###############################################################################
 
+# TODO remove
+find_package (OIS REQUIRED)
+include_directories (${OIS_INCLUDE_DIRS})
+target_link_libraries (OpenRump ${OIS_LIBRARIES})
+
 include (link_ogredeps)
 link_ogredeps (OpenRump)
 include (link_python)
