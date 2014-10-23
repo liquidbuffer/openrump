@@ -6,6 +6,7 @@
 // include files
 
 #include <openrump/systems/OgreRenderer.hpp>
+#include <openrump/Exception.hpp>
 
 #include <OgreRoot.h>
 #include <OgreConfigFile.h>
@@ -75,6 +76,8 @@ void OgreRenderer::initialise()
 {
     if(m_Root.get())
         return;
+    
+    // Initialises ogre root and sets up SDL
 
     m_Root = std::unique_ptr<Ogre::Root>(new Ogre::Root(m_PluginsCfg));
 
@@ -100,7 +103,7 @@ void OgreRenderer::initialise()
         }
     }
 
-    // configure rendering window
+    // open Ogre's default config dialog
 #ifdef _DEBUG
     if(!(m_Root->restoreConfig() || m_Root->showConfigDialog()))
         return;
@@ -133,8 +136,12 @@ void OgreRenderer::initialise()
         }
     }
     
-    SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
+    // initialise SDL to use video and events
+    ASSERT(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) >= 0, Exception, OgreRenderer::initialise,
+        std::string("Failed to initialise SDL: ") + SDL_GetError()
+    )
 
+    // open SDL window - no GL support
     m_SDLWindow = SDL_CreateWindow(
         "Open Rump",            // window title
         SDL_WINDOWPOS_CENTERED, // initial x position
@@ -143,30 +150,31 @@ void OgreRenderer::initialise()
         height,                 // height
         SDL_WINDOW_SHOWN        // flags, see below
     );
-    if(!m_SDLWindow)
-        throw std::runtime_error(std::string("Could not create SDL window: ") + SDL_GetError());
+    ASSERT(m_SDLWindow, Exception, OgreRenderer::initialise,
+        std::string("Could not create SDL window: ") + SDL_GetError()
+    )
     
+    // get SDL window handle so it can be passed to Ogre
     SDL_SysWMinfo wmInfo;
-    SDL_VERSION(&wmInfo.version);
-    if(SDL_GetWindowWMInfo(m_SDLWindow, &wmInfo) == SDL_FALSE)
-        throw std::runtime_error("Couldn't get SDL window info");
-    
     Ogre::String winHandle;
+    SDL_VERSION(&wmInfo.version);
+    ASSERT(SDL_GetWindowWMInfo(m_SDLWindow, &wmInfo) != SDL_FALSE, Exception, OgreRenderer::initialise,
+        "Couldn't get SDL window info"
+    )
     switch(wmInfo.subsystem)
     {
         case SDL_SYSWM_X11:
             winHandle = Ogre::StringConverter::toString((unsigned long)wmInfo.info.x11.window);
             break;
         default:
-            throw std::runtime_error("Unexpected WM");
+            ASSERT(false, Exception, OgreRenderer::initialise, "Unexpected WM")
             break;
     }
     
+    // finally, create ogre render window and pass SDL's window handle
     Ogre::NameValuePairList params;
     params.insert(std::make_pair("parentWindowHandle", winHandle));
-    
     m_Root->initialise(false, "", "");
-    
     m_OgreWindow = Ogre::Root::getSingleton().createRenderWindow("OGRE Window", width, height, false, &params);
     m_OgreWindow->setVisible(true);
 
