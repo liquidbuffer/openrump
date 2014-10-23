@@ -7,7 +7,7 @@
 
 #include <openrump/Game.hpp>
 #include <openrump/systems/CameraOrbit.hpp>
-#include <openrump/systems/OISInput.hpp>
+#include <openrump/systems/SDLInput.hpp>
 #include <openrump/systems/OgreRenderer.hpp>
 #include <openrump/systems/LoopTimer.hpp>
 #include <openrump/components/OgreCamera.hpp>
@@ -70,9 +70,9 @@ void Game::initialise()
     m_World.getSystemManager().addSystem<OgreRenderer>()
         .supportsComponents<
             None>();
-    /*m_World.getSystemManager().addSystem<OISInput>()
+    m_World.getSystemManager().addPolymorphicSystem<InputInterface, SDLInput>()
         .supportsComponents<
-            None>();*/
+            None>();
     m_World.getSystemManager().addSystem<CameraOrbit>()
         .supportsComponents<
             OgreCameraOrbitNode>();
@@ -83,7 +83,7 @@ void Game::initialise()
     CameraOrbit&    cameraOrbit = m_World.getSystemManager().getSystem<CameraOrbit>();
     LoopTimer&      loopTimer   = m_World.getSystemManager().getSystem<LoopTimer>();
     OgreRenderer&   renderer    = m_World.getSystemManager().getSystem<OgreRenderer>();
-    //OISInput&       input       = m_World.getSystemManager().getSystem<OISInput>();
+    InputInterface* input       = m_World.getSystemManager().getSystemPtr<InputInterface>();
 
     // ogre can cancel initialisation procedure without error
     if(!renderer.isInitialised())
@@ -99,6 +99,8 @@ void Game::initialise()
     //input.on_new_camera_angle.connect(boost::bind(&CameraOrbit::onNewCameraAngle, &cameraOrbit, _1, _2));
     //input.on_new_camera_distance.connect(boost::bind(&CameraOrbit::onNewCameraDistance, &cameraOrbit, _1));
     loopTimer.on_game_loop.connect(boost::bind(&Game::onUpdateGameLoop, this));
+    loopTimer.on_game_loop.connect(boost::bind(&InputInterface::capture, input));
+    input->on_exit.connect(boost::bind(&Game::onButtonExit, this));
 
     m_IsInitialised = true;
 }
@@ -195,19 +197,6 @@ void Game::onUpdateGameLoop()
 {
     //m_World.setDeltaTime();
     m_World.update();
-
-    SDL_Event event;
-    while(SDL_PollEvent(&event))
-    {
-        if(event.type == SDL_KEYDOWN)
-        {
-            std::cout << "key down event" << std::endl;
-        }
-        if(event.type == SDL_QUIT)
-        {
-            this->onButtonExit();
-        }
-    }
 }
 
 // ----------------------------------------------------------------------------

@@ -18,7 +18,7 @@ macro (link_sdl2 TARGET_NAME)
         )
         
         set (SDL2_INCLUDE_DIR "${EXTERNAL_DEP_DIR}/include/SDL2")
-        set (SDL2_LIBRARY SDL)
+        set (SDL2_LIBRARY SDL2)
     endif (SDL2_FOUND)
 
     include_directories (${SDL2_INCLUDE_DIR})
