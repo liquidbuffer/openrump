@@ -94,13 +94,11 @@ void Game::initialise()
 
     // create connections
     renderer.on_frame_queued.connect(boost::bind(&LoopTimer::onFrameRendered, &loopTimer));
-    //loopTimer.on_game_loop.connect(boost::bind(&OISInput::capture, &input));
-    //input.on_exit.connect(boost::bind(&Game::onButtonExit, this));
-    //input.on_new_camera_angle.connect(boost::bind(&CameraOrbit::onNewCameraAngle, &cameraOrbit, _1, _2));
-    //input.on_new_camera_distance.connect(boost::bind(&CameraOrbit::onNewCameraDistance, &cameraOrbit, _1));
+    input->on_new_camera_angle.connect(boost::bind(&CameraOrbit::onNewCameraAngle, &cameraOrbit, _1, _2));
+    input->on_new_camera_distance.connect(boost::bind(&CameraOrbit::onNewCameraDistance, &cameraOrbit, _1));
+    input->on_exit.connect(boost::bind(&Game::onButtonExit, this));
     loopTimer.on_game_loop.connect(boost::bind(&Game::onUpdateGameLoop, this));
     loopTimer.on_game_loop.connect(boost::bind(&InputInterface::capture, input));
-    input->on_exit.connect(boost::bind(&Game::onButtonExit, this));
 
     m_IsInitialised = true;
 }

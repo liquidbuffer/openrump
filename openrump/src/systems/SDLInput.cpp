@@ -43,9 +43,22 @@ void SDLInput::capture()
     SDL_Event event;
     while(SDL_PollEvent(&event))
     {
-        if(event.type == SDL_QUIT)
+        switch(event.type)
         {
-            on_exit();
+            case SDL_QUIT:
+                on_exit();
+                break;
+            case SDL_KEYDOWN:
+                switch(event.key.keysym.sym)
+                {
+                    case SDLK_ESCAPE:
+                        on_exit();
+                    default:
+                        break;
+                }
+                break;
+            default:
+                break;
         }
     }
 }
