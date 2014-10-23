@@ -48,15 +48,56 @@ void SDLInput::capture()
             case SDL_QUIT:
                 on_exit();
                 break;
+
             case SDL_KEYDOWN:
                 switch(event.key.keysym.sym)
                 {
+                    // escape key
                     case SDLK_ESCAPE:
                         on_exit();
+                        break;
+                        
+                    // WASD directional input state changes
+                    case SDLK_w:
+                        m_MoveAxisState.up = 1000;
+                        break;
+                    case SDLK_s:
+                        m_MoveAxisState.down = 1000;
+                        break;
+                    case SDLK_a:
+                        m_MoveAxisState.left = 1000;
+                        break;
+                    case SDLK_d:
+                        m_MoveAxisState.right = 1000;
+                        break;
+                        
                     default:
                         break;
                 }
                 break;
+            
+            case SDL_KEYUP:
+                switch(event.key.keysym.sym)
+                {
+                    // WASD directional input state changes
+                    case SDLK_w:
+                        m_MoveAxisState.up = 0;
+                        break;
+                    case SDLK_s:
+                        m_MoveAxisState.down = 0;
+                        break;
+                    case SDLK_a:
+                        m_MoveAxisState.left = 0;
+                        break;
+                    case SDLK_d:
+                        m_MoveAxisState.right = 0;
+                        break;
+                        
+                    default:
+                        break;
+                }
+                break;
+                
             default:
                 break;
         }
