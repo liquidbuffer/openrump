@@ -11,10 +11,30 @@
 #include <boost/graph/graph_concepts.hpp>
 
 namespace OpenRump {
-    
+
+// ----------------------------------------------------------------------------
+void SDLInput::dispatchDirectionChange()
+{
+}
+
+// ----------------------------------------------------------------------------
+void SDLInput::dispatchCameraAngleChange(int x, int y)
+{
+    on_camera_angle_change(static_cast<float>(x),
+                           static_cast<float>(y));
+}
+
+// ----------------------------------------------------------------------------
+void SDLInput::dispatchCameraDistanceChange(int y)
+{
+    on_camera_distance_change(static_cast<float>(y));
+}
+
 // ----------------------------------------------------------------------------
 void SDLInput::initialise()
 {
+    // constrain mouse to window extents
+    SDL_SetRelativeMouseMode(SDL_TRUE);
 }
 
 // ----------------------------------------------------------------------------
@@ -60,15 +80,45 @@ void SDLInput::capture()
                     // WASD directional input state changes
                     case SDLK_w:
                         m_MoveAxisState.up = 1000;
+                        this->dispatchDirectionChange();
                         break;
                     case SDLK_s:
                         m_MoveAxisState.down = 1000;
+                        this->dispatchDirectionChange();
                         break;
                     case SDLK_a:
                         m_MoveAxisState.left = 1000;
+                        this->dispatchDirectionChange();
                         break;
                     case SDLK_d:
                         m_MoveAxisState.right = 1000;
+                        this->dispatchDirectionChange();
+                        break;
+                        
+                    default:
+                        break;
+                }
+                break;
+
+            case SDL_KEYUP:
+                switch(event.key.keysym.sym)
+                {
+                    // WASD directional input state changes
+                    case SDLK_w:
+                        m_MoveAxisState.up = 0;
+                        this->dispatchDirectionChange();
+                        break;
+                    case SDLK_s:
+                        m_MoveAxisState.down = 0;
+                        this->dispatchDirectionChange();
+                        break;
+                    case SDLK_a:
+                        m_MoveAxisState.left = 0;
+                        this->dispatchDirectionChange();
+                        break;
+                    case SDLK_d:
+                        m_MoveAxisState.right = 0;
+                        this->dispatchDirectionChange();
                         break;
                         
                     default:
@@ -76,27 +126,13 @@ void SDLInput::capture()
                 }
                 break;
             
-            case SDL_KEYUP:
-                switch(event.key.keysym.sym)
-                {
-                    // WASD directional input state changes
-                    case SDLK_w:
-                        m_MoveAxisState.up = 0;
-                        break;
-                    case SDLK_s:
-                        m_MoveAxisState.down = 0;
-                        break;
-                    case SDLK_a:
-                        m_MoveAxisState.left = 0;
-                        break;
-                    case SDLK_d:
-                        m_MoveAxisState.right = 0;
-                        break;
-                        
-                    default:
-                        break;
-                }
-                break;
+                case SDL_MOUSEMOTION:
+                    this->dispatchCameraAngleChange(event.motion.xrel,
+                                                    event.motion.yrel);
+                    break;
+                case SDL_MOUSEWHEEL:
+                    this->dispatchCameraDistanceChange(event.wheel.y);
+                    break;
                 
             default:
                 break;

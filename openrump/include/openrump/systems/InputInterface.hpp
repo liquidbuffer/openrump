@@ -54,10 +54,9 @@ public:
     
     // events
     boost::signals2::signal<void ()>                on_exit;
-    boost::signals2::signal<void (float, float)>    on_new_direction;
-    boost::signals2::signal<void (float, float)>    on_new_camera_angle;
-    boost::signals2::signal<void (float)>           on_new_camera_distance;
-    
+    boost::signals2::signal<void (float, float)>    on_direction_change;
+    boost::signals2::signal<void (float, float)>    on_camera_angle_change;
+    boost::signals2::signal<void (float)>           on_camera_distance_change;
 };
 
 }  // namespace OpenRump

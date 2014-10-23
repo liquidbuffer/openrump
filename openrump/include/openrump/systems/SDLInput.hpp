@@ -14,10 +14,11 @@ namespace OpenRump {
 class SDLInput :
     public InputInterface
 {
-    /*!
-     * @brief
-     */
-    void 
+private:
+
+    void dispatchDirectionChange();
+    void dispatchCameraAngleChange(int x, int y);
+    void dispatchCameraDistanceChange(int y);
     
     // implement ontology abstracts
     void initialise() override;
