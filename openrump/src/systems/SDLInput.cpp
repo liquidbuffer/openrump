@@ -10,11 +10,25 @@
 #include "SDL.h"
 #include <boost/graph/graph_concepts.hpp>
 
+#include <math.h>
+
 namespace OpenRump {
 
 // ----------------------------------------------------------------------------
 void SDLInput::dispatchDirectionChange()
 {
+    // directional vector
+    float x = static_cast<float>(m_MoveAxisState.right - m_MoveAxisState.left);
+    float y = static_cast<float>(m_MoveAxisState.up - m_MoveAxisState.down);
+    
+    // normalize
+    if(x != 0.0 || y != 0.0)
+    {
+        float length = sqrt(x*x + y*y);
+        x /= length;
+        y /= length;
+    }
+    on_direction_change(x, y);
 }
 
 // ----------------------------------------------------------------------------
@@ -34,7 +48,7 @@ void SDLInput::dispatchCameraDistanceChange(int y)
 void SDLInput::initialise()
 {
     // constrain mouse to window extents
-    SDL_SetRelativeMouseMode(SDL_TRUE);
+    //SDL_SetRelativeMouseMode(SDL_TRUE);
 }
 
 // ----------------------------------------------------------------------------

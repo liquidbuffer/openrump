@@ -10,10 +10,13 @@
 #include <openrump/systems/SDLInput.hpp>
 #include <openrump/systems/OgreRenderer.hpp>
 #include <openrump/systems/LoopTimer.hpp>
+#include <openrump/systems/ThirdPersonController.hpp>
 #include <openrump/components/OgreCamera.hpp>
 #include <openrump/components/OgreCameraOrbitNode.hpp>
 #include <openrump/components/OgreEntity.hpp>
 #include <openrump/components/OgreTranslateRotateNode.hpp>
+#include <openrump/components/Direction2D.hpp>
+#include <openrump/components/Speed.hpp>
 
 #include <ontology/Ontology.hpp>
 
@@ -76,14 +79,21 @@ void Game::initialise()
     m_World.getSystemManager().addSystem<CameraOrbit>()
         .supportsComponents<
             OgreCameraOrbitNode>();
+    m_World.getSystemManager().addSystem<ThirdPersonController>("../../res/twilightsparkle.xml")
+        .supportsComponents<
+            OgreCameraOrbitNode,
+            OgreTranslateRotateNode,
+            Direction2D,
+            Speed>();
     
     // initialise all systems
     m_World.getSystemManager().initialise();
 
-    CameraOrbit&    cameraOrbit = m_World.getSystemManager().getSystem<CameraOrbit>();
-    LoopTimer&      loopTimer   = m_World.getSystemManager().getSystem<LoopTimer>();
-    OgreRenderer&   renderer    = m_World.getSystemManager().getSystem<OgreRenderer>();
-    InputInterface* input       = m_World.getSystemManager().getSystemPtr<InputInterface>();
+    CameraOrbit&    cameraOrbit     = m_World.getSystemManager().getSystem<CameraOrbit>();
+    LoopTimer&      loopTimer       = m_World.getSystemManager().getSystem<LoopTimer>();
+    OgreRenderer&   renderer        = m_World.getSystemManager().getSystem<OgreRenderer>();
+    InputInterface* input           = m_World.getSystemManager().getSystemPtr<InputInterface>();
+    ThirdPersonController& thirdPC  = m_World.getSystemManager().getSystem<ThirdPersonController>();
 
     // ogre can cancel initialisation procedure without error
     if(!renderer.isInitialised())
@@ -96,6 +106,7 @@ void Game::initialise()
     renderer.on_frame_queued.connect(boost::bind(&LoopTimer::onFrameRendered, &loopTimer));
     input->on_camera_angle_change.connect(boost::bind(&CameraOrbit::onNewCameraAngle, &cameraOrbit, _1, _2));
     input->on_camera_distance_change.connect(boost::bind(&CameraOrbit::onNewCameraDistance, &cameraOrbit, _1));
+    input->on_direction_change.connect(boost::bind(&ThirdPersonController::onDirectionChange, &thirdPC, _1, _2));
     input->on_exit.connect(boost::bind(&Game::onButtonExit, this));
     loopTimer.on_game_loop.connect(boost::bind(&Game::onUpdateGameLoop, this));
     loopTimer.on_game_loop.connect(boost::bind(&InputInterface::capture, input));
@@ -117,6 +128,8 @@ Ontology::Entity::ID Game::loadPlayer(std::string entityName, std::string meshFi
     return m_World.getEntityManager().createEntity(entityName.c_str())
         .addComponent<OgreTranslateRotateNode>(translateNode, rotateNode)
         .addComponent<OgreEntity>(entity)
+        .addComponent<Direction2D>()
+        .addComponent<Speed>()
         .getID()
         ;
 }
@@ -146,19 +159,6 @@ void Game::attachCameraToEntity(Ontology::Entity::ID cameraID, Ontology::Entity:
     entity.addComponent<OgreCameraOrbitNode>(rotateNode, translateNode);
     translateNode->setPosition(0, 0, 100);
 }
-
-// ----------------------------------------------------------------------------
-/*void Game::attachCameraToEntity(std::string cameraName, std::string entityName)
-{
-    auto it = m_EntityMap.find(entityName);
-    if(it == m_EntityMap.end())
-        throw std::runtime_error(
-                "[Game::attachCameraToEntity] Error: Entity with name \""
-                + entityName + "\" doesn't exist"
-        );
-    Ogre::SceneManager* sm = m_World.getSystemManager()->getSystem<OgreRenderSystem>()->getMainSceneManager();
-    it->second->attachCameraToOrbit(sm->getCamera(cameraName));
-}*/
 
 // ----------------------------------------------------------------------------
 void Game::addGameUpdateCallback(boost::python::object callable)
