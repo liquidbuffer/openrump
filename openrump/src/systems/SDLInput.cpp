@@ -57,6 +57,11 @@ void SDLInput::processEntity(Ontology::Entity&)
 }
 
 // ----------------------------------------------------------------------------
+void SDLInput::configureEntity(Ontology::Entity&, std::string)
+{
+}
+
+// ----------------------------------------------------------------------------
 void SDLInput::attachToWindow(std::size_t windowHnd)
 {
 }

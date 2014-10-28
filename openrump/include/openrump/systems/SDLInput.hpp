@@ -23,6 +23,7 @@ private:
     // implement ontology abstracts
     void initialise() override;
     void processEntity(Ontology::Entity&) override;
+    void configureEntity(Ontology::Entity&, std::string="") override;
     
     // implement abstract methods from InputInterface
     void attachToWindow(std::size_t windowHnd) override;

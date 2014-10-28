@@ -28,6 +28,7 @@ private:
 
     void initialise() override;
     void processEntity(Ontology::Entity&) override;
+    void configureEntity(Ontology::Entity&, std::string="") override;
 
     struct Angle_t
     {

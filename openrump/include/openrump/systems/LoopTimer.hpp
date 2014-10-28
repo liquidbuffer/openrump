@@ -94,6 +94,7 @@ private:
     // implement ontology methods
     void initialise() override {};
     void processEntity(Ontology::Entity&) override {};
+    void configureEntity(Ontology::Entity&, std::string="") override {}
 
     /// timer implementation
     std::chrono::system_clock::time_point m_Timer;

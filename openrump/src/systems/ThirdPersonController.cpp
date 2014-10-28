@@ -161,4 +161,9 @@ void ThirdPersonController::processEntity(Ontology::Entity& e)
     std::cout << e.getComponent<OgreTranslateRotateNode>().translation->getPosition() << std::endl;
 }
 
+// ----------------------------------------------------------------------------
+void ThirdPersonController::configureEntity(Ontology::Entity&, std::string)
+{
+}
+
 } // namespace OpenRump

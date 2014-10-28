@@ -18,8 +18,9 @@ using namespace boost::python;
 
 struct SystemWrapper : System, wrapper<System>
 {
-    void initialise()               {}
-    void processEntity(Entity&)     {}
+    void initialise()                           {}
+    void processEntity(Entity&)                 {}
+    void configureEntity(Entity&, std::string)  {}
 };
 
 void exportOntologyInterface()
@@ -42,6 +43,7 @@ void exportOntologyInterface()
     class_<SystemWrapper, boost::noncopyable>("System")
         .def("initialise", pure_virtual(&System::initialise))
         .def("process_entity", pure_virtual(&System::processEntity))
+        .def("configure_entity", pure_virtual(&System::configureEntity))
         ;
     class_<Entity, boost::noncopyable>("Entity", no_init)
         /*.def("add_component_camera", &Entity::addComponent<OpenRump::OgreCamera>,

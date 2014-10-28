@@ -104,6 +104,7 @@ private:
     void initialise() override;
 
     void processEntity(Ontology::Entity& e) override {}
+    void configureEntity(Ontology::Entity&, std::string="") override {}
 
     std::unique_ptr<Ogre::Root> m_Root;
     Ogre::RenderWindow* m_OgreWindow;

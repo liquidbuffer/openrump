@@ -35,6 +35,11 @@ void CameraOrbit::processEntity(Ontology::Entity& e)
 }
 
 // ----------------------------------------------------------------------------
+void CameraOrbit::configureEntity(Ontology::Entity& e, std::string)
+{
+}
+
+// ----------------------------------------------------------------------------
 void CameraOrbit::onNewCameraAngle(float x, float y)
 {
     m_Angle.x -= y * 0.1;

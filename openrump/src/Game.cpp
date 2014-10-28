@@ -130,6 +130,7 @@ Ontology::Entity::ID Game::loadPlayer(std::string entityName, std::string meshFi
         .addComponent<OgreEntity>(entity)
         .addComponent<Direction2D>()
         .addComponent<Speed>()
+        .configure<ThirdPersonController>("player")
         .getID()
         ;
 }
