@@ -5,18 +5,20 @@
 // ----------------------------------------------------------------------------
 // include files
 
-#include <openrump/Game.hpp>
-#include <openrump/systems/CameraOrbit.hpp>
-#include <openrump/systems/SDLInput.hpp>
-#include <openrump/systems/OgreRenderer.hpp>
-#include <openrump/systems/LoopTimer.hpp>
-#include <openrump/systems/ThirdPersonController.hpp>
-#include <openrump/components/OgreCamera.hpp>
-#include <openrump/components/OgreCameraOrbitNode.hpp>
-#include <openrump/components/OgreEntity.hpp>
-#include <openrump/components/OgreTranslateRotateNode.hpp>
-#include <openrump/components/Direction2D.hpp>
-#include <openrump/components/Speed.hpp>
+#include "openrump/Game.hpp"
+#include "openrump/systems/CameraOrbit.hpp"
+#include "openrump/systems/DefaultPhysicsWorld.hpp"
+#include "openrump/systems/LoopTimer.hpp"
+#include "openrump/systems/OgreRenderer.hpp"
+#include "openrump/systems/OgreDotSceneManager.hpp"
+#include "openrump/systems/SDLInput.hpp"
+#include "openrump/systems/ThirdPersonController.hpp"
+#include "openrump/components/OgreCamera.hpp"
+#include "openrump/components/OgreCameraOrbitNode.hpp"
+#include "openrump/components/OgreEntity.hpp"
+#include "openrump/components/OgreTranslateRotateNode.hpp"
+#include "openrump/components/Direction2D.hpp"
+#include "openrump/components/Speed.hpp"
 
 #include <ontology/Ontology.hpp>
 
@@ -73,7 +75,13 @@ void Game::initialise()
     m_World.getSystemManager().addSystem<OgreRenderer>()
         .supportsComponents<
             None>();
+    m_World.getSystemManager().addSystem<OgreDotSceneManager>()
+        .supportsComponents<
+            None>();
     m_World.getSystemManager().addPolymorphicSystem<InputInterface, SDLInput>()
+        .supportsComponents<
+            None>();
+    m_World.getSystemManager().addSystem<DefaultPhysicsWorld>()
         .supportsComponents<
             None>();
     m_World.getSystemManager().addSystem<CameraOrbit>()

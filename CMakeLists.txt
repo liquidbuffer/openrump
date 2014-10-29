@@ -42,7 +42,7 @@ add_definitions (
 ###############################################################################
 
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
-    add_definitions (-std=c++11 -pedantic)
+    add_definitions (-std=c++11 -pedantic -fPIC)
 elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
     add_definitions (-std=c++11 -pedantic)
 elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "Intel")
