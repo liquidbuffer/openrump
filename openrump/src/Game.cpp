@@ -109,6 +109,11 @@ void Game::initialise()
 
     // attach OIS to Ogre's window
     //input.attachToWindow(renderer.getWindowHandle());
+    
+    m_World.getSystemManager().getSystem<OgreDotSceneManager>().addScene(
+        "test scene",
+        "../../../assets-openrump/mesh/test-floor/floor.scene"
+    );
 
     // create connections
     renderer.on_frame_queued.connect(boost::bind(&LoopTimer::onFrameRendered, &loopTimer));

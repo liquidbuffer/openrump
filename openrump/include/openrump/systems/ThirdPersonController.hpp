@@ -42,7 +42,7 @@ private:
     // implement ontology methods
     void initialise() override;
     void processEntity(Ontology::Entity&) override;
-    void configureEntity(Ontology::Entity&, std::string="") override;
+    void configureEntity(Ontology::Entity&, std::string) override;
     
     Ogre::Vector2 m_TargetDirection;
 

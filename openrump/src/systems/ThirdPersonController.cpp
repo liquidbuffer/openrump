@@ -157,8 +157,6 @@ void ThirdPersonController::processEntity(Ontology::Entity& e)
     e.getComponent<OgreTranslateRotateNode>().translation->translate(
         direction * currentSpeed
     );
-    
-    std::cout << e.getComponent<OgreTranslateRotateNode>().translation->getPosition() << std::endl;
 }
 
 // ----------------------------------------------------------------------------
