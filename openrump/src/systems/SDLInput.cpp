@@ -48,7 +48,7 @@ void SDLInput::dispatchCameraDistanceChange(int y)
 void SDLInput::initialise()
 {
     // constrain mouse to window extents
-    //SDL_SetRelativeMouseMode(SDL_TRUE);
+    SDL_SetRelativeMouseMode(SDL_TRUE);
 }
 
 // ----------------------------------------------------------------------------

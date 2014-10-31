@@ -33,7 +33,8 @@ OgreDotSceneManager::~OgreDotSceneManager()
 }
 
 // ----------------------------------------------------------------------------
-void OgreDotSceneManager::addScene(const std::string& sceneName, const std::string& fileName)
+void OgreDotSceneManager::addScene(const std::string& sceneName,
+                                   const std::string& fileName)
 {
     // check for scenes with the same name
     if(m_Scenes.find(sceneName) != m_Scenes.end())
@@ -139,8 +140,11 @@ void OgreDotSceneManager::parseExternals(boost::property_tree::ptree& externals)
             {
                 if(resourceLocation.first == "file")
                 {
+                    // add the path to the file as a resource location
+                    Ogre::String resourceFile = resourceLocation.second
+                        .get<Ogre::String>("<xmlattr>.name");
                     rgm->addResourceLocation(
-                        resourceLocation.second.get<Ogre::String>("<xmlattr>.name"),
+                        resourceFile.substr(0, resourceFile.find_last_of("\\/")),
                         "FileSystem",
                         m_SceneName
                     );
@@ -154,30 +158,44 @@ void OgreDotSceneManager::parseExternals(boost::property_tree::ptree& externals)
 void OgreDotSceneManager::parseNodes(boost::property_tree::ptree& nodes)
 {
     for(auto& node : nodes)
-        this->parseNode(node.second);
+        this->parseNode(node.second, m_SceneNode);
 }
 
 // ----------------------------------------------------------------------------
-void OgreDotSceneManager::parseNode(boost::property_tree::ptree& node)
+void OgreDotSceneManager::parseNode(boost::property_tree::ptree& xmlNode,
+                                    Ogre::SceneNode* parentSceneNode)
 {
-    Ogre::SceneNode* sn = m_SceneNode->createChildSceneNode(
-        m_SceneName + "." + node.get<Ogre::String>("<xmlattr>.name")
-    );
-    
-    // every node must have these three attributes
-    this->parseNodePosition(node.get_child("position"), sn);
-    this->parseNodeRotation(node.get_child("rotation"), sn);
-    this->parseNodeScale(node.get_child("scale"),       sn);
-    
-    // iterate through rest and process what we can
-    for(auto& nodeAttribtes : node)
+    for(auto& nodeAttribtes : xmlNode)
     {
+        // nested nodes
+        if(nodeAttribtes.first == "node")
+        {
+            this->parseNode(nodeAttribtes.second, parentSceneNode);
+        }
+        
         // 3D endtities
         if(nodeAttribtes.first == "entity")
         {
+            Ogre::SceneNode* sn = this->createSceneNode(xmlNode, parentSceneNode);
             this->parseNodeEntity(nodeAttribtes.second, sn);
         }
     }
+}
+
+// ----------------------------------------------------------------------------
+Ogre::SceneNode* OgreDotSceneManager::createSceneNode(boost::property_tree::ptree& xmlNode,
+                                                      Ogre::SceneNode* parentSceneNode)
+{
+    Ogre::SceneNode* sn = parentSceneNode->createChildSceneNode(
+        m_SceneName + "." + xmlNode.get<Ogre::String>("<xmlattr>.name")
+    );
+    
+    // every node must have these three attributes
+    this->parseNodePosition(xmlNode.get_child("position"), sn);
+    this->parseNodeRotation(xmlNode.get_child("rotation"), sn);
+    this->parseNodeScale(xmlNode.get_child("scale"),       sn);
+    
+    return sn;
 }
 
 // ----------------------------------------------------------------------------
@@ -215,14 +233,18 @@ void OgreDotSceneManager::parseNodeScale(boost::property_tree::ptree& scale,
 void OgreDotSceneManager::parseNodeEntity(boost::property_tree::ptree& entity,
                                           Ogre::SceneNode* node)
 {
+    // entity name and entity mesh file name are essential
     Ogre::String entityName = m_SceneName + "." + entity.get<Ogre::String>("<xmlattr>.name");
     Ogre::String entityMesh = entity.get<Ogre::String>("<xmlattr>.meshFile");
+    
+    // create entity and attach it to its corresponding scene node
     Ogre::Entity* ogreEntity = this->world->getSystemManager()
         .getSystem<OgreRenderer>()
         .getMainSceneManager()
-        ->createEntity(entityName, entityMesh);
+        ->createEntity(entityName, entityMesh, m_SceneName);
     node->attachObject(ogreEntity);
     
+    // process optional entity attributes
     for(auto& property : entity.get_child("<xmlattr>"))
     {
     }

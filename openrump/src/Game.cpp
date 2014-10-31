@@ -87,12 +87,12 @@ void Game::initialise()
     m_World.getSystemManager().addSystem<CameraOrbit>()
         .supportsComponents<
             OgreCameraOrbitNode>();
-    m_World.getSystemManager().addSystem<ThirdPersonController>("../../res/twilightsparkle.xml")
+    /*m_World.getSystemManager().addSystem<ThirdPersonController>("../../res/twilightsparkle.xml")
         .supportsComponents<
             OgreCameraOrbitNode,
             OgreTranslateRotateNode,
             Direction2D,
-            Speed>();
+            Speed>();*/
     
     // initialise all systems
     m_World.getSystemManager().initialise();
@@ -101,7 +101,7 @@ void Game::initialise()
     LoopTimer&      loopTimer       = m_World.getSystemManager().getSystem<LoopTimer>();
     OgreRenderer&   renderer        = m_World.getSystemManager().getSystem<OgreRenderer>();
     InputInterface* input           = m_World.getSystemManager().getSystemPtr<InputInterface>();
-    ThirdPersonController& thirdPC  = m_World.getSystemManager().getSystem<ThirdPersonController>();
+    //ThirdPersonController& thirdPC  = m_World.getSystemManager().getSystem<ThirdPersonController>();
 
     // ogre can cancel initialisation procedure without error
     if(!renderer.isInitialised())
@@ -114,12 +114,16 @@ void Game::initialise()
         "test scene",
         "../../../assets-openrump/mesh/test-floor/floor.scene"
     );
+    m_World.getSystemManager().getSystem<OgreDotSceneManager>().addScene(
+        "applejack",
+        "../../../assets-openrump/mesh/applejack/AJ ogre001.scene"
+    );
 
     // create connections
     renderer.on_frame_queued.connect(boost::bind(&LoopTimer::onFrameRendered, &loopTimer));
     input->on_camera_angle_change.connect(boost::bind(&CameraOrbit::onNewCameraAngle, &cameraOrbit, _1, _2));
     input->on_camera_distance_change.connect(boost::bind(&CameraOrbit::onNewCameraDistance, &cameraOrbit, _1));
-    input->on_direction_change.connect(boost::bind(&ThirdPersonController::onDirectionChange, &thirdPC, _1, _2));
+    //input->on_direction_change.connect(boost::bind(&ThirdPersonController::onDirectionChange, &thirdPC, _1, _2));
     input->on_exit.connect(boost::bind(&Game::onButtonExit, this));
     loopTimer.on_game_loop.connect(boost::bind(&Game::onUpdateGameLoop, this));
     loopTimer.on_game_loop.connect(boost::bind(&InputInterface::capture, input));
@@ -143,7 +147,7 @@ Ontology::Entity::ID Game::loadPlayer(std::string entityName, std::string meshFi
         .addComponent<OgreEntity>(entity)
         .addComponent<Direction2D>()
         .addComponent<Speed>()
-        .configure<ThirdPersonController>("player")
+        //.configure<ThirdPersonController>("player")
         .getID()
         ;
 }
@@ -167,10 +171,9 @@ void Game::attachCameraToEntity(Ontology::Entity::ID cameraID, Ontology::Entity:
     Ogre::SceneNode* attachNode = entity.getComponent<OgreTranslateRotateNode>().translation;
     Ogre::SceneNode* rotateNode = attachNode->createChildSceneNode(entity.getName()+std::string("CameraRotateNode"));
     Ogre::SceneNode* translateNode = rotateNode->createChildSceneNode(entity.getName()+std::string("CameraTranslateNode"));
+    entity.addComponent<OgreCameraOrbitNode>(rotateNode, translateNode);
     
     translateNode->attachObject(camera.getComponent<OgreCamera>().camera);
-
-    entity.addComponent<OgreCameraOrbitNode>(rotateNode, translateNode);
     translateNode->setPosition(0, 0, 100);
 }
 

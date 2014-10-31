@@ -66,7 +66,8 @@ private:
     
     void parseExternals(boost::property_tree::ptree& externals);
     void parseNodes(boost::property_tree::ptree& nodes);
-    void parseNode(boost::property_tree::ptree& node);
+    void parseNode(boost::property_tree::ptree& xmlNode, Ogre::SceneNode* parentSceneNode);
+    Ogre::SceneNode* createSceneNode(boost::property_tree::ptree& node, Ogre::SceneNode* parentSceneNode);
     void parseNodePosition(boost::property_tree::ptree& position, Ogre::SceneNode* node);
     void parseNodeRotation(boost::property_tree::ptree& rotation, Ogre::SceneNode* node);
     void parseNodeScale(boost::property_tree::ptree& scale, Ogre::SceneNode* node);
