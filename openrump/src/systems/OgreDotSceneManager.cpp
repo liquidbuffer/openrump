@@ -17,28 +17,43 @@
 
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/pending/property.hpp>
+#include <boost/graph/graph_concepts.hpp>
 
 namespace OpenRump {
 
 // ----------------------------------------------------------------------------
+OgreDotSceneManager::OgreDotSceneManager()
+{
+}
+
+// ----------------------------------------------------------------------------
+OgreDotSceneManager::~OgreDotSceneManager()
+{
+    
+}
+
+// ----------------------------------------------------------------------------
 void OgreDotSceneManager::addScene(const std::string& sceneName, const std::string& fileName)
 {
+    // check for scenes with the same name
+    if(m_Scenes.find(sceneName) != m_Scenes.end())
+    {
+        std::cerr << "[OgreDotSceneManager::addScene] Error: Scene with name \""
+            << sceneName << "\" already created" << std::endl;
+        return;
+    }
+    
+    // open the dot scene file for parsing
     std::ifstream file(fileName.c_str());
     if(!file.is_open())
     {
-        std::cerr << "Failed to open file \"" << fileName << "\"" << std::endl;
+        std::cerr << "[OgreDotSceneManager::addScene] Error: Failed to open file \""
+            << fileName << "\"" << std::endl;
         return;
     }
 
     // prepare resource group and root scene node
-    Ogre::ResourceGroupManager* rgm = Ogre::ResourceGroupManager::getSingletonPtr();
-    rgm->createResourceGroup(sceneName, false);
-    m_SceneName = sceneName;
-    m_SceneNode = this->world->getSystemManager()
-        .getSystem<OgreRenderer>()
-        .getMainSceneManager()
-        ->getRootSceneNode()
-        ->createChildSceneNode(sceneName);
+    this->prepareSceneForLoading(sceneName);
     
     using namespace boost::property_tree;
     try
@@ -47,19 +62,58 @@ void OgreDotSceneManager::addScene(const std::string& sceneName, const std::stri
         read_xml(file, pt);
     
         this->parseExternals(pt.get_child("scene.externals"));
-        rgm->initialiseResourceGroup(sceneName);
+        Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup(sceneName);
         this->parseNodes(pt.get_child("scene.nodes"));
+        this->sceneLoadingSucceeded();
     }
     catch(const ptree_bad_data& e)
     {
-        std::cerr << "ptree_bad_data exception: " << e.what() << std::endl;
-        rgm->destroyResourceGroup(sceneName);
+        std::cerr << "[OgreDotSceneManager::addScene] ptree_bad_data exception: "
+            << e.what() << std::endl;
+        this->sceneLoadingFailed();
     }
     catch(const ptree_bad_path& e)
     {
-        std::cout << "ptree_bad_path exception: " << e.what() << std::endl;
-        rgm->destroyResourceGroup(sceneName);
+        std::cout << "[OgreDotSceneManager::addScene] ptree_bad_path exception: "
+            << e.what() << std::endl;
+        this->sceneLoadingFailed();
     }
+}
+
+// ----------------------------------------------------------------------------
+void OgreDotSceneManager::prepareSceneForLoading(const std::string& sceneName)
+{
+    // create a resource group for the scene being created
+    Ogre::ResourceGroupManager::getSingletonPtr()->createResourceGroup(sceneName, false);
+    
+    // create a scene node for the scene to be attached to
+    m_SceneNode = this->world->getSystemManager()
+        .getSystem<OgreRenderer>()
+        .getMainSceneManager()
+        ->getRootSceneNode()
+        ->createChildSceneNode(sceneName);
+    
+    // store required info for scene being created
+    m_SceneName = sceneName;
+    m_Scenes.insert(sceneName);
+}
+
+// ----------------------------------------------------------------------------
+void OgreDotSceneManager::sceneLoadingSucceeded()
+{
+    m_Scenes.insert(m_SceneName);
+}
+
+// ----------------------------------------------------------------------------
+void OgreDotSceneManager::sceneLoadingFailed()
+{
+    // clean up resource group and scene node
+    this->world->getSystemManager()
+        .getSystem<OgreRenderer>()
+        .getMainSceneManager()
+        ->destroySceneNode(m_SceneNode);
+    Ogre::ResourceGroupManager::getSingleton()
+        .destroyResourceGroup(m_SceneName);
 }
 
 // ----------------------------------------------------------------------------
@@ -109,10 +163,21 @@ void OgreDotSceneManager::parseNode(boost::property_tree::ptree& node)
     Ogre::SceneNode* sn = m_SceneNode->createChildSceneNode(
         m_SceneName + "." + node.get<Ogre::String>("<xmlattr>.name")
     );
+    
+    // every node must have these three attributes
     this->parseNodePosition(node.get_child("position"), sn);
     this->parseNodeRotation(node.get_child("rotation"), sn);
     this->parseNodeScale(node.get_child("scale"),       sn);
-    this->parseNodeEntity(node.get_child("entity"),     sn);
+    
+    // iterate through rest and process what we can
+    for(auto& nodeAttribtes : node)
+    {
+        // 3D endtities
+        if(nodeAttribtes.first == "entity")
+        {
+            this->parseNodeEntity(nodeAttribtes.second, sn);
+        }
+    }
 }
 
 // ----------------------------------------------------------------------------

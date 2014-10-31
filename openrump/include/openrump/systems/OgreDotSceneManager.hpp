@@ -26,6 +26,16 @@ class OgreDotSceneManager : public Ontology::System
 public:
     
     /*!
+     * @brief Default constructor
+     */
+    OgreDotSceneManager();
+    
+    /*!
+     * @brief Default destructor
+     */
+    ~OgreDotSceneManager();
+    
+    /*!
      * @brief Loads a dot-scene file and sets up everything.
      * 
      * If a scene already exists, the scene being loaded will simply be merged
@@ -50,6 +60,10 @@ public:
     
 private:
     
+    void prepareSceneForLoading(const std::string& sceneName);
+    void sceneLoadingSucceeded();
+    void sceneLoadingFailed();
+    
     void parseExternals(boost::property_tree::ptree& externals);
     void parseNodes(boost::property_tree::ptree& nodes);
     void parseNode(boost::property_tree::ptree& node);
@@ -65,6 +79,8 @@ private:
     
     std::string m_SceneName;
     Ogre::SceneNode* m_SceneNode;
+    
+    std::set<std::string> m_Scenes;
 };
 
 } // namespace OpenRump
