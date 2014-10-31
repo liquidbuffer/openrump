@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
-// OgreDotSceneManager.cpp
+// OgreDotSceneLoader.cpp
 // ----------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------
 // include files
 
-#include "openrump/systems/OgreDotSceneManager.hpp"
+#include "openrump/systems/OgreDotSceneLoader.hpp"
 #include "openrump/systems/OgreRenderer.hpp"
 
 #include <ontology/Ontology.hpp>
@@ -22,33 +22,34 @@
 namespace OpenRump {
 
 // ----------------------------------------------------------------------------
-OgreDotSceneManager::Settings::Settings() :
+OgreDotSceneLoader::Settings::Settings() :
     loadCameras(true),
     loadLights(true),
     loadEntities(true),
-    loadExternalResources(true)
+    loadExternalResources(true),
+    excludeNodes()
 {
 }
 
 // ----------------------------------------------------------------------------
-OgreDotSceneManager::OgreDotSceneManager()
+OgreDotSceneLoader::OgreDotSceneLoader()
 {
 }
 
 // ----------------------------------------------------------------------------
-OgreDotSceneManager::~OgreDotSceneManager()
+OgreDotSceneLoader::~OgreDotSceneLoader()
 {
 }
 
 // ----------------------------------------------------------------------------
-void OgreDotSceneManager::addScene(const std::string& sceneName,
+void OgreDotSceneLoader::addScene(const std::string& sceneName,
                                    const std::string& fileName,
                                    const Settings& settings)
 {
     // check for scenes with the same name
     if(m_Scenes.find(sceneName) != m_Scenes.end())
     {
-        std::cerr << "[OgreDotSceneManager::addScene] Error: Scene with name \""
+        std::cerr << "[OgreDotSceneLoader::addScene] Error: Scene with name \""
             << sceneName << "\" already created" << std::endl;
         return;
     }
@@ -57,7 +58,7 @@ void OgreDotSceneManager::addScene(const std::string& sceneName,
     std::ifstream file(fileName.c_str());
     if(!file.is_open())
     {
-        std::cerr << "[OgreDotSceneManager::addScene] Error: Failed to open file \""
+        std::cerr << "[OgreDotSceneLoader::addScene] Error: Failed to open file \""
             << fileName << "\"" << std::endl;
         return;
     }
@@ -81,20 +82,20 @@ void OgreDotSceneManager::addScene(const std::string& sceneName,
     }
     catch(const ptree_bad_data& e)
     {
-        std::cerr << "[OgreDotSceneManager::addScene] ptree_bad_data exception: "
+        std::cerr << "[OgreDotSceneLoader::addScene] ptree_bad_data exception: "
             << e.what() << std::endl;
         this->sceneLoadingFailed();
     }
     catch(const ptree_bad_path& e)
     {
-        std::cout << "[OgreDotSceneManager::addScene] ptree_bad_path exception: "
+        std::cout << "[OgreDotSceneLoader::addScene] ptree_bad_path exception: "
             << e.what() << std::endl;
         this->sceneLoadingFailed();
     }
 }
 
 // ----------------------------------------------------------------------------
-void OgreDotSceneManager::prepareSceneForLoading(const std::string& sceneName,
+void OgreDotSceneLoader::prepareSceneForLoading(const std::string& sceneName,
                                                  const Settings& settings)
 {
     // create a resource group for the scene being created
@@ -114,13 +115,13 @@ void OgreDotSceneManager::prepareSceneForLoading(const std::string& sceneName,
 }
 
 // ----------------------------------------------------------------------------
-void OgreDotSceneManager::sceneLoadingSucceeded()
+void OgreDotSceneLoader::sceneLoadingSucceeded()
 {
     m_Scenes.insert(m_SceneName);
 }
 
 // ----------------------------------------------------------------------------
-void OgreDotSceneManager::sceneLoadingFailed()
+void OgreDotSceneLoader::sceneLoadingFailed()
 {
     // clean up resource group and scene node
     this->world->getSystemManager()
@@ -132,17 +133,17 @@ void OgreDotSceneManager::sceneLoadingFailed()
 }
 
 // ----------------------------------------------------------------------------
-void OgreDotSceneManager::destroyScene(const std::string& sceneName)
+void OgreDotSceneLoader::destroyScene(const std::string& sceneName)
 {
 }
 
 // ----------------------------------------------------------------------------
-void OgreDotSceneManager::destroyScene()
+void OgreDotSceneLoader::destroyScene()
 {
 }
 
 // ----------------------------------------------------------------------------
-void OgreDotSceneManager::parseExternals(boost::property_tree::ptree& externals)
+void OgreDotSceneLoader::parseExternals(boost::property_tree::ptree& externals)
 {
     std::set<Ogre::String> resourceLocations;
 
@@ -173,18 +174,24 @@ void OgreDotSceneManager::parseExternals(boost::property_tree::ptree& externals)
 }
 
 // ----------------------------------------------------------------------------
-void OgreDotSceneManager::parseNodes(boost::property_tree::ptree& nodes)
+void OgreDotSceneLoader::parseNodes(boost::property_tree::ptree& nodes)
 {
     for(auto& node : nodes)
         this->parseNode(node.second, m_SceneNode);
 }
 
 // ----------------------------------------------------------------------------
-void OgreDotSceneManager::parseNode(boost::property_tree::ptree& xmlNode,
+void OgreDotSceneLoader::parseNode(boost::property_tree::ptree& xmlNode,
                                     Ogre::SceneNode* parentSceneNode)
 {
     for(auto& nodeAttribtes : xmlNode)
     {
+        // skip nodes
+        if(m_Settings.excludeNodes.find(
+            xmlNode.get<Ogre::String>("<xmlattr>.name")
+        ) != m_Settings.excludeNodes.end())
+            return;
+        
         // nested nodes
         if(nodeAttribtes.first == "node")
         {
@@ -211,7 +218,7 @@ void OgreDotSceneManager::parseNode(boost::property_tree::ptree& xmlNode,
 }
 
 // ----------------------------------------------------------------------------
-Ogre::SceneNode* OgreDotSceneManager::createSceneNode(boost::property_tree::ptree& xmlNode,
+Ogre::SceneNode* OgreDotSceneLoader::createSceneNode(boost::property_tree::ptree& xmlNode,
                                                       Ogre::SceneNode* parentSceneNode)
 {
     Ogre::SceneNode* sn = parentSceneNode->createChildSceneNode(
@@ -227,7 +234,7 @@ Ogre::SceneNode* OgreDotSceneManager::createSceneNode(boost::property_tree::ptre
 }
 
 // ----------------------------------------------------------------------------
-void OgreDotSceneManager::parseNodePosition(boost::property_tree::ptree& position,
+void OgreDotSceneLoader::parseNodePosition(boost::property_tree::ptree& position,
                                             Ogre::SceneNode* node)
 {
     boost::property_tree::ptree& attr = position.get_child("<xmlattr>");
@@ -237,7 +244,7 @@ void OgreDotSceneManager::parseNodePosition(boost::property_tree::ptree& positio
 }
 
 // ----------------------------------------------------------------------------
-void OgreDotSceneManager::parseNodeRotation(boost::property_tree::ptree& rotation,
+void OgreDotSceneLoader::parseNodeRotation(boost::property_tree::ptree& rotation,
                                             Ogre::SceneNode* node)
 {
     boost::property_tree::ptree& attr = rotation.get_child("<xmlattr>");
@@ -248,7 +255,7 @@ void OgreDotSceneManager::parseNodeRotation(boost::property_tree::ptree& rotatio
 }
 
 // ----------------------------------------------------------------------------
-void OgreDotSceneManager::parseNodeScale(boost::property_tree::ptree& scale,
+void OgreDotSceneLoader::parseNodeScale(boost::property_tree::ptree& scale,
                                          Ogre::SceneNode* node)
 {
     boost::property_tree::ptree& attr = scale.get_child("<xmlattr>");
@@ -258,7 +265,7 @@ void OgreDotSceneManager::parseNodeScale(boost::property_tree::ptree& scale,
 }
 
 // ----------------------------------------------------------------------------
-void OgreDotSceneManager::parseNodeEntity(boost::property_tree::ptree& entity,
+void OgreDotSceneLoader::parseNodeEntity(boost::property_tree::ptree& entity,
                                           Ogre::SceneNode* node)
 {
     // entity name and entity mesh file name are essential
@@ -279,17 +286,17 @@ void OgreDotSceneManager::parseNodeEntity(boost::property_tree::ptree& entity,
 }
 
 // ----------------------------------------------------------------------------
-void OgreDotSceneManager::initialise()
+void OgreDotSceneLoader::initialise()
 {
 }
 
 // ----------------------------------------------------------------------------
-void OgreDotSceneManager::processEntity(Ontology::Entity&)
+void OgreDotSceneLoader::processEntity(Ontology::Entity&)
 {
 }
 
 // ----------------------------------------------------------------------------
-void OgreDotSceneManager::configureEntity(Ontology::Entity&, std::string)
+void OgreDotSceneLoader::configureEntity(Ontology::Entity&, std::string)
 {
 }
 

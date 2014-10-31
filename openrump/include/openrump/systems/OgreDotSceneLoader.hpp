@@ -1,9 +1,9 @@
 // ----------------------------------------------------------------------------
-// OgreDotSceneManager.hpp
+// OgreDotSceneLoader.hpp
 // ----------------------------------------------------------------------------
 
-#ifndef _OPENRUMP_DOT_SCENE_MANAGER_HPP_
-#define _OPENRUMP_DOT_SCENE_MANAGER_HPP_
+#ifndef _OPENRUMP_DOT_SCENE_LOADER_HPP_
+#define _OPENRUMP_DOT_SCENE_LOADER_HPP_
 
 // ----------------------------------------------------------------------------
 // include files
@@ -21,35 +21,36 @@ namespace Ogre {
 
 namespace OpenRump {
 
-class OgreDotSceneManager : public Ontology::System
+class OgreDotSceneLoader : public Ontology::System
 {
 public:
     
     struct Settings
     {
         Settings();
-        bool loadCameras = true;
-        bool loadLights = true;
-        bool loadEntities = true;
-        bool loadExternalResources = true;
+        bool loadCameras;
+        bool loadLights;
+        bool loadEntities;
+        bool loadExternalResources;
+        std::set<std::string> excludeNodes;
     };
     
     /*!
      * @brief Default constructor
      */
-    OgreDotSceneManager();
+    OgreDotSceneLoader();
     
     /*!
      * @brief Default destructor
      */
-    ~OgreDotSceneManager();
+    ~OgreDotSceneLoader();
     
     /*!
      * @brief Loads a dot-scene file and sets up everything.
      * 
      * If a scene already exists, the scene being loaded will simply be merged
      * with the existing scene. You can delete the scene at any later point in
-     * with OgreDotSceneManager::destroyScene(sceneName).
+     * with OgreDotSceneLoader::destroyScene(sceneName).
      * @param fileName The name of the dot-scene file to load.
      * @param sceneName A unique name for this part of the scene. You can use
      * @param settings A settings object controls the details of which parts should be loaded.
@@ -99,4 +100,4 @@ private:
 
 } // namespace OpenRump
 
-#endif // _OPENRUMP_DOT_SCENE_MANAGER_HPP_
+#endif // _OPENRUMP_DOT_SCENE_LOADER_HPP_

@@ -10,7 +10,7 @@
 #include "openrump/systems/DefaultPhysicsWorld.hpp"
 #include "openrump/systems/LoopTimer.hpp"
 #include "openrump/systems/OgreRenderer.hpp"
-#include "openrump/systems/OgreDotSceneManager.hpp"
+#include "openrump/systems/OgreDotSceneLoader.hpp"
 #include "openrump/systems/SDLInput.hpp"
 #include "openrump/systems/ThirdPersonController.hpp"
 #include "openrump/components/OgreCamera.hpp"
@@ -75,7 +75,7 @@ void Game::initialise()
     m_World.getSystemManager().addSystem<OgreRenderer>()
         .supportsComponents<
             None>();
-    m_World.getSystemManager().addSystem<OgreDotSceneManager>()
+    m_World.getSystemManager().addSystem<OgreDotSceneLoader>()
         .supportsComponents<
             None>();
     m_World.getSystemManager().addPolymorphicSystem<InputInterface, SDLInput>()
@@ -110,14 +110,17 @@ void Game::initialise()
     // attach OIS to Ogre's window
     //input.attachToWindow(renderer.getWindowHandle());
     
-    m_World.getSystemManager().getSystem<OgreDotSceneManager>().addScene(
+    m_World.getSystemManager().getSystem<OgreDotSceneLoader>().addScene(
         "test scene",
         "../../../assets-openrump/mesh/test-floor/floor.scene"
     );
-    /*m_World.getSystemManager().getSystem<OgreDotSceneManager>().addScene(
+    OgreDotSceneLoader::Settings sceneSettings;
+    sceneSettings.excludeNodes.insert("Plane");
+    m_World.getSystemManager().getSystem<OgreDotSceneLoader>().addScene(
         "applejack",
-        "../../../assets-openrump/mesh/applejack/AJ ogre001.scene"
-    );*/
+        "../../../assets-openrump/mesh/applejack/AJ ogre001.scene",
+        sceneSettings
+    );
 
     // create connections
     renderer.on_frame_queued.connect(boost::bind(&LoopTimer::onFrameRendered, &loopTimer));
