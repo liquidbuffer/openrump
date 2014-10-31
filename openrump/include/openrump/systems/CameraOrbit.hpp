@@ -7,8 +7,6 @@
 
 #include <ontology/System.hpp>
 
-#include <boost/thread/recursive_mutex.hpp>
-
 namespace OpenRump {
 
 class CameraOrbit :
@@ -36,8 +34,8 @@ private:
         float x, y;
     } m_Angle;
     float m_Distance;
-
-    mutable boost::recursive_mutex m_Mutex;
+    float m_MinDistance;
+    float m_MaxDistance;
 };
 
 } // namespace OpenRump

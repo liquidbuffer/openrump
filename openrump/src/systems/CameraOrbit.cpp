@@ -8,13 +8,16 @@
 #include <openrump/systems/CameraOrbit.hpp>
 #include <openrump/components/OgreCameraOrbitNode.hpp>
 #include <ontology/Entity.hpp>
+
 #include <OgreSceneNode.h>
 
 namespace OpenRump {
 
 // ----------------------------------------------------------------------------
 CameraOrbit::CameraOrbit() :
-    m_Distance(0)
+    m_Distance(4),
+    m_MinDistance(1),
+    m_MaxDistance(100)
 {
 }
 
@@ -49,7 +52,11 @@ void CameraOrbit::onNewCameraAngle(float x, float y)
 // ----------------------------------------------------------------------------
 void CameraOrbit::onNewCameraDistance(float distance)
 {
-    m_Distance -= distance * 0.1;
+    m_Distance = Ogre::Math::Clamp(
+        m_Distance * (1.0f - distance*0.1f),
+        m_MinDistance,
+        m_MaxDistance
+    );
 }
 
 } // namespace OpenRump
