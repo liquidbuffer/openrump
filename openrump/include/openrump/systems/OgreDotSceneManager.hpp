@@ -25,6 +25,15 @@ class OgreDotSceneManager : public Ontology::System
 {
 public:
     
+    struct Settings
+    {
+        Settings();
+        bool loadCameras = true;
+        bool loadLights = true;
+        bool loadEntities = true;
+        bool loadExternalResources = true;
+    };
+    
     /*!
      * @brief Default constructor
      */
@@ -43,9 +52,12 @@ public:
      * with OgreDotSceneManager::destroyScene(sceneName).
      * @param fileName The name of the dot-scene file to load.
      * @param sceneName A unique name for this part of the scene. You can use
+     * @param settings A settings object controls the details of which parts should be loaded.
      * this parameter to delete the scene later on.
      */
-    void addScene(const std::string& sceneName, const std::string& fileName);
+    void addScene(const std::string& sceneName,
+                  const std::string& fileName,
+                  const Settings& settings = Settings());
     
     /*!
      * @brief Destroys a section of the scene.
@@ -60,7 +72,7 @@ public:
     
 private:
     
-    void prepareSceneForLoading(const std::string& sceneName);
+    void prepareSceneForLoading(const std::string& sceneName, const Settings&);
     void sceneLoadingSucceeded();
     void sceneLoadingFailed();
     
@@ -80,6 +92,7 @@ private:
     
     std::string m_SceneName;
     Ogre::SceneNode* m_SceneNode;
+    Settings m_Settings;
     
     std::set<std::string> m_Scenes;
 };

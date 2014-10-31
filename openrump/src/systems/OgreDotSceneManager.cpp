@@ -22,6 +22,15 @@
 namespace OpenRump {
 
 // ----------------------------------------------------------------------------
+OgreDotSceneManager::Settings::Settings() :
+    loadCameras(true),
+    loadLights(true),
+    loadEntities(true),
+    loadExternalResources(true)
+{
+}
+
+// ----------------------------------------------------------------------------
 OgreDotSceneManager::OgreDotSceneManager()
 {
 }
@@ -29,12 +38,12 @@ OgreDotSceneManager::OgreDotSceneManager()
 // ----------------------------------------------------------------------------
 OgreDotSceneManager::~OgreDotSceneManager()
 {
-    
 }
 
 // ----------------------------------------------------------------------------
 void OgreDotSceneManager::addScene(const std::string& sceneName,
-                                   const std::string& fileName)
+                                   const std::string& fileName,
+                                   const Settings& settings)
 {
     // check for scenes with the same name
     if(m_Scenes.find(sceneName) != m_Scenes.end())
@@ -54,7 +63,7 @@ void OgreDotSceneManager::addScene(const std::string& sceneName,
     }
 
     // prepare resource group and root scene node
-    this->prepareSceneForLoading(sceneName);
+    this->prepareSceneForLoading(sceneName, settings);
     
     using namespace boost::property_tree;
     try
@@ -62,8 +71,11 @@ void OgreDotSceneManager::addScene(const std::string& sceneName,
         ptree pt;
         read_xml(file, pt);
     
-        this->parseExternals(pt.get_child("scene.externals"));
-        Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup(sceneName);
+        if(m_Settings.loadExternalResources)
+        {
+            this->parseExternals(pt.get_child("scene.externals"));
+            Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup(sceneName);
+        }
         this->parseNodes(pt.get_child("scene.nodes"));
         this->sceneLoadingSucceeded();
     }
@@ -82,7 +94,8 @@ void OgreDotSceneManager::addScene(const std::string& sceneName,
 }
 
 // ----------------------------------------------------------------------------
-void OgreDotSceneManager::prepareSceneForLoading(const std::string& sceneName)
+void OgreDotSceneManager::prepareSceneForLoading(const std::string& sceneName,
+                                                 const Settings& settings)
 {
     // create a resource group for the scene being created
     Ogre::ResourceGroupManager::getSingletonPtr()->createResourceGroup(sceneName, false);
@@ -97,6 +110,7 @@ void OgreDotSceneManager::prepareSceneForLoading(const std::string& sceneName)
     // store required info for scene being created
     m_SceneName = sceneName;
     m_Scenes.insert(sceneName);
+    m_Settings = settings;
 }
 
 // ----------------------------------------------------------------------------
@@ -130,7 +144,7 @@ void OgreDotSceneManager::destroyScene()
 // ----------------------------------------------------------------------------
 void OgreDotSceneManager::parseExternals(boost::property_tree::ptree& externals)
 {
-    Ogre::ResourceGroupManager* rgm = Ogre::ResourceGroupManager::getSingletonPtr();
+    std::set<Ogre::String> resourceLocations;
 
     for(auto& item : externals) // iterates over items in <externals> 
     {
@@ -140,18 +154,22 @@ void OgreDotSceneManager::parseExternals(boost::property_tree::ptree& externals)
             {
                 if(resourceLocation.first == "file")
                 {
-                    // add the path to the file as a resource location
+                    // add location to set (prevents duplicates)
                     Ogre::String resourceFile = resourceLocation.second
                         .get<Ogre::String>("<xmlattr>.name");
-                    rgm->addResourceLocation(
-                        resourceFile.substr(0, resourceFile.find_last_of("\\/")),
-                        "FileSystem",
-                        m_SceneName
-                    );
+                    resourceLocations.insert(resourceFile.substr(0, resourceFile.find_last_of("\\/")));
                 }
             }
         }
     }
+
+    // add set to ogre resource group
+    for(const auto& resourceFile : resourceLocations)
+        Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
+            resourceFile,
+            "FileSystem",
+            m_SceneName
+        );
 }
 
 // ----------------------------------------------------------------------------
@@ -174,10 +192,20 @@ void OgreDotSceneManager::parseNode(boost::property_tree::ptree& xmlNode,
         }
         
         // 3D endtities
-        if(nodeAttribtes.first == "entity")
+        if(m_Settings.loadEntities && nodeAttribtes.first == "entity")
         {
             Ogre::SceneNode* sn = this->createSceneNode(xmlNode, parentSceneNode);
             this->parseNodeEntity(nodeAttribtes.second, sn);
+        }
+        
+        // lights
+        if(m_Settings.loadLights && nodeAttribtes.first == "light")
+        {
+        }
+        
+        // cameras
+        if(m_Settings.loadCameras && nodeAttribtes.first == "camera")
+        {
         }
     }
 }

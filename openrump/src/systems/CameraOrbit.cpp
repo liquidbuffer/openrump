@@ -42,14 +42,14 @@ void CameraOrbit::configureEntity(Ontology::Entity& e, std::string)
 // ----------------------------------------------------------------------------
 void CameraOrbit::onNewCameraAngle(float x, float y)
 {
-    m_Angle.x -= y * 0.3;
-    m_Angle.y -= x * 0.3;
+    m_Angle.x -= y * 0.1;
+    m_Angle.y -= x * 0.1;
 }
 
 // ----------------------------------------------------------------------------
 void CameraOrbit::onNewCameraDistance(float distance)
 {
-    m_Distance -= distance * 10.0;
+    m_Distance -= distance * 0.1;
 }
 
 } // namespace OpenRump

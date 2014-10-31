@@ -114,10 +114,10 @@ void Game::initialise()
         "test scene",
         "../../../assets-openrump/mesh/test-floor/floor.scene"
     );
-    m_World.getSystemManager().getSystem<OgreDotSceneManager>().addScene(
+    /*m_World.getSystemManager().getSystem<OgreDotSceneManager>().addScene(
         "applejack",
         "../../../assets-openrump/mesh/applejack/AJ ogre001.scene"
-    );
+    );*/
 
     // create connections
     renderer.on_frame_queued.connect(boost::bind(&LoopTimer::onFrameRendered, &loopTimer));
