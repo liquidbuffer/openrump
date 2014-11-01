@@ -10,7 +10,12 @@ macro (link_sdl2 TARGET_NAME)
         add_custom_target (SDL2_PROJECT)
     else (SDL2_FOUND)
         message (STATUS "SDL2 will be downloaded automatically")
-        
+
+        # patch for handling proper shared library object extensions
+        if (UNIX)
+            set (PATCH_COMMAND patch ${EXTERNAL_DEP_DIR}/src/SDL2_PROJECT/CMakeLists.txt < ${CMAKE_SOURCE_DIR}/cmake/Patches/SDL2CMakeLists.patch)        
+        endif (UNIX)
+
         externalproject_add (SDL2_PROJECT
             PREFIX ${EXTERNAL_DEP_DIR}
             URL "https://www.libsdl.org/release/SDL2-2.0.3.tar.gz"
