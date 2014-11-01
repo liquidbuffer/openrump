@@ -58,6 +58,14 @@ public:
     Ontology::Entity::ID loadPlayer(std::string entityName, std::string meshFileName);
 
     /*!
+     * @brief Creates a player from an existing scene node.
+     * 
+     * This is useful when loading a dot scene file and you wish to take
+     * control of an object in your scene and give it propert
+     */
+    Ontology::Entity::ID createPlayerFromNode(std::string nodeName);
+
+    /*!
      * @brief Creates a new camera and attaches it to the window.
      * @param cameraName A globally unique name for this camera.
      * @return The new camera,
@@ -86,7 +94,6 @@ public:
      * @brief Removes each and every callback managed by this class.
      */
     void removeAllCallbacks();
-
 
 private:
 

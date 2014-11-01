@@ -17,7 +17,6 @@
 
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/pending/property.hpp>
-#include <boost/graph/graph_concepts.hpp>
 
 namespace OpenRump {
 
@@ -186,7 +185,7 @@ void OgreDotSceneLoader::parseNode(boost::property_tree::ptree& xmlNode,
 {
     for(auto& nodeAttribtes : xmlNode)
     {
-        // skip nodes
+        // exclude nodes
         if(m_Settings.excludeNodes.find(
             xmlNode.get<Ogre::String>("<xmlattr>.name")
         ) != m_Settings.excludeNodes.end())
@@ -198,7 +197,7 @@ void OgreDotSceneLoader::parseNode(boost::property_tree::ptree& xmlNode,
             this->parseNode(nodeAttribtes.second, parentSceneNode);
         }
         
-        // 3D endtities
+        // 3D entities
         if(m_Settings.loadEntities && nodeAttribtes.first == "entity")
         {
             Ogre::SceneNode* sn = this->createSceneNode(xmlNode, parentSceneNode);
@@ -214,6 +213,8 @@ void OgreDotSceneLoader::parseNode(boost::property_tree::ptree& xmlNode,
         if(m_Settings.loadCameras && nodeAttribtes.first == "camera")
         {
         }
+        
+        // ACTION
     }
 }
 

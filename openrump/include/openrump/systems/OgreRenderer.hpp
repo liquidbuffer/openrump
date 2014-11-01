@@ -87,6 +87,8 @@ public:
      * @brief Gets the main camera.
      */
     Ogre::Camera* getMainCamera() const;
+    
+    
 
     boost::signals2::signal<void ()> on_frame_started;
     boost::signals2::signal<void ()> on_frame_queued;
