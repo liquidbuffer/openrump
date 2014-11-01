@@ -55,6 +55,7 @@ macro (link_boost TARGET_NAME)
         
         set (Boost_SYSTEM_LIBRARY boost_system)
         set (Boost_PYTHON_LIBRARY boost_python)
+        set (Boost_INCLUDE_DIRS "")
     endif (Boost_FOUND)
 
     include_directories (${Boost_INCLUDE_DIRS})

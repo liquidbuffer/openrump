@@ -161,16 +161,14 @@ void OgreRenderer::initialise()
     ASSERT(SDL_GetWindowWMInfo(m_SDLWindow, &wmInfo) != SDL_FALSE, Exception, OgreRenderer::initialise,
         "Couldn't get SDL window info"
     )
-    switch(wmInfo.subsystem)
-    {
-        case SDL_SYSWM_X11:
-            winHandle = Ogre::StringConverter::toString((unsigned long)wmInfo.info.x11.window);
-            break;
-        default:
-            ASSERT(false, Exception, OgreRenderer::initialise, "Unexpected WM")
-            break;
-    }
-    
+#if defined(SDL_VIDEO_DRIVER_X11)
+    winHandle = Ogre::StringConverter::toString((unsigned long)wmInfo.info.x11.window);
+#elif defined(SDL_VIDEO_DRIVER_COCOA)
+    winHandle = Ogre::StringConverter::toString((unsigned long)wmInfo.info.cocoa.window);
+#else
+#   error Unsupported WM
+#endif
+
     // finally, create ogre render window and pass SDL's window handle
     Ogre::NameValuePairList params;
     params.insert(std::make_pair("parentWindowHandle", winHandle));
