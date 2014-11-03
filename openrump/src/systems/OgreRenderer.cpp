@@ -172,6 +172,7 @@ void OgreRenderer::initialise()
     // finally, create ogre render window and pass SDL's window handle
     Ogre::NameValuePairList params;
     params.insert(std::make_pair("parentWindowHandle", winHandle));
+    params.insert(std::make_pair("macAPI", "cocoa"));
     m_Root->initialise(false, "", "");
     m_OgreWindow = Ogre::Root::getSingleton().createRenderWindow("OGRE Window", width, height, false, &params);
     m_OgreWindow->setVisible(true);

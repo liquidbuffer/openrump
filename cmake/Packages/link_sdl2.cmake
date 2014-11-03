@@ -13,12 +13,14 @@ macro (link_sdl2 TARGET_NAME)
 
         # patch for handling proper shared library object extensions
         if (UNIX)
-            set (PATCH_COMMAND patch ${EXTERNAL_DEP_DIR}/src/SDL2_PROJECT/CMakeLists.txt < ${CMAKE_SOURCE_DIR}/cmake/Patches/SDL2CMakeLists.patch)        
+            set (PATCH_COMMAND patch ${EXTERNAL_DEP_DIR}/src/SDL2_PROJECT/CMakeLists.txt < ${CMAKE_SOURCE_DIR}/cmake/Patches/SDL2CMakeLists.patch)
+            message (STATUS "patching SDL2")
         endif (UNIX)
 
         externalproject_add (SDL2_PROJECT
             PREFIX ${EXTERNAL_DEP_DIR}
             URL "https://www.libsdl.org/release/SDL2-2.0.3.tar.gz"
+            PATCH_COMMAND ${PATCH_COMMAND}
             CMAKE_ARGS ${COMMON_CMAKE_FLAGS}
         )
         
