@@ -19,16 +19,14 @@
 namespace OpenRump {
 
 // ----------------------------------------------------------------------------
-App::App(std::string workingDirectory) :
-    m_WorkingDirectory(workingDirectory),
-    m_PyWorkingDirectory(new char[workingDirectory.size()+1])
+App::App(const char* workingDirectory) :
+    m_PyWorkingDirectory(workingDirectory),
+#ifdef _DEBUG
+    m_PySysPath("../../py")
+#else
+    m_PySysPath("py")
+#endif
 {
-
-    // python requires a writeable char* of the working directory
-    std::copy(workingDirectory.begin(),
-              workingDirectory.end(),
-              m_PyWorkingDirectory.get());
-    m_PyWorkingDirectory[workingDirectory.size()] = '\0';
 }
 
 // ----------------------------------------------------------------------------
@@ -40,18 +38,10 @@ App::~App()
 void App::onLoad()
 {
     // important for when python needs to load modules
-    Py_SetProgramName(m_PyWorkingDirectory.get());
+    Py_SetProgramName(const_cast<char*>(m_PyWorkingDirectory));
     Py_Initialize();
+    PySys_SetPath(const_cast<char*>(m_PySysPath));
 }
-
-#include <stdio.h>  /* defines FILENAME_MAX */
-#ifdef WINDOWS
-    #include <direct.h>
-    #define GetCurrentDir _getcwd
-#else
-    #include <unistd.h>
-    #define GetCurrentDir getcwd
- #endif
 
 // ----------------------------------------------------------------------------
 void App::onRun()

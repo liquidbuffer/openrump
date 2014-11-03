@@ -49,6 +49,11 @@ public:
      * @brief Begins running the game (main loop).
      */
     void run();
+    
+    /*!
+     * @brief Gets the ontology world in which all systems and entities are stored in some way.
+     */
+    Ontology::World& getWorld();
 
     /*!
      * @brief Loads a player into the game.

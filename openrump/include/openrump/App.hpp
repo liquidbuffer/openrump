@@ -27,7 +27,7 @@ public:
     /*!
      * @brief constructor
      */
-    App(std::string workingDirectory);
+    App(const char* workingDirectory);
 
     /*!
      * @brief Default destructor
@@ -51,8 +51,8 @@ private:
      */
     void onExit() override;
 
-    std::string m_WorkingDirectory;
-    std::unique_ptr<char[]> m_PyWorkingDirectory;
+    const char* m_PyWorkingDirectory;
+    const char* m_PySysPath;
     std::unique_ptr<Game> m_Game;
 };
 

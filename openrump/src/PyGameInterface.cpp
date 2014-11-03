@@ -29,5 +29,8 @@ void exportGameInterface()
         .def("add_game_update_callback", &Game::addGameUpdateCallback)
         .def("remove_game_update_callback", &Game::removeGameUpdateCallback)
         .def("remove_all_callbacks", &Game::removeAllCallbacks)
+        .def("get_world", &Game::getWorld,
+            return_value_policy<
+                reference_existing_object>())
     ;
 }

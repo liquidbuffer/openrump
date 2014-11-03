@@ -61,6 +61,12 @@ void Game::stop()
 }
 
 // ----------------------------------------------------------------------------
+Ontology::World& Game::getWorld()
+{
+    return m_World;
+}
+
+// ----------------------------------------------------------------------------
 void Game::initialise()
 {
     if(m_IsInitialised)
@@ -87,12 +93,12 @@ void Game::initialise()
     m_World.getSystemManager().addSystem<CameraOrbit>()
         .supportsComponents<
             OgreCameraOrbitNode>();
-    /*m_World.getSystemManager().addSystem<ThirdPersonController>("../../res/twilightsparkle.xml")
+    m_World.getSystemManager().addSystem<ThirdPersonController>()
         .supportsComponents<
             OgreCameraOrbitNode,
             OgreTranslateRotateNode,
             Direction2D,
-            Speed>();*/
+            Speed>();
     
     // initialise all systems
     m_World.getSystemManager().initialise();
@@ -101,7 +107,7 @@ void Game::initialise()
     LoopTimer&      loopTimer       = m_World.getSystemManager().getSystem<LoopTimer>();
     OgreRenderer&   renderer        = m_World.getSystemManager().getSystem<OgreRenderer>();
     InputInterface* input           = m_World.getSystemManager().getSystemPtr<InputInterface>();
-    //ThirdPersonController& thirdPC  = m_World.getSystemManager().getSystem<ThirdPersonController>();
+    ThirdPersonController& thirdPC  = m_World.getSystemManager().getSystem<ThirdPersonController>();
 
     // ogre can cancel initialisation procedure without error
     if(!renderer.isInitialised())
@@ -126,7 +132,7 @@ void Game::initialise()
     renderer.on_frame_queued.connect(boost::bind(&LoopTimer::onFrameRendered, &loopTimer));
     input->on_camera_angle_change.connect(boost::bind(&CameraOrbit::onNewCameraAngle, &cameraOrbit, _1, _2));
     input->on_camera_distance_change.connect(boost::bind(&CameraOrbit::onNewCameraDistance, &cameraOrbit, _1));
-    //input->on_direction_change.connect(boost::bind(&ThirdPersonController::onDirectionChange, &thirdPC, _1, _2));
+    input->on_direction_change.connect(boost::bind(&ThirdPersonController::onDirectionChange, &thirdPC, _1, _2));
     input->on_exit.connect(boost::bind(&Game::onButtonExit, this));
     loopTimer.on_game_loop.connect(boost::bind(&Game::onUpdateGameLoop, this));
     loopTimer.on_game_loop.connect(boost::bind(&InputInterface::capture, input));
