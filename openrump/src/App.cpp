@@ -22,10 +22,11 @@ namespace OpenRump {
 App::App(const char* workingDirectory) :
     m_PyWorkingDirectory(workingDirectory),
 #ifdef _DEBUG
-    m_PySysPath("../../py")
+    m_PySysPath("../../py"),
 #else
-    m_PySysPath("py")
+    m_PySysPath("py"),
 #endif
+    m_ScriptFile(nullptr)
 {
 }
 
@@ -35,8 +36,24 @@ App::~App()
 }
 
 // ----------------------------------------------------------------------------
+void App::setScript(char* scriptFile)
+{
+    m_ScriptFile = scriptFile;
+}
+
+// ----------------------------------------------------------------------------
+void App::go()
+{
+    this->onLoad();
+    this->onRun();
+    this->onExit();
+}
+
+// ----------------------------------------------------------------------------
 void App::onLoad()
 {
+    std::cout << "OpenRump starting..." << std::endl;
+    
     // important for when python needs to load modules
     Py_SetProgramName(const_cast<char*>(m_PyWorkingDirectory));
     Py_Initialize();
@@ -53,7 +70,7 @@ void App::onRun()
         initontology();
         object main_module = import("__main__");
         object main_namespace = main_module.attr("__dict__");
-        object ignored = exec_file("../../py/Main.py", main_namespace);
+        object ignored = exec_file(m_ScriptFile, main_namespace);
     } catch(const error_already_set&)
     {
         PyErr_Print();
@@ -63,7 +80,7 @@ void App::onRun()
 // ----------------------------------------------------------------------------
 void App::onExit()
 {
-    std::cout << "exit" << std::endl;
+    std::cout << "OpenRump quitting..." << std::endl;
     Py_Finalize();
 }
 

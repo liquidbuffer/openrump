@@ -6,7 +6,6 @@
 // include files
 
 #include <openrump/Export.hpp>
-#include <openrump/BaseApp.hpp>
 
 #include <memory>
 
@@ -19,8 +18,7 @@ namespace OpenRump {
 
 namespace OpenRump {
 
-class OPENRUMP_API App :
-    public BaseApp
+class OPENRUMP_API App
 {
 public:
 
@@ -33,26 +31,37 @@ public:
      * @brief Default destructor
      */
     ~App();
+    
+    /*!
+     * @brief Script to execute.
+     */
+    void setScript(char* scriptFile);
+    
+    /*!
+     * @brief Launc the app.
+     */
+    void go();
 
 private:
 
     /*!
      * @brief Called when the application should load
      */
-    void onLoad() override;
+    void onLoad();
 
     /*!
      * @brief Called when the application should run
      */
-    void onRun() override;
+    void onRun();
 
     /*!
      * @brief Called when the application is exiting
      */
-    void onExit() override;
+    void onExit();
 
     const char* m_PyWorkingDirectory;
     const char* m_PySysPath;
+    char* m_ScriptFile;
     std::unique_ptr<Game> m_Game;
 };
 
