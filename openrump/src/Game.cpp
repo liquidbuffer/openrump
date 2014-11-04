@@ -115,18 +115,6 @@ void Game::initialise()
 
     // attach OIS to Ogre's window
     //input.attachToWindow(renderer.getWindowHandle());
-    
-    m_World.getSystemManager().getSystem<OgreDotSceneLoader>().addScene(
-        "test scene",
-        "../../../assets-openrump/mesh/test-floor/floor.scene"
-    );
-    OgreDotSceneLoader::Settings sceneSettings;
-    sceneSettings.excludeNodes.insert("Plane");
-    m_World.getSystemManager().getSystem<OgreDotSceneLoader>().addScene(
-        "applejack",
-        "../../../assets-openrump/mesh/applejack/AJ ogre001.scene",
-        sceneSettings
-    );
 
     // create connections
     renderer.on_frame_queued.connect(boost::bind(&LoopTimer::onFrameRendered, &loopTimer));

@@ -57,6 +57,7 @@ struct EntityManagerWrapper : EntityManager, wrapper<System>
 };
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(EntityManagerCreateEntityOverloads, createEntityWrapper, 0, 1)
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(OgreDotSceneLoaderAddSceneOverloads, addScene, 2, 3)
 
 #define STRINGIFY(x) #x
 #define TO_STRING(x) STRINGIFY(x)
@@ -143,6 +144,19 @@ void exportOntologyInterface()
         .def_readonly("on_direction_change", &InputInterface::on_direction_change)
         .def_readonly("on_camera_angle_change", &InputInterface::on_camera_angle_change)
         .def_readonly("on_camera_distance_change", &InputInterface::on_camera_distance_change)
+        ;
+    class_<LoopTimer, boost::noncopyable, bases<SystemWrapper> >("LoopTimer", no_init)
+        .def("reset", &LoopTimer::reset)
+        .def("get_elapsed_time", &LoopTimer::getElapsedTime)
+        .def("set_fps", &LoopTimer::setFPS)
+        .def("get_time_between_frames", &LoopTimer::getTimeBetweenFrames)
+        .def("get_render_fps", &LoopTimer::getRenderFPS)
+        .def("get_update_fps", &LoopTimer::getUpdateFPS)
+        .def_readonly("on_render_loop", &LoopTimer::on_render_loop)
+        .def_readonly("on_game_loop", &LoopTimer::on_game_loop)
+        ;
+    class_<OgreDotSceneLoader, boost::noncopyable, bases<SystemWrapper> >("OgreDotSceneLoader", no_init)
+        .def("add_scene", &OgreDotSceneLoader::addScene, OgreDotSceneLoaderAddSceneOverloads())
         ;
     
     /* not wrapping entities - at least not yet. They should be hidden from the end user.
