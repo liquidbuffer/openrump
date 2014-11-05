@@ -17,7 +17,7 @@ using namespace OpenRump;
 void (Game::*attachCameraToEntity_entityName)(std::string)                          = &Game::attachCameraToEntity;
 void (Game::*attachCameraToEntity_cameraName_entityName)(std::string, std::string)  = &Game::attachCameraToEntity;*/
 
-void exportGameInterface()
+void exportPyGame()
 {
     using namespace boost::python;
     class_<Game, boost::noncopyable>("Game")

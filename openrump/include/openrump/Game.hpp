@@ -5,7 +5,7 @@
 // ----------------------------------------------------------------------------
 // include files
 
-#include <openrump/PyCallbackDispatcher.hpp>
+#include <openrump/py/PyCallbackDispatcher.hpp>
 
 #include <ontology/Entity.hxx>
 #include <ontology/World.hpp>

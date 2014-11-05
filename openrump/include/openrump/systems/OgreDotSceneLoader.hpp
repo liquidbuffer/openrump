@@ -20,13 +20,14 @@ namespace Ogre {
 }
 
 namespace OpenRump {
-
+    
 class OgreDotSceneLoader : public Ontology::System
 {
 public:
     
-    struct Settings
+    class Settings
     {
+    public:
         Settings();
         bool loadCameras;
         bool loadLights;

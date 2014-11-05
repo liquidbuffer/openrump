@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------------
-// PyInterface.cpp
+// PythonModules.cpp
 // ----------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------
@@ -11,17 +11,33 @@
 // ----------------------------------------------------------------------------
 // foward declarations
 
-void exportOntologyInterface();
-//void exportEntityPlayerInterface();
-void exportGameInterface();
+void exportPyOntology();
+void exportPyGame();
+
+// systems
+void exportPyCameraOrbit();
+void exportPyDefaultPhysicsWorld();
+void exportPyInputInterface();
+void exportPyLoopTimer();
+void exportPyOgreDotSceneLoader();
+void exportPyOgreRenderer();
+void exportPyThirdPersonController();
 
 BOOST_PYTHON_MODULE(ontology)
 {
-    exportOntologyInterface();
+    
 }
 
 BOOST_PYTHON_MODULE(open_rump)
 {
-    exportGameInterface();
-    /*exportEntityPlayerInterface();*/
+    exportPyOntology();
+    exportPyGame();
+    exportPyOgreDotSceneLoader();
+    /*exportPyCameraOrbit();
+    exportPyDefaultPhysicsWorld();
+    exportPyInputInterface();
+    exportPyLoopTimer();
+    //
+    exportPyOgreRenderer();
+    exportPyThirdPersonController();*/
 }
