@@ -23,21 +23,15 @@ void exportPyOgreDotSceneLoader();
 void exportPyOgreRenderer();
 void exportPyThirdPersonController();
 
-BOOST_PYTHON_MODULE(ontology)
-{
-    
-}
-
 BOOST_PYTHON_MODULE(open_rump)
 {
     exportPyOntology();
     exportPyGame();
-    exportPyOgreDotSceneLoader();
-    /*exportPyCameraOrbit();
+    exportPyCameraOrbit();
     exportPyDefaultPhysicsWorld();
     exportPyInputInterface();
     exportPyLoopTimer();
-    //
+    exportPyOgreDotSceneLoader();
     exportPyOgreRenderer();
-    exportPyThirdPersonController();*/
+    exportPyThirdPersonController();
 }
