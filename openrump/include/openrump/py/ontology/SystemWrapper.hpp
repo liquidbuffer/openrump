@@ -11,12 +11,9 @@
 #include <ontology/System.hpp>
 #include <ontology/Entity.hpp>
 
-using namespace Ontology;
-using namespace boost::python;
-
-struct SystemWrapper : public System, wrapper<System>
+struct SystemWrapper : public Ontology::System, boost::python::wrapper<Ontology::System>
 {
     void initialise();
-    void processEntity(Entity&);
-    void configureEntity(Entity&, std::string);
+    void processEntity(Ontology::Entity&);
+    void configureEntity(Ontology::Entity&, std::string);
 };

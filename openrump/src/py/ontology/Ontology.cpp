@@ -21,10 +21,6 @@
 #include <openrump/systems/OgreRenderer.hpp>
 #include <openrump/systems/ThirdPersonController.hpp>
 
-using namespace Ontology;
-using namespace OpenRump;
-using namespace boost::python;
-
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(EntityManagerCreateEntityOverloads, createEntityWrapper, 0, 1)
 
 #define STRINGIFY(x) #x
@@ -42,7 +38,7 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(EntityManagerCreateEntityOverloads, creat
 
 // generates get python methods for the specified system
 #define DEF_GET_SYSTEM(pystr, system) \
-    .def("get_" pystr, &SystemManager::getSystem<system>, \
+    .def("get_" pystr, &Ontology::SystemManager::getSystem<system>, \
         return_value_policy< \
             reference_existing_object>())
 
@@ -52,23 +48,26 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(EntityManagerCreateEntityOverloads, creat
 
 void exportPyOntology()
 {
+    using namespace OpenRump;
+    using namespace boost::python;
+    
     // ----------------------------------------------------------------------------
     // ontology world
-    class_<World, boost::noncopyable>("World")
-        .def("get_system_manager", &World::getSystemManager,
+    class_<Ontology::World, boost::noncopyable>("World")
+        .def("get_system_manager", &Ontology::World::getSystemManager,
              return_value_policy<
                 reference_existing_object>())
-        .def("get_entity_manager", &World::getEntityManager,
+        .def("get_entity_manager", &Ontology::World::getEntityManager,
              return_value_policy<
                 reference_existing_object>())
-        .def("get_delta_time", &World::getDeltaTime)
-        .def("set_delta_time", &World::setDeltaTime)
-        .def("update", &World::update)
+        .def("get_delta_time", &Ontology::World::getDeltaTime)
+        .def("set_delta_time", &Ontology::World::setDeltaTime)
+        .def("update", &Ontology::World::update)
         ;
     
     // ----------------------------------------------------------------------------
     // system manager
-    class_<SystemManager, boost::noncopyable>("SystemManager", no_init)
+    class_<Ontology::SystemManager, boost::noncopyable>("SystemManager", no_init)
         DEF_GET_SYSTEM("camera_orbit", CameraOrbit)
         DEF_GET_SYSTEM("default_physics_world", DefaultPhysicsWorld)
         DEF_GET_SYSTEM("input_interface", InputInterface)
@@ -90,9 +89,9 @@ void exportPyOntology()
     // ----------------------------------------------------------------------------
     // system base class
     class_<SystemWrapper, boost::noncopyable>("System")
-        .def("initialise", pure_virtual(&System::initialise))
-        .def("process_entity", pure_virtual(&System::processEntity))
-        .def("configure_entity", pure_virtual(&System::configureEntity))
+        .def("initialise", pure_virtual(&Ontology::System::initialise))
+        .def("process_entity", pure_virtual(&Ontology::System::processEntity))
+        .def("configure_entity", pure_virtual(&Ontology::System::configureEntity))
         ;
 
     /* not wrapping entities - at least not yet. They should be hidden from the end user.

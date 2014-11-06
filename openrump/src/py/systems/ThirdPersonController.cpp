@@ -11,9 +11,7 @@
 #include <openrump/systems/ThirdPersonController.hpp>
 #include <openrump/py/ontology/SystemWrapper.hpp>
 
-using namespace OpenRump;
-using namespace boost::python;
-
 void exportPyThirdPersonController()
 {
+    using namespace boost::python;
 }

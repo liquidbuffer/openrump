@@ -23,15 +23,27 @@ void exportPyOgreDotSceneLoader();
 void exportPyOgreRenderer();
 void exportPyThirdPersonController();
 
-BOOST_PYTHON_MODULE(open_rump)
+class OntologyNamespace {};
+class GameNamespace {};
+
+BOOST_PYTHON_MODULE(_open_rump)
 {
-    exportPyOntology();
-    exportPyGame();
-    exportPyCameraOrbit();
-    exportPyDefaultPhysicsWorld();
-    exportPyInputInterface();
-    exportPyLoopTimer();
-    exportPyOgreDotSceneLoader();
-    exportPyOgreRenderer();
-    exportPyThirdPersonController();
+    using namespace boost::python;
+    
+    {
+        scope Ontology = class_<OntologyNamespace>("Ontology");
+        exportPyOntology();
+    }
+    
+    {
+        scope Game = class_<GameNamespace>("Game");
+        exportPyGame();
+        exportPyCameraOrbit();
+        exportPyDefaultPhysicsWorld();
+        exportPyInputInterface();
+        exportPyLoopTimer();
+        exportPyOgreDotSceneLoader();
+        exportPyOgreRenderer();
+        exportPyThirdPersonController();
+    }
 }

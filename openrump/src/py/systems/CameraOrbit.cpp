@@ -9,15 +9,14 @@
 #include <boost/python.hpp>  // must be included before std to avoid warnings
 
 #include <openrump/systems/CameraOrbit.hpp>
-#include <openrump/py/ontology/SystemWrapper.hpp>
-
-using namespace OpenRump;
-using namespace boost::python;
+#include <ontology/System.hpp>
 
 void exportPyCameraOrbit()
 {
-    class_<CameraOrbit, bases<SystemWrapper> >("CameraOrbit")
-        .def("on_new_camera_angle", &CameraOrbit::onNewCameraAngle)
-        .def("on_new_camera_distance", &CameraOrbit::onNewCameraDistance)
+    using namespace boost::python;
+
+    class_<OpenRump::CameraOrbit/*, bases<Ontology::System>*/ >("CameraOrbit")
+        .def("on_new_camera_angle", &OpenRump::CameraOrbit::onNewCameraAngle)
+        .def("on_new_camera_distance", &OpenRump::CameraOrbit::onNewCameraDistance)
         ;
 }

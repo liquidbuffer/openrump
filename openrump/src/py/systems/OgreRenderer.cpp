@@ -11,9 +11,8 @@
 #include <openrump/systems/CameraOrbit.hpp>
 #include <openrump/py/ontology/SystemWrapper.hpp>
 
-using namespace OpenRump;
-using namespace boost::python;
-
 void exportPyOgreRenderer()
 {
+    using namespace boost::python;
+    
 }

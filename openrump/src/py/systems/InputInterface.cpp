@@ -11,26 +11,25 @@
 #include <openrump/py/systems/InputInterface.hpp>
 #include <openrump/py/ontology/SystemWrapper.hpp>
 
-using namespace OpenRump;
-using namespace boost::python;
-
 void exportPyInputInterface()
 {
-    class_<InputInterfaceWrapper, boost::noncopyable, bases<SystemWrapper> >("Input")
-        .def("attach_to_window", pure_virtual(&InputInterface::attachToWindow))
-        .def("detach_from_window", pure_virtual(&InputInterface::detachFromWindow))
-        .def("set_window_extents", pure_virtual(&InputInterface::setWindowExtents))
-        .def("capture", pure_virtual(&InputInterface::capture))
-        .def_readonly("on_exit", &InputInterface::on_exit)
-        .def_readonly("on_direction_change", &InputInterface::on_direction_change)
-        .def_readonly("on_camera_angle_change", &InputInterface::on_camera_angle_change)
-        .def_readonly("on_camera_distance_change", &InputInterface::on_camera_distance_change)
+    using namespace boost::python;
+    
+    class_<InputInterfaceWrapper, boost::noncopyable/*, bases<Ontology::System>*/ >("Input")
+        .def("attach_to_window", pure_virtual(&OpenRump::InputInterface::attachToWindow))
+        .def("detach_from_window", pure_virtual(&OpenRump::InputInterface::detachFromWindow))
+        .def("set_window_extents", pure_virtual(&OpenRump::InputInterface::setWindowExtents))
+        .def("capture", pure_virtual(&OpenRump::InputInterface::capture))
+        .def_readonly("on_exit", &OpenRump::InputInterface::on_exit)
+        .def_readonly("on_direction_change", &OpenRump::InputInterface::on_direction_change)
+        .def_readonly("on_camera_angle_change", &OpenRump::InputInterface::on_camera_angle_change)
+        .def_readonly("on_camera_distance_change", &OpenRump::InputInterface::on_camera_distance_change)
         ;
 }
 
 void InputInterfaceWrapper::initialise() {}
-void InputInterfaceWrapper::processEntity(Entity&) {}
-void InputInterfaceWrapper::configureEntity(Entity&, std::string) {}
+void InputInterfaceWrapper::processEntity(Ontology::Entity&) {}
+void InputInterfaceWrapper::configureEntity(Ontology::Entity&, std::string) {}
 void InputInterfaceWrapper::attachToWindow(std::size_t) {}
 void InputInterfaceWrapper::detachFromWindow() {}
 void InputInterfaceWrapper::setWindowExtents(unsigned int, unsigned int) {}

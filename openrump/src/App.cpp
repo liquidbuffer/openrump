@@ -66,7 +66,7 @@ void App::onRun()
     using namespace boost::python;
     try
     {
-        initopen_rump();
+        init_open_rump();
         object main_module = import("__main__");
         object main_namespace = main_module.attr("__dict__");
         object ignored = exec_file(m_ScriptFile, main_namespace);

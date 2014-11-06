@@ -12,12 +12,12 @@ void SystemWrapper::initialise()
     this->get_override("initialise")();
 }
 
-void SystemWrapper::processEntity(Entity& e)
+void SystemWrapper::processEntity(Ontology::Entity& e)
 {
     this->get_override("processEntity")(e);
 }
 
-void SystemWrapper::configureEntity(Entity&, std::string params)
+void SystemWrapper::configureEntity(Ontology::Entity&, std::string params)
 {
     this->get_override("configureEntity")(params);
 }

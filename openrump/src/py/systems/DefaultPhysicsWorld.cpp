@@ -11,11 +11,10 @@
 #include <openrump/systems/DefaultPhysicsWorld.hpp>
 #include <openrump/py/ontology/SystemWrapper.hpp>
 
-using namespace OpenRump;
-using namespace boost::python;
-
 void exportPyDefaultPhysicsWorld()
 {
-    class_<DefaultPhysicsWorld, boost::noncopyable, bases<SystemWrapper> >("DefaultPhysicsWorld", no_init)
+    using namespace boost::python;
+    
+    class_<OpenRump::DefaultPhysicsWorld, boost::noncopyable/*, bases<Ontology::System>*/ >("DefaultPhysicsWorld", no_init)
         ;
 }
