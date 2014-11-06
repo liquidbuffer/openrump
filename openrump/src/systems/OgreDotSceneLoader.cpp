@@ -31,6 +31,12 @@ OgreDotSceneLoader::Settings::Settings() :
 }
 
 // ----------------------------------------------------------------------------
+void OgreDotSceneLoader::Settings::excludeNode(std::string node)
+{
+    this->excludeNodes.insert(node);
+}
+
+// ----------------------------------------------------------------------------
 OgreDotSceneLoader::OgreDotSceneLoader()
 {
 }

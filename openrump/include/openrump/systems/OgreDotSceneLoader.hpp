@@ -34,6 +34,8 @@ public:
         bool loadEntities;
         bool loadExternalResources;
         std::set<std::string> excludeNodes;
+        
+        void excludeNode(std::string node);
     };
     
     /*!

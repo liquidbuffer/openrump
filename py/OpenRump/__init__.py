@@ -6,7 +6,10 @@ from _open_rump import Game, Ontology
 # Some monkey patching - you saw nothing
 ###############################################################################
 
-# easier method for getting systems
+###############################################################################
+# easier method for getting systems from the world
+###############################################################################
+
 ontology_system_map = {
     "CameraOrbit": Ontology.SystemManager.get_camera_orbit,
     "DefaultPhysicsWorld": Ontology.SystemManager.get_default_physics_world,
@@ -16,6 +19,8 @@ ontology_system_map = {
     "OgreRenderer": Ontology.SystemManager.get_ogre_renderer,
     "ThirdPersonController": Ontology.SystemManager.get_third_person_controller
 }
+
+
 def get_system_helper(self, systemName):
     return ontology_system_map[systemName](self.get_system_manager())
 

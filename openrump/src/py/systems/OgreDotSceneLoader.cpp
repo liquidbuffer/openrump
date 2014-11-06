@@ -26,5 +26,6 @@ void exportPyOgreDotSceneLoader()
         .def_readwrite("load_entities", &OpenRump::OgreDotSceneLoader::Settings::loadEntities)
         .def_readwrite("load_external_resources", &OpenRump::OgreDotSceneLoader::Settings::loadExternalResources)
         .def_readwrite("exclude_nodes", &OpenRump::OgreDotSceneLoader::Settings::excludeNodes)
+        .def("exclude_node", &OpenRump::OgreDotSceneLoader::Settings::excludeNode)
         ;
 }
