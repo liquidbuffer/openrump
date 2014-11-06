@@ -11,6 +11,7 @@
 #include <OgreFrameListener.h>
 
 #include <ontology/System.hpp>
+#include <ontology/Entity.hxx>
 
 #include <boost/signals2.hpp>
 
@@ -82,13 +83,19 @@ public:
      * @param name A globally unique name for the camera.
      */
     Ogre::Camera* createCamera(std::string name);
+    
+    void setCameraView(Ogre::Camera* camera, Ogre::Real left,
+                       Ogre::Real top, Ogre::Real width, Ogre::Real height);
+    void setCameraClipping(Ogre::Camera* camera, Ogre::Real near, Ogre::Real far);
+    void setMainCamera(Ogre::Camera* camera);
+    void destroyCamera(Ogre::Camera* camera);
 
     /*!
      * @brief Gets the main camera.
      */
     Ogre::Camera* getMainCamera() const;
     
-    
+    Ogre::SceneNode* getSceneNode(std::string nodeName) const;
 
     boost::signals2::signal<void ()> on_frame_started;
     boost::signals2::signal<void ()> on_frame_queued;

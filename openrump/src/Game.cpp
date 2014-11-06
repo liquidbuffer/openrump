@@ -152,7 +152,9 @@ Ontology::Entity::ID Game::loadPlayer(std::string entityName, std::string meshFi
 // ----------------------------------------------------------------------------
 Ontology::Entity::ID Game::createCamera(std::string cameraName)
 {
-    Ogre::Camera* camera = m_World.getSystemManager().getSystem<OgreRenderer>().createCamera(cameraName);
+    Ogre::Camera* camera = m_World.getSystemManager()
+        .getSystem<OgreRenderer>()
+        .createCamera(cameraName);
     return m_World.getEntityManager().createEntity(cameraName.c_str())
         .addComponent<OgreCamera>(camera)
         .getID()
@@ -160,18 +162,51 @@ Ontology::Entity::ID Game::createCamera(std::string cameraName)
 }
 
 // ----------------------------------------------------------------------------
-void Game::attachCameraToEntity(Ontology::Entity::ID cameraID, Ontology::Entity::ID entityID)
+void Game::orbitCameraAroundEntity(Ontology::Entity::ID cameraID, Ontology::Entity::ID entityID)
 {
+    this->detachCameraFromOrbit(cameraID);
+    
     Ontology::Entity& camera = m_World.getEntityManager().getEntity(cameraID);
     Ontology::Entity& entity = m_World.getEntityManager().getEntity(entityID);
     
     Ogre::SceneNode* attachNode = entity.getComponent<OgreTranslateRotateNode>().translation;
     Ogre::SceneNode* rotateNode = attachNode->createChildSceneNode(entity.getName()+std::string("CameraRotateNode"));
     Ogre::SceneNode* translateNode = rotateNode->createChildSceneNode(entity.getName()+std::string("CameraTranslateNode"));
-    entity.addComponent<OgreCameraOrbitNode>(rotateNode, translateNode);
+    camera.addComponent<OgreCameraOrbitNode>(rotateNode, translateNode);
     
     translateNode->attachObject(camera.getComponent<OgreCamera>().camera);
     translateNode->setPosition(0, 0, 100);
+}
+
+// ----------------------------------------------------------------------------
+void Game::orbitCameraAroundNode(Ontology::Entity::ID cameraID, std::string nodeName)
+{
+    this->detachCameraFromOrbit(cameraID);
+    
+    Ontology::Entity& camera = m_World.getEntityManager().getEntity(cameraID);
+    OgreRenderer& renderer = m_World.getSystemManager().getSystem<OgreRenderer>();
+    
+    Ogre::SceneNode* attachNode = renderer.getSceneNode(nodeName);
+    Ogre::SceneNode* rotateNode = attachNode->createChildSceneNode(nodeName+std::string("CameraRotateNode"));
+    Ogre::SceneNode* translateNode = rotateNode->createChildSceneNode(nodeName+std::string("CameraTranslateNode"));
+    camera.addComponent<OgreCameraOrbitNode>(rotateNode, translateNode);
+    
+    translateNode->attachObject(camera.getComponent<OgreCamera>().camera);
+    translateNode->setPosition(0, 0, 100);
+}
+
+// ----------------------------------------------------------------------------
+void Game::detachCameraFromOrbit(Ontology::Entity::ID cameraID)
+{
+    Ontology::Entity& camera = m_World.getEntityManager().getEntity(cameraID);
+    if(!camera.hasComponent<OgreCameraOrbitNode>())
+        return;
+    
+    OgreCameraOrbitNode& orbitNode = camera.getComponent<OgreCameraOrbitNode>();
+    orbitNode.translation->detachObject(camera.getComponent<OgreCamera>().camera);
+    orbitNode.rotation->getParentSceneNode()->removeAndDestroyAllChildren();
+    
+    camera.removeComponent<OgreCameraOrbitNode>();
 }
 
 // ----------------------------------------------------------------------------

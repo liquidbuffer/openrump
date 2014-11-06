@@ -237,9 +237,49 @@ Ogre::Camera* OgreRenderer::createCamera(std::string name)
 }
 
 // ----------------------------------------------------------------------------
+void OgreRenderer::setCameraView(Ogre::Camera* camera,
+                                 Ogre::Real left,
+                                 Ogre::Real top,
+                                 Ogre::Real width,
+                                 Ogre::Real height)
+{
+    Ogre::Viewport* vp = camera->getViewport();
+    vp->setDimensions(left, top, width, height);
+    camera->setAspectRatio(
+        Ogre::Real(vp->getActualWidth()) /
+        Ogre::Real(vp->getActualHeight())
+    );
+}
+
+// ----------------------------------------------------------------------------
+void OgreRenderer::setCameraClipping(Ogre::Camera* camera, Ogre::Real near, Ogre::Real far)
+{
+    camera->setNearClipDistance(near);
+    camera->setFarClipDistance(far);
+}
+
+// ----------------------------------------------------------------------------
+void OgreRenderer::setMainCamera(Ogre::Camera* camera)
+{
+    m_Camera = camera;
+}
+
+// ----------------------------------------------------------------------------
+void OgreRenderer::destroyCamera(Ogre::Camera* camera)
+{
+    m_SceneManager->destroyCamera(camera);
+}
+
+// ----------------------------------------------------------------------------
 Ogre::Camera* OgreRenderer::getMainCamera() const
 {
     return m_Camera;
+}
+
+// ----------------------------------------------------------------------------
+Ogre::SceneNode* OgreRenderer::getSceneNode(std::string nodeName) const
+{
+    return m_SceneManager->getSceneNode(nodeName);
 }
 
 // ----------------------------------------------------------------------------

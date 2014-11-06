@@ -81,8 +81,12 @@ public:
      * @brief Attaches the main camera to the orbit of an entity.
      * @param entityName The entity identifier string.
      */
-    void attachCameraToEntity(Ontology::Entity::ID camera, Ontology::Entity::ID object);
+    void orbitCameraAroundEntity(Ontology::Entity::ID cameraID, Ontology::Entity::ID entityID);
+    
+    void orbitCameraAroundNode(Ontology::Entity::ID cameraID, std::string nodeName);
 
+    void detachCameraFromOrbit(Ontology::Entity::ID cameraID);
+    
     /*!
      * @brief Registers a callback for when game updates occur.
      * By default a game update occurs at a constant rate of 60 times a second,
