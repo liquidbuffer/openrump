@@ -3,3 +3,6 @@
 
 # python playground file
 Main.py
+
+# compiles python files
+*.pyc
