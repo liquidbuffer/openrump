@@ -47,6 +47,18 @@ void CameraOrbit::onNewCameraAngle(float x, float y)
 {
     m_Angle.x -= y * 0.1;
     m_Angle.y -= x * 0.1;
+    
+    // wrap angles to 360
+    while(m_Angle.x > 360.0)
+        m_Angle.x -= 360.0;
+    while(m_Angle.x < 0.0)
+        m_Angle.x += 360.0;
+    
+    // clamp x angle to -90/+90
+    if(m_Angle.x > 180.0 && m_Angle.x < 270.0)
+        m_Angle.x = 270.0;
+    if(m_Angle.x < 180.0 && m_Angle.x > 90.0)
+        m_Angle.x = 90.0;
 }
 
 // ----------------------------------------------------------------------------
